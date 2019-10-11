@@ -23,7 +23,7 @@ namespace LauncherBack.Helpers
         //Initialize values
         private void Initialize()
         {
-            server = "92.222.80.11";
+            server = "localhost";
             database = "NEYHOS_STUDIO";
             uid = "root";
             password = "Projet_meuporg57";
