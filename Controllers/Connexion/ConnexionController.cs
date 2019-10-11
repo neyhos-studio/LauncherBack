@@ -17,7 +17,7 @@ namespace LauncherBack.Controllers.Connexion
         public string Connexion([FromBody] RequestFront request)
         {
 
-            return "::: " + bdd.Select();
+            return "::: ";
         }
     }
 }
