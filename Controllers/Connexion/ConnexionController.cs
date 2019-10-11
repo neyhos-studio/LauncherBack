@@ -16,7 +16,7 @@ namespace LauncherBack.Controllers.Connexion
         [ActionName("Inscription")]
         public void Connexion([FromBody] RequestFront request)
         {
-            Console.WriteLine(":::" + bdd);
+            Console.WriteLine(":::" + bdd.Select());
         }
     }
 }

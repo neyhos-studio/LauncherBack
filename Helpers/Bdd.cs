@@ -79,7 +79,7 @@ namespace LauncherBack.Helpers
         }
 
         //SELECT
-        public bool Select()
+        public string Select()
         {
             string query = "SELECT * FROM NS_ETATS_UTILISATEUR";
 
@@ -90,7 +90,7 @@ namespace LauncherBack.Helpers
 
             if(this.OpenConnection() == true)
             {
-                return this.OpenConnection();
+                return "JE SUIS CONNECTE";
                 /*MySqlCommand cmd = new MySqlCommand(query, connection);
                 MySqlDataReader dataReader = cmd.ExecuteReader();
 
@@ -106,7 +106,7 @@ namespace LauncherBack.Helpers
                 return list;*/
             } else
             {
-                return this.OpenConnection();
+                return "JE SUIS PAS CONNECTE";
                 //return list;
             }
         }
