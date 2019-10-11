@@ -14,10 +14,10 @@ namespace LauncherBack.Controllers.Connexion
 
         [HttpPost]
         [ActionName("Inscription")]
-        public string Connexion([FromBody] RequestFront request)
+        public bool Connexion([FromBody] RequestFront request)
         {
 
-            return request.accountEmail + request.accountPassword;
+            return bdd.Select();
         }
     }
 }
