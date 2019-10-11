@@ -14,10 +14,9 @@ namespace LauncherBack.Controllers.Connexion
 
         [HttpPost]
         [ActionName("Inscription")]
-        public string Connexion([FromBody] RequestFront request)
+        public void Connexion([FromBody] RequestFront request)
         {
-
-            return "::: ";
+            Console.WriteLine(":::" + bdd);
         }
     }
 }
