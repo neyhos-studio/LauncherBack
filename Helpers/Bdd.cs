@@ -23,10 +23,10 @@ namespace LauncherBack.Helpers
         //Initialize values
         private void Initialize()
         {
-            server = "92.222.80.11:3306";
+            server = "92.222.80.11";
             database = "NEYHOS_STUDIO";
-            uid = "root";
-            password = "Projet_meuporg57";
+            uid = "NEYHOS_STUDIO";
+            password = "0knqtalmp1";
             string connectionString;
             connectionString = "SERVER=" + server + ";" + "DATABASE=" +
             database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
