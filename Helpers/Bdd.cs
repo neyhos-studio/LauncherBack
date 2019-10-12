@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using LauncherBack.Controllers.Connexion;
 using MySql.Data.MySqlClient;
 
 namespace LauncherBack.Helpers
@@ -78,37 +79,99 @@ namespace LauncherBack.Helpers
             }
         }
 
-        //SELECT
-        public List<string>[] Select()
+        //ACCOUNT EXIST
+        public bool Connexion(RequestFront request)
         {
-            string query = "SELECT * FROM NS_ETATS_UTILISATEUR";
+            string query = "SELECT COUNT(*) FROM NS_ACCOUNTS as ACC WHERE ACC.ACCOUNT_EMAIL = '"+request.accountEmail+"' AND ACC.ACCOUNT_PASSWORD = '"+request.accountPassword+"'";
 
-            List<string>[] list = new List<string>[3];
-            list[0] = new List<string>();
-            list[1] = new List<string>();
-            list[2] = new List<string>();
+            bool exist = false;
 
             if(this.OpenConnection() == true)
             {
                 MySqlCommand cmd = new MySqlCommand(query, connection);
-                MySqlDataReader dataReader = cmd.ExecuteReader();
+               
+
+                if (int.Parse(cmd.ExecuteScalar() + "") == 1)
+                {
+                    exist = true;
+                }
+
+                this.CloseConnection();
+            } else
+            {
+                Console.WriteLine("Erreur de connexion à la BDD");
+            }
+
+            return exist;
+        }
+
+        //RECUP ID ACCOUNT
+        public int RecupIdAccount(RequestFront request)
+        {
+            string queryRecupID = "SELECT ACCOUNT_ID FROM NS_ACCOUNTS as ACC WHERE ACC.ACCOUNT_EMAIL = '" + request.accountEmail + "' AND ACC.ACCOUNT_PASSWORD = '" + request.accountPassword + "'";
+            int id = 0;
+
+            if (this.OpenConnection() == true)
+            {
+                MySqlCommand cmd2 = new MySqlCommand(queryRecupID, connection);
+                MySqlDataReader dataReader = cmd2.ExecuteReader();
 
                 while (dataReader.Read())
                 {
-                    list[0].Add(dataReader["ETAT_UTILISATEUR_ID"] + "");
-                    list[1].Add(dataReader["ETAT_UTILISATEUR_LIBELLE"] + "");
-                    list[2].Add(dataReader["ETAT_UTILISATEUR_COLOR"] + "");
+                    id = int.Parse(dataReader["ACCOUNT_ID"] + "");
                 }
 
-                Console.WriteLine("::: JE SUIS CO");
-
                 dataReader.Close();
+
                 this.CloseConnection();
-                return list;
+
+                return id;
             } else
             {
-                Console.WriteLine("::: JE SUIS PAS CO");
-                return list;
+                return 0;
+            }
+
+            
+        }
+
+        //INSERT TOKEN
+        public void InsertToken(int idAccount, string tokenServer, string tokenClient)
+        {
+            string queryRecupID = "INSERT INTO NS_TOKENS (TOKEN_ACCOUNT_ID, TOKEN_TOKEN_SERVER, TOKEN_TOKEN_CLIENT, TOKEN_DATE_CREATION) VALUES (" + idAccount+", '" + tokenServer+"', '"+ tokenClient + "', '"+ DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"')";
+
+            if (this.OpenConnection() == true)
+            {
+                MySqlCommand cmd = new MySqlCommand(queryRecupID, connection);
+                cmd.ExecuteNonQuery();
+                this.CloseConnection();
+            }
+            else
+            {
+            }
+        }
+
+        //PASSAGE EN LIGNE
+        public void PassageEnLigne(int idAccount)
+        {
+            string passageEnLigne = "UPDATE NS_UTILISATEURS SET UTILISATEUR_ETAT = 2 WHERE UTILISATEUR_ID_ACCOUNT = 2";
+
+            if (this.OpenConnection() == true)
+            {
+                //create mysql command
+                MySqlCommand cmd = new MySqlCommand();
+                //Assign the query using CommandText
+                cmd.CommandText = passageEnLigne;
+                //Assign the connection using Connection
+                cmd.Connection = connection;
+
+                //Execute query
+                cmd.ExecuteNonQuery();
+
+                //close connection
+                this.CloseConnection();
+            }
+            else
+            {
             }
         }
     }
