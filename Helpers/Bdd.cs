@@ -23,7 +23,7 @@ namespace LauncherBack.Helpers
         //Initialize values
         private void Initialize()
         {
-            server = "localhost";
+            server = "92.222.80.11:3306";
             database = "NEYHOS_STUDIO";
             uid = "root";
             password = "Projet_meuporg57";
@@ -100,12 +100,14 @@ namespace LauncherBack.Helpers
                     list[2].Add(dataReader["ETAT_UTILISATEUR_COLOR"] + "");
                 }
 
+                Console.WriteLine("::: JE SUIS CO");
+
                 dataReader.Close();
                 this.CloseConnection();
                 return list;
             } else
             {
-                
+                Console.WriteLine("::: JE SUIS PAS CO");
                 return list;
             }
         }
