@@ -50,11 +50,13 @@ namespace LauncherBack.Controllers.Inscription
             }
 
             //Test du contenu du PSEUDO (mots interdis)
-            string[] listeMotsInterdis = CONST.MOTS_INTERDIS.Split('|');
+            //string[] listeMotsInterdis = CONST.MOTS_INTERDIS.Split('|');
             bool test = false;
-            for (int i = 0; i < listeMotsInterdis.Length; i++)
+            List<String> listeMotsInterdits = bdd.RecupListeMotsInterdits();
+
+            for (int i = 0; i < listeMotsInterdits.Count(); i++)
             {
-                string motInterditNormaliser = listeMotsInterdis.GetValue(i).ToString().ToLower();
+                string motInterditNormaliser = listeMotsInterdits[i].ToString().ToLower();
                 string pseudoNormaliser = request.pseudo.ToLower();
                 if (pseudoNormaliser.Contains(motInterditNormaliser))
                 {

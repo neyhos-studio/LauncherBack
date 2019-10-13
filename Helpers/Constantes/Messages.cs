@@ -22,5 +22,10 @@ namespace LauncherBack.Helpers
             public const string INSCRIPTION_PSEUDO_2_ESPACES = "Votre pseudo ne peux contenir plus de 2 espaces d'affilés";
             public const string INSCRIPTION_PSEUDO_2_TIRETS = "Votre pseudo ne peux contenir plus de 2 tirets d'affilés";
         #endregion
+
+        #region CONFIGURATION
+            public const string CONFIGURATION_MOT_INTERDIT_OK = "Mot interdit ajouté à la liste !";
+            public const string CONFIGURATION_MOT_INTERDIT_NOK = "Mot interdit non ajouté à la liste";
+        #endregion
     }
 }

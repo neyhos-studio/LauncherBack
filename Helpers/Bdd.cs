@@ -247,5 +247,54 @@ namespace LauncherBack.Helpers
         }
 
         #endregion
+
+        #region CONFIGURATION
+        public List<String> RecupListeMotsInterdits()
+        {
+            string queryRecupListe = "SELECT * FROM NS_MOTS_INTERDITS";
+            List<String> listeMotsInterdits = new List<string>();
+
+            if (this.OpenConnection() == true)
+            {
+                MySqlCommand cmd2 = new MySqlCommand(queryRecupListe, connection);
+                MySqlDataReader dataReader = cmd2.ExecuteReader();
+
+                while (dataReader.Read())
+                {
+                    listeMotsInterdits.Add(dataReader["MOT_INTERDIT_LIBELLE"].ToString());
+                }
+
+                dataReader.Close();
+
+                this.CloseConnection();
+
+                return listeMotsInterdits;
+            }
+            else
+            {
+                return null;
+            }
+
+
+        }
+        public bool InsertMotInterdit(string motInterdit)
+        {
+            string queryAddMotInterdit = "INSERT INTO NS_MOTS_INTERDITS (MOT_INTERDIT_LIBELLE) VALUES ('" + motInterdit + "')";
+            bool response;
+
+            if (this.OpenConnection() == true)
+            {
+                MySqlCommand cmd = new MySqlCommand(queryAddMotInterdit, connection);
+                cmd.ExecuteNonQuery();
+                this.CloseConnection();
+
+                return response = true;
+            }
+            else
+            {
+                return response = false;
+            }
+        }
+        #endregion
     }
 }
