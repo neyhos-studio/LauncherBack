@@ -280,7 +280,6 @@ namespace LauncherBack.Helpers
         public bool InsertMotInterdit(string motInterdit)
         {
             string queryAddMotInterdit = "INSERT INTO NS_MOTS_INTERDITS (MOT_INTERDIT_LIBELLE) VALUES ('" + motInterdit + "')";
-            bool response;
 
             if (this.OpenConnection() == true)
             {
@@ -288,11 +287,11 @@ namespace LauncherBack.Helpers
                 cmd.ExecuteNonQuery();
                 this.CloseConnection();
 
-                return response = true;
+                return  true;
             }
             else
             {
-                return response = false;
+                return  false;
             }
         }
         #endregion
