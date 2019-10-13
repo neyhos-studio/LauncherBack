@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace LauncherBack.Controllers.Connexion
 {
-    public class RequestFront
+    public class RequestFrontConnexion
     {
-        public string accountEmail { get; set; }
-        public string accountPassword { get; set; }
+        public string email { get; set; }
+        public string password { get; set; }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LauncherBack.Controllers.Connexion;
+using LauncherBack.Controllers.Inscription;
 using MySql.Data.MySqlClient;
 
 namespace LauncherBack.Helpers
@@ -79,10 +80,12 @@ namespace LauncherBack.Helpers
             }
         }
 
+        #region CONNEXION
+
         //ACCOUNT EXIST
-        public bool Connexion(RequestFront request)
+        public bool Connexion(RequestFrontConnexion request)
         {
-            string query = "SELECT COUNT(*) FROM NS_ACCOUNTS as ACC WHERE ACC.ACCOUNT_EMAIL = '"+request.accountEmail+"' AND ACC.ACCOUNT_PASSWORD = '"+request.accountPassword+"'";
+            string query = "SELECT COUNT(*) FROM NS_ACCOUNTS as ACC WHERE ACC.ACCOUNT_EMAIL = '"+request.email+"' AND ACC.ACCOUNT_PASSWORD = '"+request.password+"'";
 
             bool exist = false;
 
@@ -106,9 +109,9 @@ namespace LauncherBack.Helpers
         }
 
         //RECUP ID ACCOUNT
-        public int RecupIdAccount(RequestFront request)
+        public int RecupIdAccount(RequestFrontConnexion request)
         {
-            string queryRecupID = "SELECT ACCOUNT_ID FROM NS_ACCOUNTS as ACC WHERE ACC.ACCOUNT_EMAIL = '" + request.accountEmail + "' AND ACC.ACCOUNT_PASSWORD = '" + request.accountPassword + "'";
+            string queryRecupID = "SELECT ACCOUNT_ID FROM NS_ACCOUNTS as ACC WHERE ACC.ACCOUNT_EMAIL = '" + request.email + "' AND ACC.ACCOUNT_PASSWORD = '" + request.password + "'";
             int id = 0;
 
             if (this.OpenConnection() == true)
@@ -153,7 +156,7 @@ namespace LauncherBack.Helpers
         //PASSAGE EN LIGNE
         public void PassageEnLigne(int idAccount)
         {
-            string passageEnLigne = "UPDATE NS_UTILISATEURS SET UTILISATEUR_ETAT = 2 WHERE UTILISATEUR_ID_ACCOUNT = 2";
+            string passageEnLigne = "UPDATE NS_UTILISATEURS SET UTILISATEUR_ETAT = 2 WHERE UTILISATEUR_ID_ACCOUNT = "+ idAccount+"";
 
             if (this.OpenConnection() == true)
             {
@@ -174,5 +177,75 @@ namespace LauncherBack.Helpers
             {
             }
         }
+
+        #endregion
+
+        #region INSCRIPTION 
+
+        public bool Inscription(RequestFrontInscription request)
+        {
+            string queryAddAccount = "INSERT INTO NS_ACCOUNTS (ACCOUNT_EMAIL, ACCOUNT_PASSWORD) VALUES ('"+request.email+"', '"+request.password+"')";
+            string quertRecupIdAccount = "SELECT MAX(ACCOUNT_ID) as MAX_ID FROM NS_ACCOUNTS WHERE ACCOUNT_EMAIL = '" + request.email + "'";
+            int id = 0;
+            bool estInscrit = false;
+
+            if (this.OpenConnection() == true)
+            {
+                MySqlCommand cmd = new MySqlCommand(queryAddAccount, connection);
+                cmd.ExecuteNonQuery();
+
+                MySqlCommand recupId = new MySqlCommand(quertRecupIdAccount, connection);
+                recupId.ExecuteNonQuery();
+                MySqlDataReader dataReader = recupId.ExecuteReader();
+
+                while (dataReader.Read())
+                {
+                    id = int.Parse(dataReader["MAX_ID"] + "");
+                }
+
+                dataReader.Close();
+
+                string queryAddUtilisateur = "INSERT INTO NS_UTILISATEURS (UTILISATEUR_ID_ACCOUNT, UTILISATEUR_PSEUDO) VALUES (" + id + ", '" + request.pseudo + "')";
+                MySqlCommand cmd2 = new MySqlCommand(queryAddUtilisateur, connection);
+                cmd2.ExecuteNonQuery();
+
+                this.CloseConnection();
+
+                return estInscrit = true;
+
+            }
+            else
+            {
+                return estInscrit;
+            }
+        }
+
+        public bool EmailExist(string email)
+        {
+            string query = "SELECT COUNT(*) FROM NS_ACCOUNTS as ACC WHERE ACC.ACCOUNT_EMAIL = '" + email + "'";
+
+            bool exist = false;
+
+            if (this.OpenConnection() == true)
+            {
+                MySqlCommand cmd = new MySqlCommand(query, connection);
+
+
+                if (int.Parse(cmd.ExecuteScalar() + "") == 1)
+                {
+                    exist = true;
+                }
+
+                this.CloseConnection();
+            }
+            else
+            {
+                Console.WriteLine("Erreur de connexion à la BDD");
+            }
+
+            return exist;
+        }
+
+        #endregion
     }
 }

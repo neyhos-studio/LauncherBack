@@ -3,8 +3,8 @@ using LauncherBack.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-
 using CONST = LauncherBack.Helpers.Constantes;
+using MSG = LauncherBack.Helpers.Messages;
 
 namespace LauncherBack.Controllers.Connexion
 {
@@ -13,29 +13,37 @@ namespace LauncherBack.Controllers.Connexion
     public class ConnexionController : ControllerBase
     {
         Bdd bdd = new Bdd();
+        ResponseFront responseFront = new ResponseFront();
 
         [HttpPost]
-        [ActionName("Inscription")]
-        public ResponseFront Connexion([FromBody] RequestFront request)
+        [ActionName("Connexion")]
+        public ResponseFront Connexion([FromBody] RequestFrontConnexion request)
         {
-            bool exist = bdd.Connexion(request);
-            ResponseFront responseFront = new ResponseFront();
+            string mdpCrypt = ShaHash.GetShaHash(request.password);
+            string concatPasswordKeys = String.Concat(CONST.KEY_CRYPTAGE, mdpCrypt, CONST.KEY_CRYPTAGE);
+            string stringCrypt = ShaHash.GetShaHash(concatPasswordKeys);
 
-            if (exist)
+            request.password = stringCrypt;
+
+            try
             {
+                bool exist = bdd.Connexion(request);
+
                 int idAccount = bdd.RecupIdAccount(request);
-                string tokenClient = generationToken(CONST.longueurToken);
-                string tokenServer = generationToken(CONST.longueurToken);
+                string tokenClient = generationToken(CONST.LONGUEUR_TOKEN);
+                string tokenServer = generationToken(CONST.LONGUEUR_TOKEN);
 
                 bdd.InsertToken(idAccount, tokenServer, tokenClient);
                 bdd.PassageEnLigne(idAccount);
 
                 responseFront.response = tokenClient;
                 return responseFront;
-            }else
+            }
+            catch(Exception e)
             {
+                Console.WriteLine("Erreur durant la connexion : " + e.Message);
                 responseFront.hasError = true;
-                responseFront.error = "Compte introuvable";
+                responseFront.error = MSG.COMPTE_INTROUVABLE;
                 return responseFront;
             }
         }
@@ -62,5 +70,7 @@ namespace LauncherBack.Controllers.Connexion
 
             return token;
         }
+
+        
     }
 }
