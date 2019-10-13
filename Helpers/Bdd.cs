@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using LauncherBack.Controllers.Connexion;
 using LauncherBack.Controllers.Inscription;
 using MySql.Data.MySqlClient;
+using MSG = LauncherBack.Helpers.Messages;
 
 namespace LauncherBack.Helpers
 {
@@ -54,11 +55,11 @@ namespace LauncherBack.Helpers
                 switch (ex.Number)
                 {
                     case 0:
-                        Console.WriteLine("Cannot connect to server.  Contact administrator");
+                        Console.WriteLine(MSG.BDD_CANNOT_CONNECT_SERVER);
                         break;
 
                     case 1045:
-                        Console.WriteLine("Invalid username/password, please try again");
+                        Console.WriteLine(MSG.BDD_INVALID_USERNAME_OR_PASSWORD);
                         break;
                 }
                 return false;
@@ -102,7 +103,7 @@ namespace LauncherBack.Helpers
                 this.CloseConnection();
             } else
             {
-                Console.WriteLine("Erreur de connexion à la BDD");
+                Console.WriteLine(MSG.BDD_ERREUR_CONNEXION_BDD);
             }
 
             return exist;
@@ -240,7 +241,7 @@ namespace LauncherBack.Helpers
             }
             else
             {
-                Console.WriteLine("Erreur de connexion à la BDD");
+                Console.WriteLine(MSG.BDD_ERREUR_CONNEXION_BDD);
             }
 
             return exist;

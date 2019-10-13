@@ -27,5 +27,11 @@ namespace LauncherBack.Helpers
             public const string CONFIGURATION_MOT_INTERDIT_OK = "Mot interdit ajouté à la liste !";
             public const string CONFIGURATION_MOT_INTERDIT_NOK = "Mot interdit non ajouté à la liste";
         #endregion
+
+        #region BDD
+        public const string BDD_CANNOT_CONNECT_SERVER = "Cannot connect to server.  Contact administrator";
+        public const string BDD_INVALID_USERNAME_OR_PASSWORD = "Invalid username/password, please try again";
+        public const string BDD_ERREUR_CONNEXION_BDD = "Erreur de connexion à la BDD";
+        #endregion
     }
 }
