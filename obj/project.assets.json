@@ -2,6 +2,15 @@
   "version": 3,
   "targets": {
     ".NETCoreApp,Version=v2.1": {
+      "AWSSDK/2.3.55.2": {
+        "type": "package",
+        "compile": {
+          "lib/net45/AWSSDK.dll": {}
+        },
+        "runtime": {
+          "lib/net45/AWSSDK.dll": {}
+        }
+      },
       "BouncyCastle.NetCore/1.8.3": {
         "type": "package",
         "dependencies": {
@@ -16,6 +25,19 @@
           "lib/netstandard2.0/BouncyCastle.Crypto.dll": {}
         }
       },
+      "ColoredConsole/1.0.0": {
+        "type": "package",
+        "dependencies": {
+          "LiteGuard": "2.0.0",
+          "NETStandard.Library": "1.6.1"
+        },
+        "compile": {
+          "lib/netstandard1.3/ColoredConsole.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard1.3/ColoredConsole.dll": {}
+        }
+      },
       "Google.Protobuf/3.6.1": {
         "type": "package",
         "dependencies": {
@@ -26,6 +48,15 @@
         },
         "runtime": {
           "lib/netstandard1.0/Google.Protobuf.dll": {}
+        }
+      },
+      "LiteGuard/2.0.0": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard2.0/LiteGuard.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/LiteGuard.dll": {}
         }
       },
       "log4net/2.0.8": {
@@ -63,6 +94,21 @@
         },
         "runtime": {
           "lib/netstandard1.3/log4net.dll": {}
+        }
+      },
+      "MicroKnights.Log4NetAdoNetAppender/1.0.2": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Extensions.Configuration.Json": "1.1.2",
+          "NETStandard.Library": "1.6.1",
+          "System.Data.SqlClient": "4.4.2",
+          "log4net": "2.0.8"
+        },
+        "compile": {
+          "lib/netstandard1.3/MicroKnights.Log4NetAdoNetAppender.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard1.3/MicroKnights.Log4NetAdoNetAppender.dll": {}
         }
       },
       "Microsoft.AspNet.WebApi.Client/5.2.6": {
@@ -2675,13 +2721,14 @@
           }
         }
       },
-      "MySql.Data/8.0.17": {
+      "MySql.Data/8.0.18": {
         "type": "package",
         "dependencies": {
           "BouncyCastle.NetCore": "1.8.3",
           "Google.Protobuf": "3.6.1",
           "SSH.NET": "2016.1.0",
           "System.Configuration.ConfigurationManager": "4.4.1",
+          "System.Resources.Extensions": "4.6.0-preview8.19405.3",
           "System.Security.Permissions": "4.4.1",
           "System.Text.Encoding.CodePages": "4.4.0"
         },
@@ -3994,6 +4041,15 @@
           "lib/netstandard1.5/System.Reflection.TypeExtensions.dll": {}
         }
       },
+      "System.Resources.Extensions/4.6.0-preview8.19405.3": {
+        "type": "package",
+        "compile": {
+          "ref/netstandard2.0/System.Resources.Extensions.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/System.Resources.Extensions.dll": {}
+        }
+      },
       "System.Resources.ResourceManager/4.3.0": {
         "type": "package",
         "dependencies": {
@@ -4841,6 +4897,28 @@
     }
   },
   "libraries": {
+    "AWSSDK/2.3.55.2": {
+      "sha512": "zy/6psTOx9c8LaZqL1tUtiGKMpd35b16TNRctz/N6Qc6hqFeOjyZ5WVhn89szJkkZtotcMFyfq58Y2RfyRxxUg==",
+      "type": "package",
+      "path": "awssdk/2.3.55.2",
+      "hasTools": true,
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "awssdk.2.3.55.2.nupkg.sha512",
+        "awssdk.nuspec",
+        "lib/net35/AWSSDK.dll",
+        "lib/net35/AWSSDK.pdb",
+        "lib/net45/AWSSDK.dll",
+        "lib/net45/AWSSDK.pdb",
+        "lib/portable-wpa+netcore45/AWSSDK.dll",
+        "lib/windows8/AWSSDK.dll",
+        "lib/windowsphone8/AWSSDK.dll",
+        "tools/account-management.ps1",
+        "tools/net35/install.ps1",
+        "tools/net45/install.ps1"
+      ]
+    },
     "BouncyCastle.NetCore/1.8.3": {
       "sha512": "jAy3uHN1U9DpoT/TgLqDTEhlccn/4doOVxhSmmNsnoSsGfHT9Lwr634ac9D0YFujAhNw61nWF4UIpHyzv0aQww==",
       "type": "package",
@@ -4868,6 +4946,18 @@
         "lib/xamarinios/BouncyCastle.Crypto.xml"
       ]
     },
+    "ColoredConsole/1.0.0": {
+      "sha512": "6amHw3LSYI4ze/MOI2i/uREOcw83fMGewbyIlio3k/1LK+CCsk3JLCX35R5fWmQDYijHdYDOZN4qRIjUS7mw3A==",
+      "type": "package",
+      "path": "coloredconsole/1.0.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "coloredconsole.1.0.0.nupkg.sha512",
+        "coloredconsole.nuspec",
+        "lib/netstandard1.3/ColoredConsole.dll"
+      ]
+    },
     "Google.Protobuf/3.6.1": {
       "sha512": "741fGeDQjixBJaU2j+0CbrmZXsNJkTn/hWbOh4fLVXndHsCclJmWznCPWrJmPoZKvajBvAz3e8ECJOUvRtwjNQ==",
       "type": "package",
@@ -4881,6 +4971,21 @@
         "lib/net45/Google.Protobuf.xml",
         "lib/netstandard1.0/Google.Protobuf.dll",
         "lib/netstandard1.0/Google.Protobuf.xml"
+      ]
+    },
+    "LiteGuard/2.0.0": {
+      "sha512": "iuJg9RYjGX3KvuAo3KEIskUmW4IgDMKW++zxG4woQodY+mVp3FxdnHj0TLV8MHaB3Vd6p90T2vduEW4PGt1ORg==",
+      "type": "package",
+      "path": "liteguard/2.0.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/netstandard1.0/LiteGuard.dll",
+        "lib/netstandard1.0/LiteGuard.xml",
+        "lib/netstandard2.0/LiteGuard.dll",
+        "lib/netstandard2.0/LiteGuard.xml",
+        "liteguard.2.0.0.nupkg.sha512",
+        "liteguard.nuspec"
       ]
     },
     "log4net/2.0.8": {
@@ -4905,6 +5010,18 @@
         "lib/netstandard1.3/log4net.dll",
         "log4net.2.0.8.nupkg.sha512",
         "log4net.nuspec"
+      ]
+    },
+    "MicroKnights.Log4NetAdoNetAppender/1.0.2": {
+      "sha512": "e4ODSiCeDU8UC7sCekGxwN75G7jnCoD8LAX6KYMOn9BbHrc3EzTIqhoX2lqJZpPURMecAtbR1F9BMy6pjWyX9g==",
+      "type": "package",
+      "path": "microknights.log4netadonetappender/1.0.2",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/netstandard1.3/MicroKnights.Log4NetAdoNetAppender.dll",
+        "microknights.log4netadonetappender.1.0.2.nupkg.sha512",
+        "microknights.log4netadonetappender.nuspec"
       ]
     },
     "Microsoft.AspNet.WebApi.Client/5.2.6": {
@@ -7549,20 +7666,20 @@
         "version.txt"
       ]
     },
-    "MySql.Data/8.0.17": {
-      "sha512": "yfwJ+4L6RqRW3N2qUSOzHGehJNTMes8GB4XnOTO4m3s7P/lVgoL/nLL91XU+7XEC3j2QHHTJZX2Mia1nY/Gtlg==",
+    "MySql.Data/8.0.18": {
+      "sha512": "BgzDO6yitNn0np6kUbNpgRsXj7o1Km0lZoSdDi3++HuWQdFxbaERuxcYbmkDZEqEtvySxf5ww+dqSE0uf9F5+A==",
       "type": "package",
-      "path": "mysql.data/8.0.17",
+      "path": "mysql.data/8.0.18",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "lib/net452/MySql.Data.dll",
         "lib/net452/MySql.Data.xml",
-        "lib/netstandard1.6/MySql.Data.dll",
-        "lib/netstandard1.6/MySql.Data.xml",
         "lib/netstandard2.0/MySql.Data.dll",
         "lib/netstandard2.0/MySql.Data.xml",
-        "mysql.data.8.0.17.nupkg.sha512",
+        "lib/netstandard2.1/MySql.Data.dll",
+        "lib/netstandard2.1/MySql.Data.xml",
+        "mysql.data.8.0.18.nupkg.sha512",
         "mysql.data.nuspec"
       ]
     },
@@ -10830,6 +10947,24 @@
         "system.reflection.typeextensions.nuspec"
       ]
     },
+    "System.Resources.Extensions/4.6.0-preview8.19405.3": {
+      "sha512": "6GWlVqlVxY8bHHD2SSoWmI8o86BJXZT8LSadE8BIbUa5UzHYi95WFnYU6Xaif58D6fduDN/Dv0ZOindx4L7YYA==",
+      "type": "package",
+      "path": "system.resources.extensions/4.6.0-preview8.19405.3",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE.TXT",
+        "THIRD-PARTY-NOTICES.TXT",
+        "lib/netstandard2.0/System.Resources.Extensions.dll",
+        "lib/netstandard2.0/System.Resources.Extensions.xml",
+        "ref/netstandard2.0/System.Resources.Extensions.dll",
+        "system.resources.extensions.4.6.0-preview8.19405.3.nupkg.sha512",
+        "system.resources.extensions.nuspec",
+        "useSharedDesignerContext.txt",
+        "version.txt"
+      ]
+    },
     "System.Resources.ResourceManager/4.3.0": {
       "sha512": "/zrcPkkWdZmI4F92gL/TPumP98AVDu/Wxr3CSJGQQ+XN6wbRZcyfSKVoPo17ilb3iOr0cCRqJInGwNMolqhS8A==",
       "type": "package",
@@ -13121,10 +13256,13 @@
   },
   "projectFileDependencyGroups": {
     ".NETCoreApp,Version=v2.1": [
+      "AWSSDK >= 2.3.55.2",
+      "ColoredConsole >= 1.0.0",
+      "MicroKnights.Log4NetAdoNetAppender >= 1.0.2",
       "Microsoft.AspNetCore.App >= 2.1.1",
       "Microsoft.AspNetCore.Razor.Design >= 2.1.2",
       "Microsoft.NETCore.App >= 2.1.0",
-      "MySql.Data >= 8.0.17",
+      "MySql.Data >= 8.0.18",
       "Swashbuckle.AspNetCore >= 4.0.1",
       "log4net >= 2.0.8"
     ]
@@ -13170,6 +13308,18 @@
     "frameworks": {
       "netcoreapp2.1": {
         "dependencies": {
+          "AWSSDK": {
+            "target": "Package",
+            "version": "[2.3.55.2, )"
+          },
+          "ColoredConsole": {
+            "target": "Package",
+            "version": "[1.0.0, )"
+          },
+          "MicroKnights.Log4NetAdoNetAppender": {
+            "target": "Package",
+            "version": "[1.0.2, )"
+          },
           "Microsoft.AspNetCore.App": {
             "suppressParent": "All",
             "target": "Package",
@@ -13188,7 +13338,7 @@
           },
           "MySql.Data": {
             "target": "Package",
-            "version": "[8.0.17, )"
+            "version": "[8.0.18, )"
           },
           "Swashbuckle.AspNetCore": {
             "target": "Package",
@@ -13206,5 +13356,17 @@
         "warn": true
       }
     }
-  }
+  },
+  "logs": [
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Le package 'AWSSDK 2.3.55.2' a été restauré en utilisant '.NETFramework,Version=v4.6.1' au lieu du framework cible du projet '.NETCoreApp,Version=v2.1'. Ce package n'est peut-être pas totalement compatible avec votre projet.",
+      "libraryId": "AWSSDK",
+      "targetGraphs": [
+        ".NETCoreApp,Version=v2.1"
+      ]
+    }
+  ]
 }

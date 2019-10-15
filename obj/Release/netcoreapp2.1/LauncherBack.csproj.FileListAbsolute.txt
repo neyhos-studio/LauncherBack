@@ -1,0 +1,16 @@
+C:\Users\Le boss\Documents\Projet_MMO_renew\LauncherBack\obj\Release\netcoreapp2.1\LauncherBack.Properties.Resources.resources
+C:\Users\Le boss\Documents\Projet_MMO_renew\LauncherBack\obj\Release\netcoreapp2.1\LauncherBack.csproj.GenerateResource.cache
+C:\Users\Le boss\Documents\Projet_MMO_renew\LauncherBack\obj\Release\netcoreapp2.1\LauncherBack.csproj.CoreCompileInputs.cache
+C:\Users\Le boss\Documents\Projet_MMO_renew\LauncherBack\obj\Release\netcoreapp2.1\LauncherBack.RazorAssemblyInfo.cache
+C:\Users\Le boss\Documents\Projet_MMO_renew\LauncherBack\obj\Release\netcoreapp2.1\LauncherBack.RazorAssemblyInfo.cs
+C:\Users\Le boss\Documents\Projet_MMO_renew\LauncherBack\obj\Release\netcoreapp2.1\LauncherBack.AssemblyInfoInputs.cache
+C:\Users\Le boss\Documents\Projet_MMO_renew\LauncherBack\obj\Release\netcoreapp2.1\LauncherBack.AssemblyInfo.cs
+C:\Users\Le boss\Documents\Projet_MMO_renew\LauncherBack\bin\Release\netcoreapp2.1\log4net.config
+C:\Users\Le boss\Documents\Projet_MMO_renew\LauncherBack\bin\Release\netcoreapp2.1\LauncherBack.deps.json
+C:\Users\Le boss\Documents\Projet_MMO_renew\LauncherBack\bin\Release\netcoreapp2.1\LauncherBack.runtimeconfig.json
+C:\Users\Le boss\Documents\Projet_MMO_renew\LauncherBack\bin\Release\netcoreapp2.1\LauncherBack.runtimeconfig.dev.json
+C:\Users\Le boss\Documents\Projet_MMO_renew\LauncherBack\bin\Release\netcoreapp2.1\LauncherBack.dll
+C:\Users\Le boss\Documents\Projet_MMO_renew\LauncherBack\bin\Release\netcoreapp2.1\LauncherBack.pdb
+C:\Users\Le boss\Documents\Projet_MMO_renew\LauncherBack\obj\Release\netcoreapp2.1\LauncherBack.RazorTargetAssemblyInfo.cache
+C:\Users\Le boss\Documents\Projet_MMO_renew\LauncherBack\obj\Release\netcoreapp2.1\LauncherBack.dll
+C:\Users\Le boss\Documents\Projet_MMO_renew\LauncherBack\obj\Release\netcoreapp2.1\LauncherBack.pdb

@@ -12,3 +12,6 @@ C:\Users\Le boss\Documents\Projet_MMO_renew\LauncherBack\obj\Debug\netcoreapp2.1
 C:\Users\Le boss\Documents\Projet_MMO_renew\LauncherBack\obj\Debug\netcoreapp2.1\LauncherBack.RazorTargetAssemblyInfo.cache
 C:\Users\Le boss\Documents\Projet_MMO_renew\LauncherBack\obj\Debug\netcoreapp2.1\LauncherBack.dll
 C:\Users\Le boss\Documents\Projet_MMO_renew\LauncherBack\obj\Debug\netcoreapp2.1\LauncherBack.pdb
+C:\Users\Le boss\Documents\Projet_MMO_renew\LauncherBack\obj\Debug\netcoreapp2.1\LauncherBack.Properties.Resources.resources
+C:\Users\Le boss\Documents\Projet_MMO_renew\LauncherBack\obj\Debug\netcoreapp2.1\LauncherBack.csproj.GenerateResource.cache
+C:\Users\Le boss\Documents\Projet_MMO_renew\LauncherBack\bin\Debug\netcoreapp2.1\log4net.config

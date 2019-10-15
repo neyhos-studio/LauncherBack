@@ -17,6 +17,8 @@ namespace LauncherBack.Helpers
         private string uid;
         private string password;
 
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         //Constructor
         public Bdd()
         {
@@ -84,29 +86,28 @@ namespace LauncherBack.Helpers
         #region CONNEXION
 
         //ACCOUNT EXIST
-        public bool Connexion(RequestFrontConnexion request)
+        public int Connexion(RequestFrontConnexion request)
         {
             string query = "SELECT COUNT(*) FROM NS_ACCOUNTS as ACC WHERE ACC.ACCOUNT_EMAIL = '"+request.email+"' AND ACC.ACCOUNT_PASSWORD = '"+request.password+"'";
+            int Count = 0;
 
-            bool exist = false;
-
-            if(this.OpenConnection() == true)
+            if (this.OpenConnection() == true)
             {
+                //Create Mysql Command
                 MySqlCommand cmd = new MySqlCommand(query, connection);
-               
 
-                if (int.Parse(cmd.ExecuteScalar() + "") == 1)
-                {
-                    exist = true;
-                }
+                //ExecuteScalar will return one value
+                Count = int.Parse(cmd.ExecuteScalar() + "");
 
+                //close Connection
                 this.CloseConnection();
-            } else
-            {
-                Console.WriteLine(MSG.BDD_ERREUR_CONNEXION_BDD);
-            }
 
-            return exist;
+                return Count;
+            }
+            else
+            {
+                return Count;
+            }
         }
 
         //RECUP ID ACCOUNT

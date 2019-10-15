@@ -10,8 +10,11 @@ namespace LauncherBack.Controllers.Connexion
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
+
     public class ConnexionController : ControllerBase
     {
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         Bdd bdd = new Bdd();
         ResponseFront responseFront = new ResponseFront();
 
@@ -27,7 +30,15 @@ namespace LauncherBack.Controllers.Connexion
 
             try
             {
-                bool exist = bdd.Connexion(request);
+                int exist = bdd.Connexion(request);
+
+                if(exist == 0)
+                {
+                    log.Info("Compte introuvable en BDD");
+                    responseFront.hasError = true;
+                    responseFront.error = MSG.COMPTE_INTROUVABLE;
+                    return responseFront;
+                }
 
                 int idAccount = bdd.RecupIdAccount(request);
                 string tokenClient = generationToken(CONST.LONGUEUR_TOKEN);
@@ -36,14 +47,16 @@ namespace LauncherBack.Controllers.Connexion
                 bdd.InsertToken(idAccount, tokenServer, tokenClient);
                 bdd.PassageEnLigne(idAccount);
 
+                log.Info("Utilisateur #" + idAccount + " vient de connecter");
+
                 responseFront.response = tokenClient;
                 return responseFront;
             }
             catch(Exception e)
             {
-                Console.WriteLine("Erreur durant la connexion : " + e.Message);
+                log.Error("Erreur durant la connexion", e);
                 responseFront.hasError = true;
-                responseFront.error = MSG.COMPTE_INTROUVABLE;
+                responseFront.error = MSG.CONNEXION_IMPOSSIBLE;
                 return responseFront;
             }
         }

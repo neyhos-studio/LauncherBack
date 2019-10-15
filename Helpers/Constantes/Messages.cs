@@ -33,5 +33,9 @@ namespace LauncherBack.Helpers
         public const string BDD_INVALID_USERNAME_OR_PASSWORD = "Invalid username/password, please try again";
         public const string BDD_ERREUR_CONNEXION_BDD = "Erreur de connexion à la BDD";
         #endregion
+
+        #region MESSAGES SYSTEM
+        public const string CONNEXION_IMPOSSIBLE = "Erreur système, contactez un administrateur !";
+        #endregion
     }
 }
