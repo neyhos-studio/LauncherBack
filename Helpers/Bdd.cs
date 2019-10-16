@@ -1,21 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using LauncherBack.Controllers.Connexion;
 using LauncherBack.Controllers.Inscription;
 using MySql.Data.MySqlClient;
 using MSG = LauncherBack.Helpers.Messages;
+using CRED = LauncherBack.Helpers.Config.Credentials;
 
 namespace LauncherBack.Helpers
 {
     public class Bdd
     {
         private MySqlConnection connection;
-        private string server;
-        private string database;
-        private string uid;
-        private string password;
 
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -28,20 +23,17 @@ namespace LauncherBack.Helpers
         //Initialize values
         private void Initialize()
         {
-            server = "92.222.80.11";
-            database = "NEYHOS_STUDIO";
-            uid = "NEYHOS_STUDIO";
-            password = "0knqtalmp1";
             string connectionString;
-            connectionString = "SERVER=" + server + ";" + "DATABASE=" +
-            database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
+            connectionString = "SERVER=" + CRED.SERVER + ";" + "DATABASE=" +
+            CRED.DATABASE + ";" + "UID=" + CRED.LOGIN + ";" + "PASSWORD=" + CRED.PASSWORD + ";";
 
             connection = new MySqlConnection(connectionString);
         }
 
         //open connection to database
-        private bool OpenConnection()
+        public bool OpenConnection()
         {
+
             try
             {
                 connection.Open();
@@ -49,6 +41,7 @@ namespace LauncherBack.Helpers
             }
             catch (MySqlException ex)
             {
+                log.Error("Connexion à la BDD impossible !");
                 //When handling errors, you can your application's response based 
                 //on the error number.
                 //The two most common error numbers when connecting are as follows:
@@ -57,11 +50,11 @@ namespace LauncherBack.Helpers
                 switch (ex.Number)
                 {
                     case 0:
-                        Console.WriteLine(MSG.BDD_CANNOT_CONNECT_SERVER);
+                        log.Warn(MSG.BDD_CANNOT_CONNECT_SERVER);
                         break;
 
                     case 1045:
-                        Console.WriteLine(MSG.BDD_INVALID_USERNAME_OR_PASSWORD);
+                        log.Warn(MSG.BDD_INVALID_USERNAME_OR_PASSWORD);
                         break;
                 }
                 return false;

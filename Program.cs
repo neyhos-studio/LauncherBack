@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Xml;
 using Amazon.ElasticMapReduce.Model;
+using LauncherBack.Helpers;
 using log4net;
 using log4net.Config;
 using Microsoft.AspNetCore;
@@ -28,7 +29,14 @@ namespace LauncherBack
             log4netConfig.Load(File.OpenRead("log4net.config"));
             log4net.Config.XmlConfigurator.Configure(log4net.LogManager.GetRepository(Assembly.GetEntryAssembly()), log4netConfig["log4net"]);
             log.Info("Démarrage de l'API ...");
-            CreateWebHostBuilder(args).Build().Run();
+            log.Info("Connexion à la BDD ...");
+            Bdd bdd = new Bdd();
+            if (bdd.OpenConnection())
+            {
+                log.Info("BDD connectée !");
+                CreateWebHostBuilder(args).Build().Run();
+            }
+            
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
