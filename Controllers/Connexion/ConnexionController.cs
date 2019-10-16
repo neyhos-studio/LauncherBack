@@ -1,8 +1,8 @@
-﻿
-using LauncherBack.Helpers;
+﻿using LauncherBack.Helpers;
+using log4net;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
+using System.Reflection;
 using CONST = LauncherBack.Helpers.Constantes;
 using MSG = LauncherBack.Helpers.Messages;
 
@@ -13,7 +13,7 @@ namespace LauncherBack.Controllers.Connexion
 
     public class ConnexionController : ControllerBase
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         Bdd bdd = new Bdd();
         ResponseFront responseFront = new ResponseFront();

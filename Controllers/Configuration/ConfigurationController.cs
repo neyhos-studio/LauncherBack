@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using LauncherBack.Controllers.Connexion;
+﻿using LauncherBack.Controllers.Connexion;
 using LauncherBack.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using MSG = LauncherBack.Helpers.Messages;
