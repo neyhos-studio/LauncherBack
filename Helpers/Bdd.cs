@@ -4,7 +4,7 @@ using LauncherBack.Controllers.Connexion;
 using LauncherBack.Controllers.Inscription;
 using MySql.Data.MySqlClient;
 using MSG = LauncherBack.Helpers.Messages;
-using CRED = LauncherBack.Helpers.Config.Credentials;
+
 
 namespace LauncherBack.Helpers
 {
@@ -15,17 +15,17 @@ namespace LauncherBack.Helpers
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         //Constructor
-        public Bdd()
+        public Bdd(string server, string database, string login, string password)
         {
-            Initialize();
+            Initialize(server, database, login, password);
         }
 
         //Initialize values
-        private void Initialize()
+        private void Initialize(string server, string database, string login, string password)
         {
             string connectionString;
-            connectionString = "SERVER=" + CRED.SERVER + ";" + "DATABASE=" +
-            CRED.DATABASE + ";" + "UID=" + CRED.LOGIN + ";" + "PASSWORD=" + CRED.PASSWORD + ";";
+            connectionString = "SERVER=" + server + ";" + "DATABASE=" +
+            database + ";" + "UID=" + login + ";" + "PASSWORD=" + password + ";";
 
             connection = new MySqlConnection(connectionString);
         }

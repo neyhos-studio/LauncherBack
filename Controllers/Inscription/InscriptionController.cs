@@ -5,8 +5,11 @@ using Microsoft.AspNetCore.Mvc;
 
 using CONST = LauncherBack.Helpers.Constantes;
 using MSG = LauncherBack.Helpers.Messages;
+using CRED = LauncherBack.Helpers.Config.Credentials;
 using LauncherBack.Helpers;
 using LauncherBack.Controllers.Connexion;
+using log4net;
+using System.Reflection;
 
 namespace LauncherBack.Controllers.Inscription
 {
@@ -14,13 +17,27 @@ namespace LauncherBack.Controllers.Inscription
     [ApiController]
     public class InscriptionController : Controller
     {
-        Bdd bdd = new Bdd();
+        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
         ResponseFront responseFront = new ResponseFront();
 
         [HttpPost]
         [ActionName("Inscription")]
         public ResponseFront Inscription([FromBody] RequestFrontInscription request)
         {
+
+            Bdd bdd;
+
+            //Configuration environnement de travail
+            if (CONST.envTravail == 0)
+            {
+                bdd = new Bdd(CRED.SERVER_PROD, CRED.DATABASE_PROD, CRED.LOGIN_PROD, CRED.PASSWORD_PROD);
+            }
+            else
+            {
+                bdd = new Bdd(CRED.SERVER_DEV, CRED.DATABASE_DEV, CRED.LOGIN_DEV, CRED.PASSWORD_DEV);
+            }
+
             #region Critères d'acceptances
             //On test les critères d'acceptances de l'Email / Password / Pseudo
 
@@ -111,7 +128,7 @@ namespace LauncherBack.Controllers.Inscription
                 return responseFront;
             }catch(Exception e)
             {
-                Console.WriteLine("Erreur durant l'inscription : " + e.Message);
+                log.Warn("Erreur durant l'inscription : " + e.Message);
                 responseFront.hasError = true;
                 responseFront.error = MSG.INSCRIPTION_FAILED;
                 return responseFront;

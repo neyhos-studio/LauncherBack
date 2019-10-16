@@ -5,6 +5,7 @@ using System;
 using System.Reflection;
 using CONST = LauncherBack.Helpers.Constantes;
 using MSG = LauncherBack.Helpers.Messages;
+using CRED = LauncherBack.Helpers.Config.Credentials;
 
 namespace LauncherBack.Controllers.Connexion
 {
@@ -14,14 +15,24 @@ namespace LauncherBack.Controllers.Connexion
     public class ConnexionController : ControllerBase
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-
-        Bdd bdd = new Bdd();
         ResponseFront responseFront = new ResponseFront();
 
         [HttpPost]
         [ActionName("Connexion")]
         public ResponseFront Connexion([FromBody] RequestFrontConnexion request)
         {
+            Bdd bdd;
+
+            //Configuration environnement de travail
+            if (CONST.envTravail == 0)
+            {
+                bdd = new Bdd(CRED.SERVER_PROD, CRED.DATABASE_PROD, CRED.LOGIN_PROD, CRED.PASSWORD_PROD);
+            }
+            else
+            {
+                bdd = new Bdd(CRED.SERVER_DEV, CRED.DATABASE_DEV, CRED.LOGIN_DEV, CRED.PASSWORD_DEV);
+            }
+
             string mdpCrypt = ShaHash.GetShaHash(request.password);
             string concatPasswordKeys = String.Concat(CONST.KEY_CRYPTAGE, mdpCrypt, CONST.KEY_CRYPTAGE);
             string stringCrypt = ShaHash.GetShaHash(concatPasswordKeys);

@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Reflection;
 using System.Xml;
 using LauncherBack.Helpers;
@@ -7,11 +8,14 @@ using log4net.Config;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
+using CRED = LauncherBack.Helpers.Config.Credentials;
+using CONST = LauncherBack.Helpers.Constantes;
 
 [assembly: XmlConfigurator(ConfigFile = "log4net.config", Watch = true)]
 
 namespace LauncherBack
 {
+
     public class Program
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
@@ -21,14 +25,48 @@ namespace LauncherBack
             XmlDocument log4netConfig = new XmlDocument();
             log4netConfig.Load(File.OpenRead("log4net.config"));
             XmlConfigurator.Configure(LogManager.GetRepository(Assembly.GetEntryAssembly()), log4netConfig["log4net"]);
-            log.Info("Démarrage de l'API ...");
-            log.Info("Connexion à la BDD ...");
-            Bdd bdd = new Bdd();
-            if (bdd.OpenConnection())
+
+            string env;
+
+            Console.WriteLine("Sur quelle base de données se connecter ?");
+            Console.WriteLine("1 : Production (Server)");
+            Console.WriteLine("2 : Développement (Local)");
+            env = Console.ReadLine();
+
+            if (env == "1")
             {
-                log.Info("BDD connectée !");
-                CreateWebHostBuilder(args).Build().Run();
+
+                CONST.envTravail = 0;
+
+                log.Info("Travail sur environnement de PROD");
+                Bdd bdd = new Bdd(CRED.SERVER_PROD, CRED.DATABASE_PROD, CRED.LOGIN_PROD, CRED.PASSWORD_PROD);
+
+                log.Info("Connexion à la BDD de production ...");
+
+                if (bdd.OpenConnection())
+                {
+                    log.Info("BDD connectée !");
+                    log.Info("Démarrage de l'API ...");
+                    CreateWebHostBuilder(args).Build().Run();
+                }
+            } else
+            {
+
+                CONST.envTravail = 1;
+
+                log.Info("Travail sur environnement de DEV");
+                Bdd bdd = new Bdd(CRED.SERVER_DEV, CRED.DATABASE_DEV, CRED.LOGIN_DEV, CRED.PASSWORD_DEV);
+                log.Info("Connexion à la BDD localhost ...");
+
+                if (bdd.OpenConnection())
+                {
+                    log.Info("BDD connectée !");
+                    log.Info("Démarrage de l'API ...");
+                    CreateWebHostBuilder(args).Build().Run();
+                }
             }
+            
+            
             
         }
 
