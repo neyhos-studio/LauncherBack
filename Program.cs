@@ -29,8 +29,8 @@ namespace LauncherBack
             string env;
 
             Console.WriteLine("Sur quelle base de données se connecter ?");
-            Console.WriteLine("1 : Production (Server)");
-            Console.WriteLine("2 : Développement (Local)");
+            Console.WriteLine("1 : SERVER");
+            Console.WriteLine("2 : LOCAL");
             env = Console.ReadLine();
 
             if (env == "1")
