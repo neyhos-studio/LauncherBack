@@ -1,4 +1,5 @@
-﻿using LauncherBack.Helpers;
+﻿using LauncherBack.Controllers.Utilisateur;
+using LauncherBack.Helpers;
 using log4net;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -20,7 +21,8 @@ namespace LauncherBack.Controllers.Connexion
         [ActionName("Connexion")]
         public ResponseFront Connexion([FromBody] RequestFrontConnexion request)
         {
-            Bdd bdd = ConnexionBdd.connexionBase(); 
+            Bdd bdd = ConnexionBdd.connexionBase();
+            Bannissement bannissement = new Bannissement();
 
             string mdpCrypt = ShaHash.GetShaHash(request.password);
             string concatPasswordKeys = String.Concat(CONST.KEY_CRYPTAGE, mdpCrypt, CONST.KEY_CRYPTAGE);
@@ -41,6 +43,19 @@ namespace LauncherBack.Controllers.Connexion
                 }
 
                 int idAccount = bdd.RecupIdAccount(request);
+
+                bannissement = bdd.TesterBannissementUtilisateur(idAccount);
+
+                bannissement.finForm = bannissement.fin.ToString("dd.MM.yyyy-HH:mm:ss");
+
+                if (bannissement.hasBanned)
+                {
+                    log.Info(MSG.COMPTE_BANNI);
+                    responseFront.hasError = true;
+                    responseFront.response = bannissement;
+                    return responseFront;
+                }
+                
                 string tokenClient = generationToken(CONST.LONGUEUR_TOKEN);
                 string tokenServer = generationToken(CONST.LONGUEUR_TOKEN);
 

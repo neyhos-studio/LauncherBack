@@ -4,6 +4,7 @@
     {
         #region CONNEXION
             public const string COMPTE_INTROUVABLE = "Compte introuvable";
+            public const string COMPTE_BANNI = "Tentative de connexion avec un compte banni ...";
         #endregion
 
         #region INSCRIPTION
@@ -24,13 +25,13 @@
         #endregion
 
         #region BDD
-        public const string BDD_CANNOT_CONNECT_SERVER = "Cannot connect to server.  Contact administrator";
-        public const string BDD_INVALID_USERNAME_OR_PASSWORD = "Invalid username/password, please try again";
-        public const string BDD_ERREUR_CONNEXION_BDD = "Erreur de connexion à la BDD";
+            public const string BDD_CANNOT_CONNECT_SERVER = "Cannot connect to server.  Contact administrator";
+            public const string BDD_INVALID_USERNAME_OR_PASSWORD = "Invalid username/password, please try again";
+            public const string BDD_ERREUR_CONNEXION_BDD = "Erreur de connexion à la BDD";
         #endregion
 
         #region MESSAGES SYSTEM
-        public const string CONNEXION_IMPOSSIBLE = "Erreur système, contactez un administrateur !";
+            public const string CONNEXION_IMPOSSIBLE = "Erreur système, contactez un administrateur !";
         #endregion
     }
 }

@@ -30,7 +30,7 @@ namespace LauncherBack.Controllers.Utilisateur
 
             int idAccount = bdd.RecupIdUtilisateur(request);
 
-            utilisateur = bdd.RecupUtilisateur(idAccount);
+            utilisateur = bdd.RecupUtilisateur(idAccount);           
 
             if(utilisateur.pseudo == null)
             {

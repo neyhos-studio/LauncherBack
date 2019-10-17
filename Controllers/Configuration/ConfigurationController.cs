@@ -14,7 +14,7 @@ namespace LauncherBack.Controllers.Configuration
     public class ConfigurationController : Controller
     {
         [HttpPost]
-        [ActionName("Inscription")]
+        [ActionName("Mots interdits")]
         public ResponseFront AjouterMotInterdit([FromBody] string motInterdit)
         {
             Bdd bdd = ConnexionBdd.connexionBase();
@@ -31,6 +31,16 @@ namespace LauncherBack.Controllers.Configuration
                 responseFront.error = MSG.CONFIGURATION_MOT_INTERDIT_NOK;
                 return responseFront;
             }
+        }
+
+        [HttpPost]
+        [ActionName("Bannissement")]
+        public void Bannissement([FromBody] RequestBannissement request)
+        {
+            Bdd bdd = ConnexionBdd.connexionBase();
+
+            bdd.BannirUnUtilisateur(request.dateDebut, request.duree, request.motif, request.idAccount);
+
         }
     }
 }

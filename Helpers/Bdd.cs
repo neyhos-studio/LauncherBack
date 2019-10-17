@@ -175,6 +175,37 @@ namespace LauncherBack.Helpers
             }
         }
 
+        public Bannissement TesterBannissementUtilisateur(int idAccount)
+        {
+            Bannissement bannissement = new Bannissement();
+
+            string query = "SELECT * FROM NS_BANNISSEMENTS WHERE BANNISSEMENT_ACCOUNT = " + idAccount + " AND BANNISSEMENT_DATE_FIN > '" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "'";
+
+            if (this.OpenConnection() == true)
+            {
+                MySqlCommand cmd = new MySqlCommand(query, connection);
+                MySqlDataReader dataReader = cmd.ExecuteReader();
+
+                while (dataReader.Read())
+                {
+                    bannissement.hasBanned = true;
+                    bannissement.debut = DateTime.Parse(dataReader["BANNISSEMENT_DATE_DEBUT"] + "");
+                    bannissement.duree = int.Parse(dataReader["BANNISSEMENT_DUREE"] + "");
+                    bannissement.fin = DateTime.Parse(dataReader["BANNISSEMENT_DATE_FIN"] + "");
+                    bannissement.raison = dataReader["BANNISSEMENT_RAISON"] + "";
+                }
+
+                dataReader.Close();
+
+                this.CloseConnection();
+                return bannissement;
+            }
+            else
+            {
+                return bannissement;
+            }
+        }
+
         #endregion
 
         #region INSCRIPTION 
@@ -365,6 +396,23 @@ namespace LauncherBack.Helpers
                 return null;
             }
             }
+
+        
+        public void BannirUnUtilisateur(DateTime dateDebut, int duree, string motif, int idAccount)
+        {
+            DateTime dateFin = dateDebut.AddDays(duree);
+            string queryBannirUtilisateur = "INSERT INTO NS_BANNISSEMENTS (BANNISSEMENT_ACCOUNT, BANNISSEMENT_DATE_DEBUT, BANNISSEMENT_DUREE, BANNISSEMENT_DATE_FIN, BANNISSEMENT_RAISON) VALUES (" + idAccount + ", '" + dateDebut.ToString("yyyy-MM-dd HH:mm:ss") + "', " + duree + ", '" + dateFin.ToString("yyyy-MM-dd HH:mm:ss") + "', '" + motif + "')";
+
+            if (this.OpenConnection() == true)
+            {
+                MySqlCommand cmd = new MySqlCommand(queryBannirUtilisateur, connection);
+                cmd.ExecuteNonQuery();
+                this.CloseConnection();
+            }
+            else
+            {
+            }
+        }
         #endregion
     }
 }
