@@ -21,17 +21,7 @@ namespace LauncherBack.Controllers.Connexion
         [ActionName("Connexion")]
         public ResponseFront Connexion([FromBody] RequestFrontConnexion request)
         {
-            Bdd bdd;
-
-            //Configuration environnement de travail
-            if (CONST.envTravail == 0)
-            {
-                bdd = new Bdd(CRED.SERVER_PROD, CRED.DATABASE_PROD, CRED.LOGIN_PROD, CRED.PASSWORD_PROD);
-            }
-            else
-            {
-                bdd = new Bdd(CRED.SERVER_DEV, CRED.DATABASE_DEV, CRED.LOGIN_DEV, CRED.PASSWORD_DEV);
-            }
+            Bdd bdd = ConnexionBdd.connexionBase(); 
 
             string mdpCrypt = ShaHash.GetShaHash(request.password);
             string concatPasswordKeys = String.Concat(CONST.KEY_CRYPTAGE, mdpCrypt, CONST.KEY_CRYPTAGE);
@@ -96,5 +86,8 @@ namespace LauncherBack.Controllers.Connexion
         }
 
         
+
     }
+
+    
 }

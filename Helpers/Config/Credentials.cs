@@ -9,7 +9,7 @@
 
         public const string SERVER_DEV = "localhost";
         public const string DATABASE_DEV = "NEYHOS_STUDIO";
-        public const string LOGIN_DEV = "NEYHOS_STUDIO";
-        public const string PASSWORD_DEV = "0knqtalmp1";
+        public const string LOGIN_DEV = "neyhos_studio";
+        public const string PASSWORD_DEV = "Projet_meuporg57";
     }
 }

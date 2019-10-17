@@ -17,17 +17,7 @@ namespace LauncherBack.Controllers.Configuration
         [ActionName("Inscription")]
         public ResponseFront AjouterMotInterdit([FromBody] string motInterdit)
         {
-            Bdd bdd;
-
-            //Configuration environnement de travail
-            if (CONST.envTravail == 0)
-            {
-                bdd = new Bdd(CRED.SERVER_PROD, CRED.DATABASE_PROD, CRED.LOGIN_PROD, CRED.PASSWORD_PROD);
-            }
-            else
-            {
-                bdd = new Bdd(CRED.SERVER_DEV, CRED.DATABASE_DEV, CRED.LOGIN_DEV, CRED.PASSWORD_DEV);
-            }
+            Bdd bdd = ConnexionBdd.connexionBase();
 
             ResponseFront responseFront = new ResponseFront();
 

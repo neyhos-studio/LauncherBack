@@ -26,17 +26,8 @@ namespace LauncherBack.Controllers.Inscription
         public ResponseFront Inscription([FromBody] RequestFrontInscription request)
         {
 
-            Bdd bdd;
+            Bdd bdd = ConnexionBdd.connexionBase();
 
-            //Configuration environnement de travail
-            if (CONST.envTravail == 0)
-            {
-                bdd = new Bdd(CRED.SERVER_PROD, CRED.DATABASE_PROD, CRED.LOGIN_PROD, CRED.PASSWORD_PROD);
-            }
-            else
-            {
-                bdd = new Bdd(CRED.SERVER_DEV, CRED.DATABASE_DEV, CRED.LOGIN_DEV, CRED.PASSWORD_DEV);
-            }
 
             #region Critères d'acceptances
             //On test les critères d'acceptances de l'Email / Password / Pseudo
