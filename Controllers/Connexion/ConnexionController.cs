@@ -5,7 +5,6 @@ using System;
 using System.Reflection;
 using CONST = LauncherBack.Helpers.Constantes;
 using MSG = LauncherBack.Helpers.Messages;
-using CRED = LauncherBack.Helpers.Config.Credentials;
 
 namespace LauncherBack.Controllers.Connexion
 {

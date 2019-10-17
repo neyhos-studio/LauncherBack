@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using LauncherBack.Controllers.Connexion;
 using LauncherBack.Controllers.Inscription;
+using LauncherBack.Controllers.Utilisateur;
 using MySql.Data.MySqlClient;
 using MSG = LauncherBack.Helpers.Messages;
 
@@ -287,6 +288,45 @@ namespace LauncherBack.Helpers
             else
             {
                 return  false;
+            }
+        }
+        #endregion
+
+        #region Utilisateur
+        public Utilisateur RecupUtilisateur(RequestFrontUtilisateur request)
+        {
+            string query = "SELECT * FROM NS_TOKENS WHERE TOKEN_TOKEN_CLIENT = '"+request.token+"'";
+            Utilisateur utilisateur = new Utilisateur();
+            int idAccount = 0;
+
+            if (this.OpenConnection() == true)
+            {
+                MySqlCommand cmd = new MySqlCommand(query, connection);
+                MySqlDataReader dataReader = cmd.ExecuteReader();
+
+                while (dataReader.Read())
+                {
+                    idAccount = int.Parse(dataReader["TOKEN_ACCOUNT_ID"] + "");
+                }
+
+                dataReader.Close();
+
+                string queryUser = "SELECT * FROM NS_UTILISATEURS WHERE UTILISATEUR_ID_ACCOUNT = " + idAccount + "";
+
+                MySqlCommand cmd2 = new MySqlCommand(queryUser, connection);
+                MySqlDataReader dataReader2 = cmd2.ExecuteReader();
+
+                while (dataReader2.Read())
+                {
+                    utilisateur.pseudo = dataReader2["UTILISATEUR_PSEUDO"] + "";
+                }
+
+                this.CloseConnection();
+                return utilisateur;
+            }
+            else
+            {
+                return utilisateur;
             }
         }
         #endregion
