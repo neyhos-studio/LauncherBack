@@ -5,6 +5,7 @@ using LauncherBack.Controllers.Inscription;
 using LauncherBack.Controllers.Utilisateur;
 using MySql.Data.MySqlClient;
 using MSG = LauncherBack.Helpers.Messages;
+using CONST = LauncherBack.Helpers.Constantes;
 
 
 namespace LauncherBack.Helpers
@@ -293,7 +294,7 @@ namespace LauncherBack.Helpers
         #endregion
 
         #region Utilisateur
-        public Utilisateur RecupUtilisateur(RequestFrontUtilisateur request)
+        public int RecupIdUtilisateur(RequestFrontUtilisateur request)
         {
             string query = "SELECT * FROM NS_TOKENS WHERE TOKEN_TOKEN_CLIENT = '"+request.token+"'";
             Utilisateur utilisateur = new Utilisateur();
@@ -311,24 +312,59 @@ namespace LauncherBack.Helpers
 
                 dataReader.Close();
 
-                string queryUser = "SELECT * FROM NS_UTILISATEURS WHERE UTILISATEUR_ID_ACCOUNT = " + idAccount + "";
+                this.CloseConnection();
+                return idAccount;
+            }
+            else
+            {
+                return idAccount;
+            }
+        }
 
+        public Utilisateur RecupUtilisateur(int idAccount)
+        {
+            string queryUser = "SELECT * FROM NS_UTILISATEURS WHERE UTILISATEUR_ID_ACCOUNT = " + idAccount + "";
+            Utilisateur utilisateur = new Utilisateur();
+
+            if (this.OpenConnection() == true)
+            {
                 MySqlCommand cmd2 = new MySqlCommand(queryUser, connection);
                 MySqlDataReader dataReader2 = cmd2.ExecuteReader();
 
                 while (dataReader2.Read())
                 {
                     utilisateur.pseudo = dataReader2["UTILISATEUR_PSEUDO"] + "";
+                    switch (dataReader2["UTILISATEUR_ETAT"])
+                    {
+                        case 1:
+                            utilisateur.status = CONST.HORS_LIGNE;
+                            break;
+                        case 2:
+                            utilisateur.status = CONST.EN_LIGNE;
+                            break;
+                        case 3:
+                            utilisateur.status = CONST.ABSENT;
+                            break;
+                        case 4:
+                            utilisateur.status = CONST.OCCUPE;
+                            break;
+                        case 5:
+                            utilisateur.status = CONST.INVISIBLE;
+                            break;
+                        default:
+                            break;
+                    }
                 }
 
+                dataReader2.Close();
                 this.CloseConnection();
+
                 return utilisateur;
-            }
-            else
+            } else
             {
-                return utilisateur;
+                return null;
             }
-        }
+            }
         #endregion
     }
 }

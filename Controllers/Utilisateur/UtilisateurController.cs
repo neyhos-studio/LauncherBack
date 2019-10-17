@@ -20,14 +20,27 @@ namespace LauncherBack.Controllers.Utilisateur
 
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         ResponseFront responseFront = new ResponseFront();
-        Utilisateur utilisateur = new Utilisateur();
 
         [HttpPost]
         [ActionName("RetournerUtilisateur")]
         public ResponseFront Connexion([FromBody] RequestFrontUtilisateur request)
         {
             Bdd bdd = ConnexionBdd.connexionBase();
-            responseFront.response = bdd.RecupUtilisateur(request);
+            Utilisateur utilisateur = new Utilisateur();
+
+            int idAccount = bdd.RecupIdUtilisateur(request);
+
+            utilisateur = bdd.RecupUtilisateur(idAccount);
+
+            if(utilisateur.pseudo == null)
+            {
+                responseFront.hasError = true;
+                responseFront.error = "Pas d'utilisateur correspond à se token";
+                return responseFront;
+            }
+
+            log.Info("Récupération des informations du joueur " + utilisateur.pseudo);
+            responseFront.response = utilisateur;
             return responseFront;
         }
 

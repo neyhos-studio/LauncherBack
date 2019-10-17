@@ -8,5 +8,12 @@
         public const int LONGUEUR_PSEUDO_MAX = 16;
 
         public static int envTravail;
+
+        //Liste des status possible pour un joueur
+        public const string EN_LIGNE = "En ligne";
+        public const string HORS_LIGNE = "Hors ligne";
+        public const string OCCUPE = "Occupée";
+        public const string INVISIBLE = "Invisible";
+        public const string ABSENT = "Absent";
     }
 }
