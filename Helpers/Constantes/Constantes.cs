@@ -9,6 +9,8 @@
 
         public static int envTravail;
 
+        public const string FORMAT_DATE = "yyyy-MM-dd HH:mm:ss";
+
         //Liste des status possible pour un joueur
         public const string EN_LIGNE = "En ligne";
         public const string HORS_LIGNE = "Hors ligne";

@@ -8,7 +8,6 @@ using MSG = LauncherBack.Helpers.Messages;
 using CONST = LauncherBack.Helpers.Constantes;
 using CONST_BDD = LauncherBack.Helpers.Config.NameBdd;
 
-
 namespace LauncherBack.Helpers
 {
     public class Bdd
@@ -27,8 +26,7 @@ namespace LauncherBack.Helpers
         private void Initialize(string server, string database, string login, string password)
         {
             string connectionString;
-            connectionString = "SERVER=" + server + ";" + "DATABASE=" +
-            database + ";" + "UID=" + login + ";" + "PASSWORD=" + password + ";";
+            connectionString = String.Format("SERVER={0};DATABASE={1};UID={2};PASSWORD={3};", server, database, login, password);
 
             connection = new MySqlConnection(connectionString);
         }
@@ -45,11 +43,6 @@ namespace LauncherBack.Helpers
             catch (MySqlException ex)
             {
                 log.Error("Connexion à la BDD impossible !");
-                //When handling errors, you can your application's response based 
-                //on the error number.
-                //The two most common error numbers when connecting are as follows:
-                //0: Cannot connect to server.
-                //1045: Invalid user name and/or password.
                 switch (ex.Number)
                 {
                     case 0:
@@ -84,7 +77,12 @@ namespace LauncherBack.Helpers
         //ACCOUNT EXIST
         public int Connexion(RequestFrontConnexion request)
         {
-            string query = "SELECT COUNT(*) FROM "+CONST_BDD.NAME_TABLE_ACCOUNT+" WHERE "+CONST_BDD.NAME_FIELD_ACCOUNT_EMAIL+" = '"+request.email+ "' AND " + CONST_BDD.NAME_FIELD_ACCOUNT_PASSWORD + " = '" + request.password+"'";
+            string query = String.Format("SELECT COUNT(*) FROM {0} WHERE {1} = '{2}' AND {3} = '{4}'", 
+                CONST_BDD.NAME_TABLE_ACCOUNT, 
+                CONST_BDD.NAME_FIELD_ACCOUNT_EMAIL, 
+                request.email, 
+                CONST_BDD.NAME_FIELD_ACCOUNT_PASSWORD, 
+                request.password);
             int Count = 0;
 
             if (this.OpenConnection() == true)
@@ -109,7 +107,13 @@ namespace LauncherBack.Helpers
         //RECUP ID ACCOUNT
         public int RecupIdAccount(RequestFrontConnexion request)
         {
-            string queryRecupID = "SELECT ACCOUNT_ID FROM " + CONST_BDD.NAME_TABLE_ACCOUNT + " WHERE " + CONST_BDD.NAME_FIELD_ACCOUNT_EMAIL + " = '" + request.email + "' AND " + CONST_BDD.NAME_FIELD_ACCOUNT_PASSWORD + " = '" + request.password + "'";
+            string queryRecupID = String.Format("SELECT {0} FROM {1} WHERE {2} = '{3}' AND {4} = '{5}'", 
+                CONST_BDD.NAME_FIELD_ACCOUNT_ID, 
+                CONST_BDD.NAME_TABLE_ACCOUNT,
+                CONST_BDD.NAME_FIELD_ACCOUNT_EMAIL,
+                request.email,
+                CONST_BDD.NAME_FIELD_ACCOUNT_PASSWORD,
+                request.password);
             int id = 0;
 
             if (this.OpenConnection() == true)
@@ -119,7 +123,7 @@ namespace LauncherBack.Helpers
 
                 while (dataReader.Read())
                 {
-                    id = int.Parse(dataReader["ACCOUNT_ID"] + "");
+                    id = int.Parse(dataReader[CONST_BDD.NAME_FIELD_ACCOUNT_ID] + "");
                 }
 
                 dataReader.Close();
@@ -138,7 +142,16 @@ namespace LauncherBack.Helpers
         //INSERT TOKEN
         public void InsertToken(int idAccount, string tokenServer, string tokenClient)
         {
-            string queryRecupID = "INSERT INTO NS_TOKENS (TOKEN_ACCOUNT_ID, TOKEN_TOKEN_SERVER, TOKEN_TOKEN_CLIENT, TOKEN_DATE_CREATION) VALUES (" + idAccount+", '" + tokenServer+"', '"+ tokenClient + "', '"+ DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"')";
+            string queryRecupID = String.Format("INSERT INTO {0} ({1},{2},{3},{4}) VALUES ({5}, '{6}', '{7}', '{8}')",
+                CONST_BDD.NAME_TABLE_TOKEN,
+                CONST_BDD.NAME_FIELD_TOKEN_ACCOUNT_ID,
+                CONST_BDD.NAME_FIELD_TOKEN_TOKEN_SERVER,
+                CONST_BDD.NAME_FIELD_TOKEN_TOKEN_CLIENT,
+                CONST_BDD.NAME_FIELD_TOKEN_DATE_CREATION,
+                idAccount,
+                tokenServer, 
+                tokenClient,
+                DateTime.Now.ToString(CONST.FORMAT_DATE));
 
             if (this.OpenConnection() == true)
             {
@@ -154,21 +167,20 @@ namespace LauncherBack.Helpers
         //PASSAGE EN LIGNE
         public void PassageEnLigne(int idAccount)
         {
-            string passageEnLigne = "UPDATE NS_UTILISATEURS SET UTILISATEUR_ETAT = 2 WHERE UTILISATEUR_ID_ACCOUNT = "+ idAccount+"";
+            string passageEnLigne = String.Format("UPDATE {0} SET {1} = 2 WHERE {2} = {3}",
+                CONST_BDD.NAME_TABLE_UTILISATEUR,
+                CONST_BDD.NAME_FIELD_UTILISATEUR_ETAT,
+                CONST_BDD.NAME_FIELD_UTILISATEUR_ID_ACCOUNT,
+                idAccount);
 
             if (this.OpenConnection() == true)
             {
-                //create mysql command
                 MySqlCommand cmd = new MySqlCommand();
-                //Assign the query using CommandText
                 cmd.CommandText = passageEnLigne;
-                //Assign the connection using Connection
                 cmd.Connection = connection;
 
-                //Execute query
                 cmd.ExecuteNonQuery();
 
-                //close connection
                 this.CloseConnection();
             }
             else
@@ -180,7 +192,12 @@ namespace LauncherBack.Helpers
         {
             Bannissement bannissement = new Bannissement();
 
-            string query = "SELECT * FROM NS_BANNISSEMENTS WHERE BANNISSEMENT_ACCOUNT = " + idAccount + " AND BANNISSEMENT_DATE_FIN > '" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "'";
+            string query = String.Format("SELECT * FROM {0} WHERE {1} = {2} AND {3} > '{4}'",
+                CONST_BDD.NAME_TABLE_BANNISSEMENT,
+                CONST_BDD.NAME_FIELD_BANNISSEMENT_ACCOUNT,
+                idAccount,
+                CONST_BDD.NAME_FIELD_BANNISSEMENT_DATE_FIN,
+                DateTime.Now.ToString(CONST.FORMAT_DATE));
 
             if (this.OpenConnection() == true)
             {
@@ -190,10 +207,10 @@ namespace LauncherBack.Helpers
                 while (dataReader.Read())
                 {
                     bannissement.hasBanned = true;
-                    bannissement.debut = DateTime.Parse(dataReader["BANNISSEMENT_DATE_DEBUT"] + "");
-                    bannissement.duree = int.Parse(dataReader["BANNISSEMENT_DUREE"] + "");
-                    bannissement.fin = DateTime.Parse(dataReader["BANNISSEMENT_DATE_FIN"] + "");
-                    bannissement.raison = dataReader["BANNISSEMENT_RAISON"] + "";
+                    bannissement.debut = DateTime.Parse(dataReader[CONST_BDD.NAME_FIELD_BANNISSEMENT_DATE_DEBUT] + "");
+                    bannissement.duree = int.Parse(dataReader[CONST_BDD.NAME_FIELD_BANNISSEMENT_DUREE] + "");
+                    bannissement.fin = DateTime.Parse(dataReader[CONST_BDD.NAME_FIELD_BANNISSEMENT_DATE_FIN] + "");
+                    bannissement.raison = dataReader[CONST_BDD.NAME_FIELD_BANNISSEMENT_RAISON] + "";
                 }
 
                 dataReader.Close();
@@ -213,8 +230,19 @@ namespace LauncherBack.Helpers
 
         public bool Inscription(RequestFrontInscription request)
         {
-            string queryAddAccount = "INSERT INTO NS_ACCOUNTS (ACCOUNT_EMAIL, ACCOUNT_PASSWORD) VALUES ('"+request.email+"', '"+request.password+"')";
-            string quertRecupIdAccount = "SELECT MAX(ACCOUNT_ID) as MAX_ID FROM NS_ACCOUNTS WHERE ACCOUNT_EMAIL = '" + request.email + "'";
+            string queryAddAccount = String.Format("INSERT INTO {0} ({1}, {2}) VALUES ('{3}', '{4}')",
+                CONST_BDD.NAME_TABLE_ACCOUNT,
+                CONST_BDD.NAME_FIELD_ACCOUNT_EMAIL,
+                CONST_BDD.NAME_FIELD_ACCOUNT_PASSWORD,
+                request.email,
+                request.password);
+
+            string quertRecupIdAccount = String.Format("SELECT MAX({0}) as MAX_ID FROM {1} WHERE {2} = '{3}'",
+                CONST_BDD.NAME_FIELD_ACCOUNT_ID,
+                CONST_BDD.NAME_TABLE_ACCOUNT,
+                CONST_BDD.NAME_FIELD_ACCOUNT_EMAIL,
+                request.email);
+
             int id = 0;
             bool estInscrit = false;
 
@@ -234,7 +262,13 @@ namespace LauncherBack.Helpers
 
                 dataReader.Close();
 
-                string queryAddUtilisateur = "INSERT INTO NS_UTILISATEURS (UTILISATEUR_ID_ACCOUNT, UTILISATEUR_PSEUDO) VALUES (" + id + ", '" + request.pseudo + "')";
+                string queryAddUtilisateur = String.Format("INSERT INTO {0} ({1}, {2}) VALUES ({3}, '{4}')",
+                    CONST_BDD.NAME_TABLE_UTILISATEUR,
+                    CONST_BDD.NAME_FIELD_UTILISATEUR_ID_ACCOUNT,
+                    CONST_BDD.NAME_FIELD_UTILISATEUR_PSEUDO,
+                    id,
+                    request.pseudo);
+
                 MySqlCommand cmd2 = new MySqlCommand(queryAddUtilisateur, connection);
                 cmd2.ExecuteNonQuery();
 
@@ -251,7 +285,10 @@ namespace LauncherBack.Helpers
 
         public bool EmailExist(string email)
         {
-            string query = "SELECT COUNT(*) FROM NS_ACCOUNTS as ACC WHERE ACC.ACCOUNT_EMAIL = '" + email + "'";
+            string query = String.Format("SELECT COUNT(*) FROM {0} WHERE {1} = '{2}'", 
+                CONST_BDD.NAME_TABLE_ACCOUNT, 
+                CONST_BDD.NAME_FIELD_ACCOUNT_EMAIL, 
+                email);
 
             bool exist = false;
 
@@ -280,7 +317,9 @@ namespace LauncherBack.Helpers
         #region CONFIGURATION
         public List<String> RecupListeMotsInterdits()
         {
-            string queryRecupListe = "SELECT * FROM NS_MOTS_INTERDITS";
+            string queryRecupListe = String.Format("SELECT * FROM {0}",
+                CONST_BDD.NAME_TABLE_MOT_INTERDIT);
+
             List<String> listeMotsInterdits = new List<string>();
 
             if (this.OpenConnection() == true)
@@ -290,7 +329,7 @@ namespace LauncherBack.Helpers
 
                 while (dataReader.Read())
                 {
-                    listeMotsInterdits.Add(dataReader["MOT_INTERDIT_LIBELLE"].ToString());
+                    listeMotsInterdits.Add(dataReader[CONST_BDD.NAME_FIELD_MOT_INTERDIT_LIBELLE].ToString());
                 }
 
                 dataReader.Close();
@@ -308,7 +347,10 @@ namespace LauncherBack.Helpers
         }
         public bool InsertMotInterdit(string motInterdit)
         {
-            string queryAddMotInterdit = "INSERT INTO NS_MOTS_INTERDITS (MOT_INTERDIT_LIBELLE) VALUES ('" + motInterdit + "')";
+            string queryAddMotInterdit = String.Format("INSERT INTO {0} ({1}) VALUES ('{2}')",
+                CONST_BDD.NAME_TABLE_MOT_INTERDIT,
+                CONST_BDD.NAME_FIELD_MOT_INTERDIT_LIBELLE,
+                motInterdit);
 
             if (this.OpenConnection() == true)
             {
@@ -328,7 +370,11 @@ namespace LauncherBack.Helpers
         #region Utilisateur
         public int RecupIdUtilisateur(RequestFrontUtilisateur request)
         {
-            string query = "SELECT * FROM NS_TOKENS WHERE TOKEN_TOKEN_CLIENT = '"+request.token+"'";
+            string query = String.Format("SELECT * FROM {0} WHERE {1} = '{2}'",
+                CONST_BDD.NAME_TABLE_TOKEN,
+                CONST_BDD.NAME_FIELD_TOKEN_TOKEN_CLIENT,
+                request.token);
+
             Utilisateur utilisateur = new Utilisateur();
             int idAccount = 0;
 
@@ -339,7 +385,7 @@ namespace LauncherBack.Helpers
 
                 while (dataReader.Read())
                 {
-                    idAccount = int.Parse(dataReader["TOKEN_ACCOUNT_ID"] + "");
+                    idAccount = int.Parse(dataReader[CONST_BDD.NAME_FIELD_TOKEN_ACCOUNT_ID] + "");
                 }
 
                 dataReader.Close();
@@ -355,7 +401,11 @@ namespace LauncherBack.Helpers
 
         public Utilisateur RecupUtilisateur(int idAccount)
         {
-            string queryUser = "SELECT * FROM NS_UTILISATEURS WHERE UTILISATEUR_ID_ACCOUNT = " + idAccount + "";
+            string queryUser = String.Format("SELECT * FROM {0} WHERE {1} = {2}",
+                CONST_BDD.NAME_TABLE_UTILISATEUR,
+                CONST_BDD.NAME_FIELD_UTILISATEUR_ID_ACCOUNT,
+                idAccount);
+
             Utilisateur utilisateur = new Utilisateur();
 
             if (this.OpenConnection() == true)
@@ -365,8 +415,8 @@ namespace LauncherBack.Helpers
 
                 while (dataReader2.Read())
                 {
-                    utilisateur.pseudo = dataReader2["UTILISATEUR_PSEUDO"] + "";
-                    switch (dataReader2["UTILISATEUR_ETAT"])
+                    utilisateur.pseudo = dataReader2[CONST_BDD.NAME_FIELD_UTILISATEUR_PSEUDO] + "";
+                    switch (dataReader2[CONST_BDD.NAME_FIELD_UTILISATEUR_ETAT])
                     {
                         case 1:
                             utilisateur.status = CONST.HORS_LIGNE;
@@ -402,7 +452,18 @@ namespace LauncherBack.Helpers
         public void BannirUnUtilisateur(DateTime dateDebut, int duree, string motif, int idAccount)
         {
             DateTime dateFin = dateDebut.AddDays(duree);
-            string queryBannirUtilisateur = "INSERT INTO NS_BANNISSEMENTS (BANNISSEMENT_ACCOUNT, BANNISSEMENT_DATE_DEBUT, BANNISSEMENT_DUREE, BANNISSEMENT_DATE_FIN, BANNISSEMENT_RAISON) VALUES (" + idAccount + ", '" + dateDebut.ToString("yyyy-MM-dd HH:mm:ss") + "', " + duree + ", '" + dateFin.ToString("yyyy-MM-dd HH:mm:ss") + "', '" + motif + "')";
+            string queryBannirUtilisateur = String.Format("INSERT INTO {0} ({1}, {2}, {3}, {4}, {5}) VALUES ({6}, '{7}', {8}, '{9}', '{10}')",
+                CONST_BDD.NAME_TABLE_BANNISSEMENT,
+                CONST_BDD.NAME_FIELD_BANNISSEMENT_ACCOUNT,
+                CONST_BDD.NAME_FIELD_BANNISSEMENT_DATE_DEBUT,
+                CONST_BDD.NAME_FIELD_BANNISSEMENT_DUREE,
+                CONST_BDD.NAME_FIELD_BANNISSEMENT_DATE_FIN,
+                CONST_BDD.NAME_FIELD_BANNISSEMENT_RAISON,
+                idAccount,
+                dateDebut.ToString(CONST.FORMAT_DATE),
+                duree,
+                dateFin.ToString(CONST.FORMAT_DATE),
+                motif.Replace("'", "''"));
 
             if (this.OpenConnection() == true)
             {

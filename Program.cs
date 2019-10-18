@@ -28,8 +28,6 @@ namespace LauncherBack
             XmlConfigurator.Configure(LogManager.GetRepository(Assembly.GetEntryAssembly()), log4netConfig["log4net"]);
 
             string env;
-            log.Debug(test.NAME_TABLE_ACCOUNT);
-            log.Debug(test.NAME_FIELD_ACCOUNT_ID);
             Console.WriteLine("Sur quelle base de données se connecter ?");
             Console.WriteLine("1 : SERVER");
             Console.WriteLine("2 : LOCAL");
