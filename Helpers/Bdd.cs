@@ -6,6 +6,7 @@ using LauncherBack.Controllers.Utilisateur;
 using MySql.Data.MySqlClient;
 using MSG = LauncherBack.Helpers.Messages;
 using CONST = LauncherBack.Helpers.Constantes;
+using CONST_BDD = LauncherBack.Helpers.Config.NameBdd;
 
 
 namespace LauncherBack.Helpers
@@ -83,7 +84,7 @@ namespace LauncherBack.Helpers
         //ACCOUNT EXIST
         public int Connexion(RequestFrontConnexion request)
         {
-            string query = "SELECT COUNT(*) FROM NS_ACCOUNTS as ACC WHERE ACC.ACCOUNT_EMAIL = '"+request.email+"' AND ACC.ACCOUNT_PASSWORD = '"+request.password+"'";
+            string query = "SELECT COUNT(*) FROM "+CONST_BDD.NAME_TABLE_ACCOUNT+" WHERE "+CONST_BDD.NAME_FIELD_ACCOUNT_EMAIL+" = '"+request.email+ "' AND " + CONST_BDD.NAME_FIELD_ACCOUNT_PASSWORD + " = '" + request.password+"'";
             int Count = 0;
 
             if (this.OpenConnection() == true)
@@ -108,7 +109,7 @@ namespace LauncherBack.Helpers
         //RECUP ID ACCOUNT
         public int RecupIdAccount(RequestFrontConnexion request)
         {
-            string queryRecupID = "SELECT ACCOUNT_ID FROM NS_ACCOUNTS as ACC WHERE ACC.ACCOUNT_EMAIL = '" + request.email + "' AND ACC.ACCOUNT_PASSWORD = '" + request.password + "'";
+            string queryRecupID = "SELECT ACCOUNT_ID FROM " + CONST_BDD.NAME_TABLE_ACCOUNT + " WHERE " + CONST_BDD.NAME_FIELD_ACCOUNT_EMAIL + " = '" + request.email + "' AND " + CONST_BDD.NAME_FIELD_ACCOUNT_PASSWORD + " = '" + request.password + "'";
             int id = 0;
 
             if (this.OpenConnection() == true)
