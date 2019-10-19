@@ -26,7 +26,7 @@ namespace LauncherBack.Controllers.Utilisateur
         public ResponseFront Connexion([FromBody] RequestFrontUtilisateur request)
         {
             Bdd bdd = ConnexionBdd.connexionBase();
-            Utilisateur utilisateur = new Utilisateur();
+            User utilisateur = new User();
 
             int idAccount = bdd.RecupIdUtilisateur(request);
 

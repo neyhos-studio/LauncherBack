@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace LauncherBack.Controllers.Utilisateur
 {
-    public class Utilisateur
+    public class User
     {
         public string pseudo { get; set; }
         public string ip { get; set; }

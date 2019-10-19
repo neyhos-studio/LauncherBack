@@ -371,7 +371,7 @@ namespace LauncherBack.Helpers
                 CONST_BDD.NAME_FIELD_TOKEN_TOKEN_CLIENT,
                 request.token);
 
-            Utilisateur utilisateur = new Utilisateur();
+            User utilisateur = new User();
             int idAccount = 0;
 
             if (this.OpenConnection() == true)
@@ -395,14 +395,14 @@ namespace LauncherBack.Helpers
             }
         }
 
-        public Utilisateur RecupUtilisateur(int idAccount)
+        public User RecupUtilisateur(int idAccount)
         {
             string queryRecuperationUtilisateur = String.Format("SELECT * FROM {0} WHERE {1} = {2}",
                 CONST_BDD.NAME_TABLE_UTILISATEUR,
                 CONST_BDD.NAME_FIELD_UTILISATEUR_ID_ACCOUNT,
                 idAccount);
 
-            Utilisateur utilisateur = new Utilisateur();
+            User utilisateur = new User();
 
             if (this.OpenConnection() == true)
             {
@@ -471,6 +471,71 @@ namespace LauncherBack.Helpers
             {
             }
         }
+        #endregion
+
+        #region Social
+        public List<User> RecupFriendList(int idAccount)
+        {
+            string queryRecupIdFriend = String.Format("SELECT {0} FROM {1} WHERE {2} = {3}",
+                CONST_BDD.NAME_FIELD_SOCIAL_APOURAMI_ID,
+                CONST_BDD.NAME_TABLE_SOCIAL,
+                CONST_BDD.NAME_FIELD_SOCIAL_UTILISATEUR_ID,
+                idAccount);
+
+            
+            List<User> friendList = new List<User>();
+            List<int> listeIdAmi = new List<int>();
+
+            if (this.OpenConnection() == true)
+            {
+                //On récupère les ID des amis
+                MySqlCommand cmd2 = new MySqlCommand(queryRecupIdFriend, connection);
+                MySqlDataReader dataReader = cmd2.ExecuteReader();
+
+                while (dataReader.Read())
+                {
+                    listeIdAmi.Add(int.Parse(dataReader[CONST_BDD.NAME_FIELD_SOCIAL_APOURAMI_ID].ToString()));
+                }
+
+                dataReader.Close();
+
+                //On récupère les infos des amis
+
+                for (int i = 0; i < listeIdAmi.Count; i++)
+                {
+                    string queryRecupInfosFriends = String.Format("SELECT * FROM {0} WHERE {1} = {2}",
+                    CONST_BDD.NAME_TABLE_UTILISATEUR,
+                    CONST_BDD.NAME_FIELD_UTILISATEUR_ID_ACCOUNT,
+                    listeIdAmi[i]);
+
+                        MySqlCommand cmdQueryUser = new MySqlCommand(queryRecupInfosFriends, connection);
+                        MySqlDataReader dataReaderUser = cmdQueryUser.ExecuteReader();
+
+                        while (dataReaderUser.Read())
+                        {
+                            User user = new User();
+
+                            user.pseudo = dataReaderUser[CONST_BDD.NAME_FIELD_UTILISATEUR_PSEUDO].ToString();
+                            user.status = dataReaderUser[CONST_BDD.NAME_FIELD_UTILISATEUR_ETAT].ToString();
+
+                            friendList.Add(user);
+                        }
+
+                        dataReaderUser.Close();
+                }
+
+                this.CloseConnection();
+
+                return friendList;
+            }
+            else
+            {
+                return friendList;
+            }
+
+
+        }
+
         #endregion
     }
 }
