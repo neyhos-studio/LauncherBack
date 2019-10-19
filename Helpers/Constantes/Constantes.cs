@@ -17,5 +17,8 @@
         public const string OCCUPE = "Occupée";
         public const string INVISIBLE = "Invisible";
         public const string ABSENT = "Absent";
+
+        public const string URL_SERVER_PROD = "http://92.222.80.11:5000";
+        public const string URL_SERVER_DEV = "https://localhost:5001";
     }
 }

@@ -77,7 +77,7 @@ namespace LauncherBack.Helpers
         //ACCOUNT EXIST
         public int Connexion(RequestFrontConnexion request)
         {
-            string query = String.Format("SELECT COUNT(*) FROM {0} WHERE {1} = '{2}' AND {3} = '{4}'", 
+            string queryConnexion = String.Format("SELECT COUNT(*) FROM {0} WHERE {1} = '{2}' AND {3} = '{4}'", 
                 CONST_BDD.NAME_TABLE_ACCOUNT, 
                 CONST_BDD.NAME_FIELD_ACCOUNT_EMAIL, 
                 request.email, 
@@ -88,7 +88,7 @@ namespace LauncherBack.Helpers
             if (this.OpenConnection() == true)
             {
                 //Create Mysql Command
-                MySqlCommand cmd = new MySqlCommand(query, connection);
+                MySqlCommand cmd = new MySqlCommand(queryConnexion, connection);
 
                 //ExecuteScalar will return one value
                 Count = int.Parse(cmd.ExecuteScalar() + "");
@@ -142,7 +142,7 @@ namespace LauncherBack.Helpers
         //INSERT TOKEN
         public void InsertToken(int idAccount, string tokenServer, string tokenClient)
         {
-            string queryRecupID = String.Format("INSERT INTO {0} ({1},{2},{3},{4}) VALUES ({5}, '{6}', '{7}', '{8}')",
+            string queryInsertToken = String.Format("INSERT INTO {0} ({1},{2},{3},{4}) VALUES ({5}, '{6}', '{7}', '{8}')",
                 CONST_BDD.NAME_TABLE_TOKEN,
                 CONST_BDD.NAME_FIELD_TOKEN_ACCOUNT_ID,
                 CONST_BDD.NAME_FIELD_TOKEN_TOKEN_SERVER,
@@ -155,7 +155,7 @@ namespace LauncherBack.Helpers
 
             if (this.OpenConnection() == true)
             {
-                MySqlCommand cmd = new MySqlCommand(queryRecupID, connection);
+                MySqlCommand cmd = new MySqlCommand(queryInsertToken, connection);
                 cmd.ExecuteNonQuery();
                 this.CloseConnection();
             }
@@ -167,7 +167,7 @@ namespace LauncherBack.Helpers
         //PASSAGE EN LIGNE
         public void PassageEnLigne(int idAccount)
         {
-            string passageEnLigne = String.Format("UPDATE {0} SET {1} = 2 WHERE {2} = {3}",
+            string queryPassageEnLigne = String.Format("UPDATE {0} SET {1} = 2 WHERE {2} = {3}",
                 CONST_BDD.NAME_TABLE_UTILISATEUR,
                 CONST_BDD.NAME_FIELD_UTILISATEUR_ETAT,
                 CONST_BDD.NAME_FIELD_UTILISATEUR_ID_ACCOUNT,
@@ -175,12 +175,8 @@ namespace LauncherBack.Helpers
 
             if (this.OpenConnection() == true)
             {
-                MySqlCommand cmd = new MySqlCommand();
-                cmd.CommandText = passageEnLigne;
-                cmd.Connection = connection;
-
+                MySqlCommand cmd = new MySqlCommand(queryPassageEnLigne, connection);
                 cmd.ExecuteNonQuery();
-
                 this.CloseConnection();
             }
             else
@@ -192,7 +188,7 @@ namespace LauncherBack.Helpers
         {
             Bannissement bannissement = new Bannissement();
 
-            string query = String.Format("SELECT * FROM {0} WHERE {1} = {2} AND {3} > '{4}'",
+            string queryIfBanned = String.Format("SELECT * FROM {0} WHERE {1} = {2} AND {3} > '{4}'",
                 CONST_BDD.NAME_TABLE_BANNISSEMENT,
                 CONST_BDD.NAME_FIELD_BANNISSEMENT_ACCOUNT,
                 idAccount,
@@ -201,7 +197,7 @@ namespace LauncherBack.Helpers
 
             if (this.OpenConnection() == true)
             {
-                MySqlCommand cmd = new MySqlCommand(query, connection);
+                MySqlCommand cmd = new MySqlCommand(queryIfBanned, connection);
                 MySqlDataReader dataReader = cmd.ExecuteReader();
 
                 while (dataReader.Read())
@@ -285,7 +281,7 @@ namespace LauncherBack.Helpers
 
         public bool EmailExist(string email)
         {
-            string query = String.Format("SELECT COUNT(*) FROM {0} WHERE {1} = '{2}'", 
+            string queryEmailExist = String.Format("SELECT COUNT(*) FROM {0} WHERE {1} = '{2}'", 
                 CONST_BDD.NAME_TABLE_ACCOUNT, 
                 CONST_BDD.NAME_FIELD_ACCOUNT_EMAIL, 
                 email);
@@ -294,7 +290,7 @@ namespace LauncherBack.Helpers
 
             if (this.OpenConnection() == true)
             {
-                MySqlCommand cmd = new MySqlCommand(query, connection);
+                MySqlCommand cmd = new MySqlCommand(queryEmailExist, connection);
 
 
                 if (int.Parse(cmd.ExecuteScalar() + "") == 1)
@@ -317,14 +313,14 @@ namespace LauncherBack.Helpers
         #region CONFIGURATION
         public List<String> RecupListeMotsInterdits()
         {
-            string queryRecupListe = String.Format("SELECT * FROM {0}",
+            string queryRecupListeMotsInteerdits = String.Format("SELECT * FROM {0}",
                 CONST_BDD.NAME_TABLE_MOT_INTERDIT);
 
             List<String> listeMotsInterdits = new List<string>();
 
             if (this.OpenConnection() == true)
             {
-                MySqlCommand cmd2 = new MySqlCommand(queryRecupListe, connection);
+                MySqlCommand cmd2 = new MySqlCommand(queryRecupListeMotsInteerdits, connection);
                 MySqlDataReader dataReader = cmd2.ExecuteReader();
 
                 while (dataReader.Read())
@@ -370,7 +366,7 @@ namespace LauncherBack.Helpers
         #region Utilisateur
         public int RecupIdUtilisateur(RequestFrontUtilisateur request)
         {
-            string query = String.Format("SELECT * FROM {0} WHERE {1} = '{2}'",
+            string queryRecupIdUtilisateur = String.Format("SELECT * FROM {0} WHERE {1} = '{2}'",
                 CONST_BDD.NAME_TABLE_TOKEN,
                 CONST_BDD.NAME_FIELD_TOKEN_TOKEN_CLIENT,
                 request.token);
@@ -380,7 +376,7 @@ namespace LauncherBack.Helpers
 
             if (this.OpenConnection() == true)
             {
-                MySqlCommand cmd = new MySqlCommand(query, connection);
+                MySqlCommand cmd = new MySqlCommand(queryRecupIdUtilisateur, connection);
                 MySqlDataReader dataReader = cmd.ExecuteReader();
 
                 while (dataReader.Read())
@@ -401,7 +397,7 @@ namespace LauncherBack.Helpers
 
         public Utilisateur RecupUtilisateur(int idAccount)
         {
-            string queryUser = String.Format("SELECT * FROM {0} WHERE {1} = {2}",
+            string queryRecuperationUtilisateur = String.Format("SELECT * FROM {0} WHERE {1} = {2}",
                 CONST_BDD.NAME_TABLE_UTILISATEUR,
                 CONST_BDD.NAME_FIELD_UTILISATEUR_ID_ACCOUNT,
                 idAccount);
@@ -410,7 +406,7 @@ namespace LauncherBack.Helpers
 
             if (this.OpenConnection() == true)
             {
-                MySqlCommand cmd2 = new MySqlCommand(queryUser, connection);
+                MySqlCommand cmd2 = new MySqlCommand(queryRecuperationUtilisateur, connection);
                 MySqlDataReader dataReader2 = cmd2.ExecuteReader();
 
                 while (dataReader2.Read())
@@ -463,7 +459,7 @@ namespace LauncherBack.Helpers
                 dateDebut.ToString(CONST.FORMAT_DATE),
                 duree,
                 dateFin.ToString(CONST.FORMAT_DATE),
-                motif.Replace("'", "''"));
+                motif.Replace("'", "''")); //TODO : remplacer le système d'échappement caractères
 
             if (this.OpenConnection() == true)
             {

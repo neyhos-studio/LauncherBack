@@ -27,13 +27,19 @@ namespace LauncherBack
             log4netConfig.Load(File.OpenRead("log4net.config"));
             XmlConfigurator.Configure(LogManager.GetRepository(Assembly.GetEntryAssembly()), log4netConfig["log4net"]);
 
-            string env;
+            string envBdd;
             Console.WriteLine("Sur quelle base de données se connecter ?");
             Console.WriteLine("1 : SERVER");
             Console.WriteLine("2 : LOCAL");
-            env = Console.ReadLine();
+            envBdd = Console.ReadLine();
 
-            if (env == "1")
+            string envServer;
+            Console.WriteLine("Sur quelle serveur se connecter ?");
+            Console.WriteLine("1 : SERVER");
+            Console.WriteLine("2 : LOCAL");
+            envServer = Console.ReadLine();
+
+            if (envBdd == "1")
             {
 
                 CONST.envTravail = 0;
@@ -47,7 +53,14 @@ namespace LauncherBack
                 {
                     log.Info("BDD connectée !");
                     log.Info("Démarrage de l'API ...");
-                    CreateWebHostBuilder(args).Build().Run();
+                    if (envServer == "1")
+                    {
+                        CreateWebHostBuilderProd(args).Run();
+                    }
+                    else
+                    {
+                        CreateWebHostBuilderDev(args).Run();
+                    }
                 }
             } else
             {
@@ -62,19 +75,38 @@ namespace LauncherBack
                 {
                     log.Info("BDD connectée !");
                     log.Info("Démarrage de l'API ...");
-                    CreateWebHostBuilder(args).Build().Run();
+                    if (envServer == "1")
+                    {
+                        CreateWebHostBuilderProd(args).Run();
+                    }
+                    else
+                    {
+                        CreateWebHostBuilderDev(args).Run();
+                    }
                 }
             }
-            
         }
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
+        public static IWebHost CreateWebHostBuilderProd(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .ConfigureLogging(config => {
+                .ConfigureLogging(config =>
+                {
                     config.ClearProviders();
                     //config.AddConsole();
                 })
-                .UseStartup<Startup>();
+                .UseStartup<Startup>()
+                .UseUrls(urls: CONST.URL_SERVER_PROD)
+                .Build();
 
+        public static IWebHost CreateWebHostBuilderDev(string[] args) =>
+            WebHost.CreateDefaultBuilder(args)
+                .ConfigureLogging(config =>
+                {
+                    config.ClearProviders();
+                    //config.AddConsole();
+                })
+                .UseStartup<Startup>()
+                .UseUrls(urls: CONST.URL_SERVER_DEV)
+                .Build();
     }
 }
