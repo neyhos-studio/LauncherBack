@@ -10,27 +10,25 @@ using Microsoft.AspNetCore.Mvc;
 using CONST = LauncherBack.Helpers.Constantes;
 using MSG = LauncherBack.Helpers.Messages;
 
-namespace LauncherBack.Controllers.Social
+namespace LauncherBack.Controllers.Games
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class FriendListController : ControllerBase
+    public class GamesController : ControllerBase
     {
-
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        public static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         ResponseFront responseFront = new ResponseFront();
 
         [HttpPost]
-        [ActionName("RetrieveFriendList")]
-        public static List<Friend> RetrieveFriendList([FromBody] int idAccount)
+        [ActionName("RetrieveGameList")]
+        public List<Game> RetrieveGameList()
         {
             Bdd bdd = DataBaseConnection.databaseConnection();
-            List<Friend> friendList = new List<Friend>();
+            List<Game> gameList = new List<Game>();
 
-            friendList = bdd.RetrieveFriendListDatabase(idAccount);
+            gameList = bdd.RetrieveGameList();
 
-            return friendList;
+            return gameList;
         }
-
     }
 }

@@ -8,6 +8,7 @@ using MSG = LauncherBack.Helpers.Messages;
 using CONST = LauncherBack.Helpers.Constantes;
 using CONST_BDD = LauncherBack.Helpers.Config.NameBdd;
 using LauncherBack.Controllers.Social;
+using LauncherBack.Controllers.Games;
 
 namespace LauncherBack.Helpers
 {
@@ -538,6 +539,43 @@ namespace LauncherBack.Helpers
 
         }
 
+        #endregion
+
+        #region GAME LIST
+        public List<Game> RetrieveGameList()
+        {
+            List<Game> gameList = new List<Game>();
+            
+
+            string queryRetrieveGameList = String.Format("SELECT * FROM {0}",
+                CONST_BDD.NAME_TABLE_JEU);
+
+            if (this.OpenConnection() == true)
+            {
+                MySqlCommand cmd = new MySqlCommand(queryRetrieveGameList, connection);
+                MySqlDataReader dataReader = cmd.ExecuteReader();
+
+                while (dataReader.Read())
+                {
+                    Game game = new Game();
+
+                    game.id = int.Parse(dataReader[CONST_BDD.NAME_FIELD_JEU_ID] + "");
+                    game.title = dataReader[CONST_BDD.NAME_FIELD_JEU_NAME] + "";
+                    game.price = 59.90;
+
+                    gameList.Add(game);
+                }
+
+                dataReader.Close();
+
+                this.CloseConnection();
+                return gameList;
+            }
+            else
+            {
+                return null;
+            }
+        }
         #endregion
     }
 }
