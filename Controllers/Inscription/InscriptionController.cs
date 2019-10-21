@@ -22,18 +22,18 @@ namespace LauncherBack.Controllers.Inscription
         ResponseFront responseFront = new ResponseFront();
 
         [HttpPost]
-        [ActionName("Inscription")]
+        [ActionName("Registration")]
         public ResponseFront Inscription([FromBody] RequestFrontInscription request)
         {
 
-            Bdd bdd = ConnexionBdd.connexionBase();
+            Bdd bdd = DataBaseConnection.databaseConnection();
 
 
             #region Critères d'acceptances
             //On test les critères d'acceptances de l'Email / Password / Pseudo
 
             //Test si l'adresse Email existe ou non
-            if (bdd.EmailExist(request.email))
+            if (bdd.TestIfEmailExist(request.email))
             {
                 responseFront.hasError = true;
                 responseFront.error = MSG.INSCRIPTION_EMAIL_EXIST;
@@ -41,7 +41,7 @@ namespace LauncherBack.Controllers.Inscription
             }
 
             //Test de la taille de MDP
-            if (request.password.Length < CONST.LONGUEUR_PASSWORD_MIN)
+            if (request.password.Length < CONST.MINIMUM_PASSWORD_LENGTH)
             {
                 responseFront.hasError = true;
                 responseFront.error = MSG.INSCRIPTION_PASSWORD_COURT;
@@ -49,7 +49,7 @@ namespace LauncherBack.Controllers.Inscription
             }
 
             //Test de la taille du PSEUDO
-            if (request.pseudo.Length > CONST.LONGUEUR_PSEUDO_MAX)
+            if (request.nickname.Length > CONST.MAXIMUM_NICKNAME_LENGTH)
             {
                 responseFront.hasError = true;
                 responseFront.error = MSG.INSCRIPTION_PSEUDO_LONG;
@@ -59,12 +59,12 @@ namespace LauncherBack.Controllers.Inscription
             //Test du contenu du PSEUDO (mots interdis)
             //string[] listeMotsInterdis = CONST.MOTS_INTERDIS.Split('|');
             bool test = false;
-            List<String> listeMotsInterdits = bdd.RecupListeMotsInterdits();
+            List<String> listeMotsInterdits = bdd.RetrieveListOfForbiddenWord();
 
             for (int i = 0; i < listeMotsInterdits.Count(); i++)
             {
                 string motInterditNormaliser = listeMotsInterdits[i].ToString().ToLower();
-                string pseudoNormaliser = request.pseudo.ToLower();
+                string pseudoNormaliser = request.nickname.ToLower();
                 if (pseudoNormaliser.Contains(motInterditNormaliser))
                 {
                     test = true;
@@ -87,7 +87,7 @@ namespace LauncherBack.Controllers.Inscription
             }
 
             //Test si le PSEUDO contient plus de 2 espaces
-            if (request.pseudo.Contains("  "))
+            if (request.nickname.Contains("  "))
             {
                 responseFront.hasError = true;
                 responseFront.error = MSG.INSCRIPTION_PSEUDO_2_ESPACES;
@@ -95,7 +95,7 @@ namespace LauncherBack.Controllers.Inscription
             }
 
             //Test si le PSEUDO contient plus de 2 -
-            if (request.pseudo.Contains("--"))
+            if (request.nickname.Contains("--"))
             {
                 responseFront.hasError = true;
                 responseFront.error = MSG.INSCRIPTION_PSEUDO_2_TIRETS;
@@ -113,8 +113,8 @@ namespace LauncherBack.Controllers.Inscription
 
             try
             {
-                request.pseudo = request.pseudo[0].ToString().ToUpper() + request.pseudo.Substring(1).ToLower();
-                bool estInscrit = bdd.Inscription(request);
+                request.nickname = request.nickname[0].ToString().ToUpper() + request.nickname.Substring(1).ToLower();
+                bool estInscrit = bdd.Registration(request);
                 responseFront.response = MSG.INSCRIPTION_OK;
                 return responseFront;
             }catch(Exception e)

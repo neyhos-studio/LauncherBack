@@ -42,7 +42,7 @@ namespace LauncherBack
             if (envBdd == "1")
             {
 
-                CONST.envTravail = 0;
+                CONST.WORK_ENV = 0;
 
                 log.Info("Travail sur environnement de PROD");
                 Bdd bdd = new Bdd(CRED.SERVER_PROD, CRED.DATABASE_PROD, CRED.LOGIN_PROD, CRED.PASSWORD_PROD);
@@ -65,7 +65,7 @@ namespace LauncherBack
             } else
             {
 
-                CONST.envTravail = 1;
+                CONST.WORK_ENV = 1;
 
                 log.Info("Travail sur environnement de DEV");
                 Bdd bdd = new Bdd(CRED.SERVER_DEV, CRED.DATABASE_DEV, CRED.LOGIN_DEV, CRED.PASSWORD_DEV);

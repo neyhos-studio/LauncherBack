@@ -4,6 +4,6 @@
     {
         public string email { get; set; }
         public string password { get; set; }
-        public string pseudo { get; set; }
+        public string nickname { get; set; }
     }
 }

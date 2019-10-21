@@ -14,14 +14,14 @@ namespace LauncherBack.Controllers.Configuration
     public class ConfigurationController : Controller
     {
         [HttpPost]
-        [ActionName("Mots interdits")]
-        public ResponseFront AjouterMotInterdit([FromBody] string motInterdit)
+        [ActionName("Forbidden Words")]
+        public ResponseFront AddForbiddenWord([FromBody] string forbiddenWord)
         {
-            Bdd bdd = ConnexionBdd.connexionBase();
+            Bdd bdd = DataBaseConnection.databaseConnection();
 
             ResponseFront responseFront = new ResponseFront();
 
-            if (bdd.InsertMotInterdit(motInterdit)){
+            if (bdd.InsertForbiddenWord(forbiddenWord)){
                 responseFront.hasError = true;
                 responseFront.response = MSG.CONFIGURATION_MOT_INTERDIT_OK;
                 return responseFront;
@@ -34,12 +34,12 @@ namespace LauncherBack.Controllers.Configuration
         }
 
         [HttpPost]
-        [ActionName("Bannissement")]
-        public void Bannissement([FromBody] RequestBannissement request)
+        [ActionName("Banishment")]
+        public void Banishment([FromBody] RequestBannissement request)
         {
-            Bdd bdd = ConnexionBdd.connexionBase();
+            Bdd bdd = DataBaseConnection.databaseConnection();
 
-            bdd.BannirUnUtilisateur(request.dateDebut, request.duree, request.motif, request.idAccount);
+            bdd.BanningUser(request.startDate, request.duration, request.reason, request.idAccount);
 
         }
     }

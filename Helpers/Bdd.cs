@@ -7,6 +7,7 @@ using MySql.Data.MySqlClient;
 using MSG = LauncherBack.Helpers.Messages;
 using CONST = LauncherBack.Helpers.Constantes;
 using CONST_BDD = LauncherBack.Helpers.Config.NameBdd;
+using LauncherBack.Controllers.Social;
 
 namespace LauncherBack.Helpers
 {
@@ -75,7 +76,7 @@ namespace LauncherBack.Helpers
         #region CONNEXION
 
         //ACCOUNT EXIST
-        public int Connexion(RequestFrontConnexion request)
+        public int Connection(RequestFrontConnexion request)
         {
             string queryConnexion = String.Format("SELECT COUNT(*) FROM {0} WHERE {1} = '{2}' AND {3} = '{4}'", 
                 CONST_BDD.NAME_TABLE_ACCOUNT, 
@@ -105,7 +106,7 @@ namespace LauncherBack.Helpers
         }
 
         //RECUP ID ACCOUNT
-        public int RecupIdAccount(RequestFrontConnexion request)
+        public int RetrieveIdAccount(RequestFrontConnexion request)
         {
             string queryRecupID = String.Format("SELECT {0} FROM {1} WHERE {2} = '{3}' AND {4} = '{5}'", 
                 CONST_BDD.NAME_FIELD_ACCOUNT_ID, 
@@ -151,7 +152,7 @@ namespace LauncherBack.Helpers
                 idAccount,
                 tokenServer, 
                 tokenClient,
-                DateTime.Now.ToString(CONST.FORMAT_DATE));
+                DateTime.Now.ToString(CONST.DATE_FORMAT));
 
             if (this.OpenConnection() == true)
             {
@@ -165,7 +166,7 @@ namespace LauncherBack.Helpers
         }
 
         //PASSAGE EN LIGNE
-        public void PassageEnLigne(int idAccount)
+        public void NowOnline(int idAccount)
         {
             string queryPassageEnLigne = String.Format("UPDATE {0} SET {1} = 2 WHERE {2} = {3}",
                 CONST_BDD.NAME_TABLE_UTILISATEUR,
@@ -184,16 +185,16 @@ namespace LauncherBack.Helpers
             }
         }
 
-        public Bannissement TesterBannissementUtilisateur(int idAccount)
+        public Banishment TestIfUserBan(int idAccount)
         {
-            Bannissement bannissement = new Bannissement();
+            Banishment banishment = new Banishment();
 
             string queryIfBanned = String.Format("SELECT * FROM {0} WHERE {1} = {2} AND {3} > '{4}'",
                 CONST_BDD.NAME_TABLE_BANNISSEMENT,
                 CONST_BDD.NAME_FIELD_BANNISSEMENT_ACCOUNT,
                 idAccount,
                 CONST_BDD.NAME_FIELD_BANNISSEMENT_DATE_FIN,
-                DateTime.Now.ToString(CONST.FORMAT_DATE));
+                DateTime.Now.ToString(CONST.DATE_FORMAT));
 
             if (this.OpenConnection() == true)
             {
@@ -202,21 +203,21 @@ namespace LauncherBack.Helpers
 
                 while (dataReader.Read())
                 {
-                    bannissement.hasBanned = true;
-                    bannissement.debut = DateTime.Parse(dataReader[CONST_BDD.NAME_FIELD_BANNISSEMENT_DATE_DEBUT] + "");
-                    bannissement.duree = int.Parse(dataReader[CONST_BDD.NAME_FIELD_BANNISSEMENT_DUREE] + "");
-                    bannissement.fin = DateTime.Parse(dataReader[CONST_BDD.NAME_FIELD_BANNISSEMENT_DATE_FIN] + "");
-                    bannissement.raison = dataReader[CONST_BDD.NAME_FIELD_BANNISSEMENT_RAISON] + "";
+                    banishment.hasBanned = true;
+                    banishment.start = DateTime.Parse(dataReader[CONST_BDD.NAME_FIELD_BANNISSEMENT_DATE_DEBUT] + "");
+                    banishment.during = int.Parse(dataReader[CONST_BDD.NAME_FIELD_BANNISSEMENT_DUREE] + "");
+                    banishment.end = DateTime.Parse(dataReader[CONST_BDD.NAME_FIELD_BANNISSEMENT_DATE_FIN] + "");
+                    banishment.reason = dataReader[CONST_BDD.NAME_FIELD_BANNISSEMENT_RAISON] + "";
                 }
 
                 dataReader.Close();
 
                 this.CloseConnection();
-                return bannissement;
+                return banishment;
             }
             else
             {
-                return bannissement;
+                return banishment;
             }
         }
 
@@ -224,7 +225,7 @@ namespace LauncherBack.Helpers
 
         #region INSCRIPTION 
 
-        public bool Inscription(RequestFrontInscription request)
+        public bool Registration(RequestFrontInscription request)
         {
             string queryAddAccount = String.Format("INSERT INTO {0} ({1}, {2}) VALUES ('{3}', '{4}')",
                 CONST_BDD.NAME_TABLE_ACCOUNT,
@@ -240,7 +241,7 @@ namespace LauncherBack.Helpers
                 request.email);
 
             int id = 0;
-            bool estInscrit = false;
+            bool isRegistered = false;
 
             if (this.OpenConnection() == true)
             {
@@ -263,23 +264,23 @@ namespace LauncherBack.Helpers
                     CONST_BDD.NAME_FIELD_UTILISATEUR_ID_ACCOUNT,
                     CONST_BDD.NAME_FIELD_UTILISATEUR_PSEUDO,
                     id,
-                    request.pseudo);
+                    request.nickname);
 
                 MySqlCommand cmd2 = new MySqlCommand(queryAddUtilisateur, connection);
                 cmd2.ExecuteNonQuery();
 
                 this.CloseConnection();
 
-                return estInscrit = true;
+                return isRegistered = true;
 
             }
             else
             {
-                return estInscrit;
+                return isRegistered;
             }
         }
 
-        public bool EmailExist(string email)
+        public bool TestIfEmailExist(string email)
         {
             string queryEmailExist = String.Format("SELECT COUNT(*) FROM {0} WHERE {1} = '{2}'", 
                 CONST_BDD.NAME_TABLE_ACCOUNT, 
@@ -311,12 +312,12 @@ namespace LauncherBack.Helpers
         #endregion
 
         #region CONFIGURATION
-        public List<String> RecupListeMotsInterdits()
+        public List<String> RetrieveListOfForbiddenWord()
         {
             string queryRecupListeMotsInteerdits = String.Format("SELECT * FROM {0}",
                 CONST_BDD.NAME_TABLE_MOT_INTERDIT);
 
-            List<String> listeMotsInterdits = new List<string>();
+            List<String> forbiddenWordList = new List<string>();
 
             if (this.OpenConnection() == true)
             {
@@ -325,14 +326,14 @@ namespace LauncherBack.Helpers
 
                 while (dataReader.Read())
                 {
-                    listeMotsInterdits.Add(dataReader[CONST_BDD.NAME_FIELD_MOT_INTERDIT_LIBELLE].ToString());
+                    forbiddenWordList.Add(dataReader[CONST_BDD.NAME_FIELD_MOT_INTERDIT_LIBELLE].ToString());
                 }
 
                 dataReader.Close();
 
                 this.CloseConnection();
 
-                return listeMotsInterdits;
+                return forbiddenWordList;
             }
             else
             {
@@ -341,7 +342,7 @@ namespace LauncherBack.Helpers
 
 
         }
-        public bool InsertMotInterdit(string motInterdit)
+        public bool InsertForbiddenWord(string motInterdit)
         {
             string queryAddMotInterdit = String.Format("INSERT INTO {0} ({1}) VALUES ('{2}')",
                 CONST_BDD.NAME_TABLE_MOT_INTERDIT,
@@ -364,14 +365,13 @@ namespace LauncherBack.Helpers
         #endregion
 
         #region Utilisateur
-        public int RecupIdUtilisateur(RequestFrontUtilisateur request)
+        public int RetrieveUserId(RequestFrontUtilisateur request)
         {
             string queryRecupIdUtilisateur = String.Format("SELECT * FROM {0} WHERE {1} = '{2}'",
                 CONST_BDD.NAME_TABLE_TOKEN,
                 CONST_BDD.NAME_FIELD_TOKEN_TOKEN_CLIENT,
                 request.token);
 
-            User utilisateur = new User();
             int idAccount = 0;
 
             if (this.OpenConnection() == true)
@@ -395,14 +395,14 @@ namespace LauncherBack.Helpers
             }
         }
 
-        public User RecupUtilisateur(int idAccount)
+        public User RetrieveUser(int idAccount)
         {
             string queryRecuperationUtilisateur = String.Format("SELECT * FROM {0} WHERE {1} = {2}",
                 CONST_BDD.NAME_TABLE_UTILISATEUR,
                 CONST_BDD.NAME_FIELD_UTILISATEUR_ID_ACCOUNT,
                 idAccount);
 
-            User utilisateur = new User();
+            User user = new User();
 
             if (this.OpenConnection() == true)
             {
@@ -411,23 +411,23 @@ namespace LauncherBack.Helpers
 
                 while (dataReader2.Read())
                 {
-                    utilisateur.pseudo = dataReader2[CONST_BDD.NAME_FIELD_UTILISATEUR_PSEUDO] + "";
+                    user.nickname = dataReader2[CONST_BDD.NAME_FIELD_UTILISATEUR_PSEUDO] + "";
                     switch (dataReader2[CONST_BDD.NAME_FIELD_UTILISATEUR_ETAT])
                     {
                         case 1:
-                            utilisateur.status = CONST.HORS_LIGNE;
+                            user.status = CONST.OFFLINE;
                             break;
                         case 2:
-                            utilisateur.status = CONST.EN_LIGNE;
+                            user.status = CONST.ONLINE;
                             break;
                         case 3:
-                            utilisateur.status = CONST.ABSENT;
+                            user.status = CONST.ABSENT;
                             break;
                         case 4:
-                            utilisateur.status = CONST.OCCUPE;
+                            user.status = CONST.BUSY;
                             break;
                         case 5:
-                            utilisateur.status = CONST.INVISIBLE;
+                            user.status = CONST.INVISIBLE;
                             break;
                         default:
                             break;
@@ -437,7 +437,7 @@ namespace LauncherBack.Helpers
                 dataReader2.Close();
                 this.CloseConnection();
 
-                return utilisateur;
+                return user;
             } else
             {
                 return null;
@@ -445,9 +445,9 @@ namespace LauncherBack.Helpers
             }
 
         
-        public void BannirUnUtilisateur(DateTime dateDebut, int duree, string motif, int idAccount)
+        public void BanningUser(DateTime startDate, int during, string reason, int idAccount)
         {
-            DateTime dateFin = dateDebut.AddDays(duree);
+            DateTime dateFin = startDate.AddDays(during);
             string queryBannirUtilisateur = String.Format("INSERT INTO {0} ({1}, {2}, {3}, {4}, {5}) VALUES ({6}, '{7}', {8}, '{9}', '{10}')",
                 CONST_BDD.NAME_TABLE_BANNISSEMENT,
                 CONST_BDD.NAME_FIELD_BANNISSEMENT_ACCOUNT,
@@ -456,10 +456,10 @@ namespace LauncherBack.Helpers
                 CONST_BDD.NAME_FIELD_BANNISSEMENT_DATE_FIN,
                 CONST_BDD.NAME_FIELD_BANNISSEMENT_RAISON,
                 idAccount,
-                dateDebut.ToString(CONST.FORMAT_DATE),
-                duree,
-                dateFin.ToString(CONST.FORMAT_DATE),
-                motif.Replace("'", "''")); //TODO : remplacer le système d'échappement caractères
+                startDate.ToString(CONST.DATE_FORMAT),
+                during,
+                dateFin.ToString(CONST.DATE_FORMAT),
+                reason.Replace("'", "''")); //TODO : remplacer le système d'échappement caractères
 
             if (this.OpenConnection() == true)
             {
@@ -474,7 +474,7 @@ namespace LauncherBack.Helpers
         #endregion
 
         #region Social
-        public List<User> RecupFriendList(int idAccount)
+        public List<Friend> RetrieveFriendListDatabase(int idAccount)
         {
             string queryRecupIdFriend = String.Format("SELECT {0} FROM {1} WHERE {2} = {3}",
                 CONST_BDD.NAME_FIELD_SOCIAL_APOURAMI_ID,
@@ -483,8 +483,8 @@ namespace LauncherBack.Helpers
                 idAccount);
 
             
-            List<User> friendList = new List<User>();
-            List<int> listeIdAmi = new List<int>();
+            List<Friend> friendList = new List<Friend>();
+            List<int> friendsIdList = new List<int>();
 
             if (this.OpenConnection() == true)
             {
@@ -494,31 +494,33 @@ namespace LauncherBack.Helpers
 
                 while (dataReader.Read())
                 {
-                    listeIdAmi.Add(int.Parse(dataReader[CONST_BDD.NAME_FIELD_SOCIAL_APOURAMI_ID].ToString()));
+                    friendsIdList.Add(int.Parse(dataReader[CONST_BDD.NAME_FIELD_SOCIAL_APOURAMI_ID].ToString()));
                 }
 
                 dataReader.Close();
 
                 //On récupère les infos des amis
 
-                for (int i = 0; i < listeIdAmi.Count; i++)
+                for (int i = 0; i < friendsIdList.Count; i++)
                 {
                     string queryRecupInfosFriends = String.Format("SELECT * FROM {0} WHERE {1} = {2}",
                     CONST_BDD.NAME_TABLE_UTILISATEUR,
                     CONST_BDD.NAME_FIELD_UTILISATEUR_ID_ACCOUNT,
-                    listeIdAmi[i]);
+                    friendsIdList[i]);
+
+                    log.Debug(queryRecupInfosFriends);
 
                         MySqlCommand cmdQueryUser = new MySqlCommand(queryRecupInfosFriends, connection);
                         MySqlDataReader dataReaderUser = cmdQueryUser.ExecuteReader();
 
                         while (dataReaderUser.Read())
                         {
-                            User user = new User();
+                            Friend friend = new Friend();
 
-                            user.pseudo = dataReaderUser[CONST_BDD.NAME_FIELD_UTILISATEUR_PSEUDO].ToString();
-                            user.status = dataReaderUser[CONST_BDD.NAME_FIELD_UTILISATEUR_ETAT].ToString();
+                            friend.nickname = dataReaderUser[CONST_BDD.NAME_FIELD_UTILISATEUR_PSEUDO].ToString();
+                            friend.status = dataReaderUser[CONST_BDD.NAME_FIELD_UTILISATEUR_ETAT].ToString();
 
-                            friendList.Add(user);
+                            friendList.Add(friend);
                         }
 
                         dataReaderUser.Close();

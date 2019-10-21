@@ -7,14 +7,14 @@ using CRED = LauncherBack.Helpers.Config.Credentials;
 
 namespace LauncherBack.Helpers
 {
-    public class ConnexionBdd
+    public class DataBaseConnection
     {
-        public static Bdd connexionBase()
+        public static Bdd databaseConnection()
         {
             Bdd bdd;
 
             //Configuration environnement de travail
-            if (CONST.envTravail == 0)
+            if (CONST.WORK_ENV == 0)
             {
                 return bdd = new Bdd(CRED.SERVER_PROD, CRED.DATABASE_PROD, CRED.LOGIN_PROD, CRED.PASSWORD_PROD);
             }

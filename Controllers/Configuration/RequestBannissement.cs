@@ -8,8 +8,8 @@ namespace LauncherBack.Controllers.Configuration
     public class RequestBannissement
     {
         public int idAccount { get; set; }
-        public DateTime dateDebut { get; set; }
-        public int duree { get; set; }
-        public string motif { get; set; }
+        public DateTime startDate { get; set; }
+        public int duration { get; set; }
+        public string reason { get; set; }
     }
 }

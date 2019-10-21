@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using LauncherBack.Controllers.Connexion;
-using LauncherBack.Controllers.Utilisateur;
 using LauncherBack.Helpers;
 using log4net;
 using Microsoft.AspNetCore.Mvc;
@@ -22,17 +21,16 @@ namespace LauncherBack.Controllers.Social
         ResponseFront responseFront = new ResponseFront();
 
         [HttpPost]
-        [ActionName("RetournerFriendList")]
-        public ResponseFront RetournerFriendList([FromBody] int idAccount)
+        [ActionName("RetrieveFriendList")]
+        public static List<Friend> RetrieveFriendList([FromBody] int idAccount)
         {
-            Bdd bdd = ConnexionBdd.connexionBase();
-            List<User> friendList = new List<User>();
+            Bdd bdd = DataBaseConnection.databaseConnection();
+            List<Friend> friendList = new List<Friend>();
 
-            friendList = bdd.RecupFriendList(idAccount);
+            friendList = bdd.RetrieveFriendListDatabase(idAccount);
+            log.Debug(friendList);
 
-            responseFront.response = friendList;
-
-            return responseFront;
+            return friendList;
         }
 
     }

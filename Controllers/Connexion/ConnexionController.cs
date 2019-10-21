@@ -18,11 +18,11 @@ namespace LauncherBack.Controllers.Connexion
         ResponseFront responseFront = new ResponseFront();
 
         [HttpPost]
-        [ActionName("Connexion")]
-        public ResponseFront Connexion([FromBody] RequestFrontConnexion request)
+        [ActionName("Connection")]
+        public ResponseFront Connection([FromBody] RequestFrontConnexion request)
         {
-            Bdd bdd = ConnexionBdd.connexionBase();
-            Bannissement bannissement = new Bannissement();
+            Bdd bdd = DataBaseConnection.databaseConnection();
+            Banishment banishment = new Banishment();
 
             string mdpCrypt = ShaHash.GetShaHash(request.password);
             string concatPasswordKeys = String.Concat(CONST.KEY_CRYPTAGE, mdpCrypt, CONST.KEY_CRYPTAGE);
@@ -32,7 +32,7 @@ namespace LauncherBack.Controllers.Connexion
 
             try
             {
-                int exist = bdd.Connexion(request);
+                int exist = bdd.Connection(request);
 
                 if(exist == 0)
                 {
@@ -42,25 +42,25 @@ namespace LauncherBack.Controllers.Connexion
                     return responseFront;
                 }
 
-                int idAccount = bdd.RecupIdAccount(request);
+                int idAccount = bdd.RetrieveIdAccount(request);
 
-                bannissement = bdd.TesterBannissementUtilisateur(idAccount);
+                banishment = bdd.TestIfUserBan(idAccount);
 
-                bannissement.finForm = bannissement.fin.ToString("dd.MM.yyyy-HH:mm:ss");
+                banishment.endFormalize = banishment.end.ToString("dd.MM.yyyy-HH:mm:ss");
 
-                if (bannissement.hasBanned)
+                if (banishment.hasBanned)
                 {
                     log.Info(MSG.COMPTE_BANNI);
                     responseFront.hasError = true;
-                    responseFront.response = bannissement;
+                    responseFront.response = banishment;
                     return responseFront;
                 }
                 
-                string tokenClient = generationToken(CONST.LONGUEUR_TOKEN);
-                string tokenServer = generationToken(CONST.LONGUEUR_TOKEN);
+                string tokenClient = generationToken(CONST.TOKEN_SIZE);
+                string tokenServer = generationToken(CONST.TOKEN_SIZE);
 
                 bdd.InsertToken(idAccount, tokenServer, tokenClient);
-                bdd.PassageEnLigne(idAccount);
+                bdd.NowOnline(idAccount);
 
                 log.Info("Utilisateur #" + idAccount + " vient de connecter");
 

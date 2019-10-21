@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using LauncherBack.Controllers.Connexion;
+using LauncherBack.Controllers.Social;
 using LauncherBack.Helpers;
 using log4net;
 using Microsoft.AspNetCore.Mvc;
@@ -22,25 +23,26 @@ namespace LauncherBack.Controllers.Utilisateur
         ResponseFront responseFront = new ResponseFront();
 
         [HttpPost]
-        [ActionName("RetournerUtilisateur")]
+        [ActionName("RetrieveUser")]
         public ResponseFront Connexion([FromBody] RequestFrontUtilisateur request)
         {
-            Bdd bdd = ConnexionBdd.connexionBase();
-            User utilisateur = new User();
+            Bdd bdd = DataBaseConnection.databaseConnection();
+            User user = new User();
 
-            int idAccount = bdd.RecupIdUtilisateur(request);
+            int idAccount = bdd.RetrieveUserId(request);
 
-            utilisateur = bdd.RecupUtilisateur(idAccount);           
+            user = bdd.RetrieveUser(idAccount);
+            user.friendList = FriendListController.RetrieveFriendList(idAccount);
 
-            if(utilisateur.pseudo == null)
+            if(user.nickname == null)
             {
                 responseFront.hasError = true;
                 responseFront.error = "Pas d'utilisateur correspond à se token";
                 return responseFront;
             }
 
-            log.Info("Récupération des informations du joueur " + utilisateur.pseudo);
-            responseFront.response = utilisateur;
+            log.Info("Récupération des informations du joueur " + user.nickname);
+            responseFront.response = user;
             return responseFront;
         }
 
