@@ -74,7 +74,7 @@ namespace LauncherBack.Helpers
             }
             catch (MySqlException ex)
             {
-                Console.WriteLine(ex.Message);
+                log.Error(ex);
                 return false;
             }
         }
@@ -84,117 +84,156 @@ namespace LauncherBack.Helpers
         //ACCOUNT EXIST
         public int Connection(RequestFrontConnexion request)
         {
-            string queryConnexion = nameBdd.connection(request);
-            int Count = 0;
-
-            if (this.OpenConnection() == true)
+            log.Info("api.Connection ...");
+            try
             {
-                //Create Mysql Command
-                MySqlCommand cmd = new MySqlCommand(queryConnexion, connection);
+                string queryConnexion = nameBdd.connection(request);
+                int Count = 0;
 
-                //ExecuteScalar will return one value
-                Count = int.Parse(cmd.ExecuteScalar().ToString());
+                if (this.OpenConnection() == true)
+                {
+                    //Create Mysql Command
+                    MySqlCommand cmd = new MySqlCommand(queryConnexion, connection);
 
-                //close Connection
-                this.CloseConnection();
+                    //ExecuteScalar will return one value
+                    Count = int.Parse(cmd.ExecuteScalar().ToString());
 
-                return Count;
-            }
-            else
+                    //close Connection
+                    this.CloseConnection();
+
+                    return Count;
+                }
+                else
+                {
+                    return Count;
+                }
+            }catch(Exception ex)
             {
-                return Count;
-            }
+                log.Error(ex);
+                return 0;
+            }            
         }
 
         //RECUP ID ACCOUNT
         public int RetrieveIdAccount(RequestFrontConnexion request)
         {
-            string queryRecupID = nameBdd.retrieveUserIdConnection(request);
-            int id = 0;
+            log.Info("api.CONNECTION.RetrieveIdAccount ...");
 
-            if (this.OpenConnection() == true)
+            try
             {
-                MySqlCommand cmd2 = new MySqlCommand(queryRecupID, connection);
-                MySqlDataReader dataReader = cmd2.ExecuteReader();
+                string queryRecupID = nameBdd.retrieveUserIdConnection(request);
+                int id = 0;
 
-                while (dataReader.Read())
+                if (this.OpenConnection() == true)
                 {
-                    id = nameBdd.retrieveFieldAccountIdConnection(dataReader);
+                    MySqlCommand cmd2 = new MySqlCommand(queryRecupID, connection);
+                    MySqlDataReader dataReader = cmd2.ExecuteReader();
+
+                    while (dataReader.Read())
+                    {
+                        id = nameBdd.retrieveFieldAccountIdConnection(dataReader);
+                    }
+
+                    dataReader.Close();
+
+                    this.CloseConnection();
+
+                    return id;
                 }
-
-                dataReader.Close();
-
-                this.CloseConnection();
-
-                return id;
-            } else
+                else
+                {
+                    return 0;
+                }
+            }
+            catch (Exception ex)
             {
+                log.Error(ex);
                 return 0;
             }
-
-            
         }
 
         //INSERT TOKEN
         public void InsertToken(int idAccount, string tokenServer, string tokenClient)
         {
-            string queryInsertToken = nameBdd.addToken(idAccount, tokenServer, tokenClient);
+            log.Info("api.CONNECTION.InsertToken ...");
 
-            if (this.OpenConnection() == true)
+            try
             {
-                MySqlCommand cmd = new MySqlCommand(queryInsertToken, connection);
-                cmd.ExecuteNonQuery();
-                this.CloseConnection();
-            }
-            else
+                string queryInsertToken = nameBdd.addToken(idAccount, tokenServer, tokenClient);
+
+                if (this.OpenConnection() == true)
+                {
+                    MySqlCommand cmd = new MySqlCommand(queryInsertToken, connection);
+                    cmd.ExecuteNonQuery();
+                    this.CloseConnection();
+                }
+            }catch (Exception ex)
             {
+                log.Error(ex);
             }
+
         }
 
         //PASSAGE EN LIGNE
         public void NowOnline(int idAccount)
         {
-            string queryPassageEnLigne = nameBdd.nowOnline(idAccount);
+            log.Info("api.CONNECTION.NowOnline ...");
 
-            if (this.OpenConnection() == true)
+            try
             {
-                MySqlCommand cmd = new MySqlCommand(queryPassageEnLigne, connection);
-                cmd.ExecuteNonQuery();
-                this.CloseConnection();
-            }
-            else
+                string queryPassageEnLigne = nameBdd.nowOnline(idAccount);
+
+                if (this.OpenConnection() == true)
+                {
+                    MySqlCommand cmd = new MySqlCommand(queryPassageEnLigne, connection);
+                    cmd.ExecuteNonQuery();
+                    this.CloseConnection();
+                }
+            }catch (Exception ex)
             {
+                log.Error(ex);
             }
+
         }
 
         public Banishment TestIfUserBan(int idAccount)
         {
-            Banishment banishment = new Banishment();
+            log.Info("api.CONNECTION.TestIfUserBan ...");
 
-            string queryIfBanned = nameBdd.testIfUserBan(idAccount);
-
-            if (this.OpenConnection() == true)
+            try
             {
-                MySqlCommand cmd = new MySqlCommand(queryIfBanned, connection);
-                MySqlDataReader dataReader = cmd.ExecuteReader();
+                Banishment banishment = new Banishment();
 
-                while (dataReader.Read())
+                string queryIfBanned = nameBdd.testIfUserBan(idAccount);
+
+                if (this.OpenConnection() == true)
                 {
-                    banishment.hasBanned = true;
-                    banishment.start = nameBdd.banishmentStart(dataReader);
-                    banishment.during = nameBdd.banishmentDuring(dataReader);
-                    banishment.end = nameBdd.banishmentEnd(dataReader);
-                    banishment.reason = nameBdd.banishmentReason(dataReader);
+                    MySqlCommand cmd = new MySqlCommand(queryIfBanned, connection);
+                    MySqlDataReader dataReader = cmd.ExecuteReader();
+
+                    while (dataReader.Read())
+                    {
+                        banishment.hasBanned = true;
+                        banishment.start = nameBdd.banishmentStart(dataReader);
+                        banishment.during = nameBdd.banishmentDuring(dataReader);
+                        banishment.end = nameBdd.banishmentEnd(dataReader);
+                        banishment.reason = nameBdd.banishmentReason(dataReader);
+                    }
+
+                    dataReader.Close();
+
+                    this.CloseConnection();
+                    return banishment;
                 }
-
-                dataReader.Close();
-
-                this.CloseConnection();
-                return banishment;
+                else
+                {
+                    return banishment;
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return banishment;
+                log.Error(ex);
+                return null;
             }
         }
 
@@ -204,69 +243,89 @@ namespace LauncherBack.Helpers
 
         public bool Registration(RequestFrontInscription request)
         {
-            string queryAddAccount = nameBdd.registrationAddAccount(request);
+            log.Info("api.INSCRIPTION.Registration ...");
 
-            string quertRecupIdAccount = nameBdd.registrationRecupIdAccount(request);
-
-            int id = 0;
-            bool isRegistered = false;
-
-            if (this.OpenConnection() == true)
+            try
             {
-                MySqlCommand cmd = new MySqlCommand(queryAddAccount, connection);
-                cmd.ExecuteNonQuery();
+                string queryAddAccount = nameBdd.registrationAddAccount(request);
 
-                MySqlCommand recupId = new MySqlCommand(quertRecupIdAccount, connection);
-                recupId.ExecuteNonQuery();
-                MySqlDataReader dataReader = recupId.ExecuteReader();
+                string quertRecupIdAccount = nameBdd.registrationRecupIdAccount(request);
 
-                while (dataReader.Read())
+                int id = 0;
+                bool isRegistered = false;
+
+                if (this.OpenConnection() == true)
                 {
-                    id = int.Parse(dataReader["MAX_ID"].ToString());
+                    MySqlCommand cmd = new MySqlCommand(queryAddAccount, connection);
+                    cmd.ExecuteNonQuery();
+
+                    MySqlCommand recupId = new MySqlCommand(quertRecupIdAccount, connection);
+                    recupId.ExecuteNonQuery();
+                    MySqlDataReader dataReader = recupId.ExecuteReader();
+
+                    while (dataReader.Read())
+                    {
+                        id = int.Parse(dataReader["MAX_ID"].ToString());
+                    }
+
+                    dataReader.Close();
+
+                    string queryAddUtilisateur = nameBdd.registrationAddUser(id, request);
+
+                    MySqlCommand cmd2 = new MySqlCommand(queryAddUtilisateur, connection);
+                    cmd2.ExecuteNonQuery();
+
+                    this.CloseConnection();
+
+                    return isRegistered = true;
+
                 }
-
-                dataReader.Close();
-
-                string queryAddUtilisateur = nameBdd.registrationAddUser(id, request);
-
-                MySqlCommand cmd2 = new MySqlCommand(queryAddUtilisateur, connection);
-                cmd2.ExecuteNonQuery();
-
-                this.CloseConnection();
-
-                return isRegistered = true;
-
+                else
+                {
+                    return isRegistered;
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return isRegistered;
+                log.Error(ex);
+                return false;
             }
         }
 
         public bool TestIfEmailExist(string email)
         {
-            string queryEmailExist = nameBdd.testIfEmailExist(email);
+            log.Info("api.INSCRIPTION.TestIfEmailExist ...");
 
-            bool exist = false;
-
-            if (this.OpenConnection() == true)
+            try
             {
-                MySqlCommand cmd = new MySqlCommand(queryEmailExist, connection);
+                string queryEmailExist = nameBdd.testIfEmailExist(email);
 
+                bool exist = false;
 
-                if (int.Parse(cmd.ExecuteScalar().ToString()) == 1)
+                if (this.OpenConnection() == true)
                 {
-                    exist = true;
+                    MySqlCommand cmd = new MySqlCommand(queryEmailExist, connection);
+
+
+                    if (int.Parse(cmd.ExecuteScalar().ToString()) == 1)
+                    {
+                        exist = true;
+                    }
+
+                    this.CloseConnection();
+                }
+                else
+                {
+                    Console.WriteLine(MSG.BDD_ERREUR_CONNEXION_BDD);
                 }
 
-                this.CloseConnection();
+                return exist;
             }
-            else
+            catch (Exception ex)
             {
-                Console.WriteLine(MSG.BDD_ERREUR_CONNEXION_BDD);
+                log.Error(ex);
+                return false;
             }
-
-            return exist;
         }
 
         #endregion
@@ -274,48 +333,66 @@ namespace LauncherBack.Helpers
         #region CONFIGURATION
         public List<String> RetrieveListOfForbiddenWord()
         {
-            string queryRecupListeMotsInteerdits = nameBdd.retrieveForbiddenWordList();
+            log.Info("api.CONFIGURATION.RetrieveListOfForbiddenWord ...");
 
-            List<String> forbiddenWordList = new List<string>();
-
-            if (this.OpenConnection() == true)
+            try
             {
-                MySqlCommand cmd2 = new MySqlCommand(queryRecupListeMotsInteerdits, connection);
-                MySqlDataReader dataReader = cmd2.ExecuteReader();
+                string queryRecupListeMotsInteerdits = nameBdd.retrieveForbiddenWordList();
 
-                while (dataReader.Read())
+                List<String> forbiddenWordList = new List<string>();
+
+                if (this.OpenConnection() == true)
                 {
-                    forbiddenWordList.Add(nameBdd.fieldForbiddenWord(dataReader));
+                    MySqlCommand cmd2 = new MySqlCommand(queryRecupListeMotsInteerdits, connection);
+                    MySqlDataReader dataReader = cmd2.ExecuteReader();
+
+                    while (dataReader.Read())
+                    {
+                        forbiddenWordList.Add(nameBdd.fieldForbiddenWord(dataReader));
+                    }
+
+                    dataReader.Close();
+
+                    this.CloseConnection();
+
+                    return forbiddenWordList;
                 }
-
-                dataReader.Close();
-
-                this.CloseConnection();
-
-                return forbiddenWordList;
+                else
+                {
+                    return null;
+                }
             }
-            else
+            catch (Exception ex)
             {
+                log.Error(ex);
                 return null;
             }
-
-
         }
         public bool InsertForbiddenWord(string motInterdit)
         {
-            string queryAddMotInterdit = nameBdd.insertForbiddenWord(motInterdit);
+            log.Info("api.CONFIGURATION.InsertForbiddenWord ...");
 
-            if (this.OpenConnection() == true)
+            try
             {
-                MySqlCommand cmd = new MySqlCommand(queryAddMotInterdit, connection);
-                cmd.ExecuteNonQuery();
-                this.CloseConnection();
+                string queryAddMotInterdit = nameBdd.insertForbiddenWord(motInterdit);
 
-                return  true;
+                if (this.OpenConnection() == true)
+                {
+                    MySqlCommand cmd = new MySqlCommand(queryAddMotInterdit, connection);
+                    cmd.ExecuteNonQuery();
+                    this.CloseConnection();
+
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return  false;
+                log.Error(ex);
+                return false;
             }
         }
         #endregion
@@ -323,122 +400,154 @@ namespace LauncherBack.Helpers
         #region Utilisateur
         public int RetrieveUserId(RequestFrontUtilisateur request)
         {
-            string queryRecupIdUtilisateur = nameBdd.retrieveUserID(request);
+            log.Info("api.UTILISATEUR.RetrieveUserId ...");
 
-            int idAccount = 0;
-
-            if (this.OpenConnection() == true)
+            try
             {
-                MySqlCommand cmd = new MySqlCommand(queryRecupIdUtilisateur, connection);
-                MySqlDataReader dataReader = cmd.ExecuteReader();
+                string queryRecupIdUtilisateur = nameBdd.retrieveUserID(request);
 
-                while (dataReader.Read())
+                int idAccount = 0;
+
+                if (this.OpenConnection() == true)
                 {
-                    idAccount = nameBdd.retrieveUserIdInt(dataReader);
+                    MySqlCommand cmd = new MySqlCommand(queryRecupIdUtilisateur, connection);
+                    MySqlDataReader dataReader = cmd.ExecuteReader();
+
+                    while (dataReader.Read())
+                    {
+                        idAccount = nameBdd.retrieveUserIdInt(dataReader);
+                    }
+
+                    dataReader.Close();
+
+                    this.CloseConnection();
+                    return idAccount;
                 }
-
-                dataReader.Close();
-
-                this.CloseConnection();
-                return idAccount;
+                else
+                {
+                    return idAccount;
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return idAccount;
+                log.Error(ex);
+                return 0;
             }
         }
 
         public User RetrieveUser(int idAccount)
         {
-            string queryRecuperationUtilisateur = nameBdd.retrieveUser(idAccount);
+            log.Info("api.UTILISATEUR.RetrieveUser ...");
 
-            User user = new User();
-
-            if (this.OpenConnection() == true)
+            try
             {
-                MySqlCommand cmd2 = new MySqlCommand(queryRecuperationUtilisateur, connection);
-                MySqlDataReader dataReader2 = cmd2.ExecuteReader();
+                string queryRecuperationUtilisateur = nameBdd.retrieveUser(idAccount);
 
-                while (dataReader2.Read())
+                User user = new User();
+
+                if (this.OpenConnection() == true)
                 {
-                    user.nickname = nameBdd.retrieveNicknameUser(dataReader2);
-                    switch (nameBdd.retrieveStatusUser(dataReader2))
+                    MySqlCommand cmd2 = new MySqlCommand(queryRecuperationUtilisateur, connection);
+                    MySqlDataReader dataReader2 = cmd2.ExecuteReader();
+
+                    while (dataReader2.Read())
                     {
-                        case 1:
-                            user.status = CONST.OFFLINE;
-                            break;
-                        case 2:
-                            user.status = CONST.ONLINE;
-                            break;
-                        case 3:
-                            user.status = CONST.ABSENT;
-                            break;
-                        case 4:
-                            user.status = CONST.BUSY;
-                            break;
-                        case 5:
-                            user.status = CONST.INVISIBLE;
-                            break;
-                        default:
-                            break;
+                        user.nickname = nameBdd.retrieveNicknameUser(dataReader2);
+                        switch (nameBdd.retrieveStatusUser(dataReader2))
+                        {
+                            case 1:
+                                user.status = CONST.OFFLINE;
+                                break;
+                            case 2:
+                                user.status = CONST.ONLINE;
+                                break;
+                            case 3:
+                                user.status = CONST.ABSENT;
+                                break;
+                            case 4:
+                                user.status = CONST.BUSY;
+                                break;
+                            case 5:
+                                user.status = CONST.INVISIBLE;
+                                break;
+                            default:
+                                break;
+                        }
                     }
+
+                    dataReader2.Close();
+                    this.CloseConnection();
+
+                    return user;
                 }
-
-                dataReader2.Close();
-                this.CloseConnection();
-
-                return user;
-            } else
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception ex)
             {
+                log.Error(ex);
                 return null;
             }
-            }
+        }
 
         
         public void BanningUser(DateTime startDate, int during, string reason, int idAccount)
         {
-            DateTime dateFin = startDate.AddDays(during);
-            string queryBannirUtilisateur = nameBdd.banUser(idAccount, startDate, during, dateFin, reason);
+            log.Info("api.UTILISATEUR.BanningUser ...");
 
-            if (this.OpenConnection() == true)
+            try
             {
-                MySqlCommand cmd = new MySqlCommand(queryBannirUtilisateur, connection);
-                cmd.ExecuteNonQuery();
-                this.CloseConnection();
+                DateTime dateFin = startDate.AddDays(during);
+                string queryBannirUtilisateur = nameBdd.banUser(idAccount, startDate, during, dateFin, reason);
+
+                if (this.OpenConnection() == true)
+                {
+                    MySqlCommand cmd = new MySqlCommand(queryBannirUtilisateur, connection);
+                    cmd.ExecuteNonQuery();
+                    this.CloseConnection();
+                }
             }
-            else
+            catch (Exception ex)
             {
+                log.Error(ex);
             }
+
         }
         #endregion
 
         #region Social
         public List<Friend> RetrieveFriendListDatabase(int idAccount)
         {
-            string queryRecupIdFriend = nameBdd.retrieveIdAccountFriend(idAccount);
+            log.Info("api.SOCIAL.RetrieveFriendListDatabase ...");
 
-            
-            List<Friend> friendList = new List<Friend>();
-            List<int> friendsIdList = new List<int>();
-
-            if (this.OpenConnection() == true)
+            try
             {
-                //On récupère les ID des amis
-                MySqlCommand cmd2 = new MySqlCommand(queryRecupIdFriend, connection);
-                MySqlDataReader dataReader = cmd2.ExecuteReader();
+                string queryRecupIdFriend = nameBdd.retrieveIdAccountFriend(idAccount);
 
-                while (dataReader.Read())
+
+                List<Friend> friendList = new List<Friend>();
+                List<int> friendsIdList = new List<int>();
+
+                if (this.OpenConnection() == true)
                 {
-                    friendsIdList.Add(nameBdd.retrieveIdFriend(dataReader));
-                }
+                    //On récupère les ID des amis
+                    MySqlCommand cmd2 = new MySqlCommand(queryRecupIdFriend, connection);
+                    MySqlDataReader dataReader = cmd2.ExecuteReader();
 
-                dataReader.Close();
+                    while (dataReader.Read())
+                    {
+                        friendsIdList.Add(nameBdd.retrieveIdFriend(dataReader));
+                    }
 
-                //On récupère les infos des amis
+                    dataReader.Close();
 
-                for (int i = 0; i < friendsIdList.Count; i++)
-                {
-                    string queryRecupInfosFriends = nameBdd.retrieveInfoFriends(friendsIdList, i);
+                    //On récupère les infos des amis
+
+                    for (int i = 0; i < friendsIdList.Count; i++)
+                    {
+                        string queryRecupInfosFriends = nameBdd.retrieveInfoFriends(friendsIdList, i);
 
                         MySqlCommand cmdQueryUser = new MySqlCommand(queryRecupInfosFriends, connection);
                         MySqlDataReader dataReaderUser = cmdQueryUser.ExecuteReader();
@@ -454,17 +563,22 @@ namespace LauncherBack.Helpers
                         }
 
                         dataReaderUser.Close();
+                    }
+
+                    this.CloseConnection();
+
+                    return friendList;
                 }
-
-                this.CloseConnection();
-
-                return friendList;
+                else
+                {
+                    return friendList;
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return friendList;
+                log.Error(ex);
+                return null;
             }
-
 
         }
 
@@ -473,126 +587,158 @@ namespace LauncherBack.Helpers
         #region GAME LIST
         public List<Game> RetrieveGameList()
         {
-            List<Game> gameList = new List<Game>();
-            
+            log.Info("api.GAME_LIST.RetrieveGameList ...");
 
-            string queryRetrieveGameList = nameBdd.retrieveGameList();
-
-            if (this.OpenConnection() == true)
+            try
             {
-                MySqlCommand cmd = new MySqlCommand(queryRetrieveGameList, connection);
-                MySqlDataReader dataReader = cmd.ExecuteReader();
+                List<Game> gameList = new List<Game>();
 
-                while (dataReader.Read())
+
+                string queryRetrieveGameList = nameBdd.retrieveGameList();
+
+                if (this.OpenConnection() == true)
                 {
-                    Game game = new Game();
+                    MySqlCommand cmd = new MySqlCommand(queryRetrieveGameList, connection);
+                    MySqlDataReader dataReader = cmd.ExecuteReader();
 
-                    game.id = nameBdd.retrieveIdGame(dataReader);
-                    game.title = nameBdd.retrieveTitleGame(dataReader);
-                    game.price = 59.90;
-
-                    gameList.Add(game);
-                }
-
-                dataReader.Close();
-
-                this.CloseConnection();
-                return gameList;
-            }
-            else
-            {
-                return null;
-            }
-        }
-        public List<Game> RetrieveUserGameList(int idAccount)
-        {
-            List<Game> userGameList = new List<Game>();
-            List<int> userGameIdList = new List<int>();
-
-            string queryRetrieveUserGameList = nameBdd.retrieveGameListUser(idAccount);
-
-            if (this.OpenConnection() == true)
-            {
-                //On récupère les ID des amis
-                MySqlCommand cmd2 = new MySqlCommand(queryRetrieveUserGameList, connection);
-                MySqlDataReader dataReader = cmd2.ExecuteReader();
-
-                while (dataReader.Read())
-                {
-                    userGameIdList.Add(nameBdd.retrieveFieldIdGame(dataReader));
-                }
-
-                dataReader.Close();
-
-                //On récupère les infos des amis
-
-                for (int i = 0; i < userGameIdList.Count; i++)
-                {
-                    string queryRecupInfoGame = nameBdd.retrieveGameInfos(userGameIdList, i);
-
-                    MySqlCommand cmdQueryUser = new MySqlCommand(queryRecupInfoGame, connection);
-                    MySqlDataReader dataReaderUser = cmdQueryUser.ExecuteReader();
-
-                    while (dataReaderUser.Read())
+                    while (dataReader.Read())
                     {
                         Game game = new Game();
 
-                        game.title = nameBdd.retrieveNameGame(dataReaderUser);
+                        game.id = nameBdd.retrieveIdGame(dataReader);
+                        game.title = nameBdd.retrieveTitleGame(dataReader);
+                        game.price = 59.90;
 
-                        userGameList.Add(game);
+                        gameList.Add(game);
                     }
 
-                    dataReaderUser.Close();
+                    dataReader.Close();
+
+                    this.CloseConnection();
+                    return gameList;
                 }
-
-                this.CloseConnection();
-
-                return userGameList;
+                else
+                {
+                    return null;
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return userGameList;
+                log.Error(ex);
+                return null;
             }
+
+        }
+        public List<Game> RetrieveUserGameList(int idAccount)
+        {
+            log.Info("api.GAME_LIST.RetrieveUserGameList ...");
+
+            try
+            {
+                List<Game> userGameList = new List<Game>();
+                List<int> userGameIdList = new List<int>();
+
+                string queryRetrieveUserGameList = nameBdd.retrieveGameListUser(idAccount);
+
+                if (this.OpenConnection() == true)
+                {
+                    //On récupère les ID des amis
+                    MySqlCommand cmd2 = new MySqlCommand(queryRetrieveUserGameList, connection);
+                    MySqlDataReader dataReader = cmd2.ExecuteReader();
+
+                    while (dataReader.Read())
+                    {
+                        userGameIdList.Add(nameBdd.retrieveFieldIdGame(dataReader));
+                    }
+
+                    dataReader.Close();
+
+                    //On récupère les infos des amis
+
+                    for (int i = 0; i < userGameIdList.Count; i++)
+                    {
+                        string queryRecupInfoGame = nameBdd.retrieveGameInfos(userGameIdList, i);
+
+                        MySqlCommand cmdQueryUser = new MySqlCommand(queryRecupInfoGame, connection);
+                        MySqlDataReader dataReaderUser = cmdQueryUser.ExecuteReader();
+
+                        while (dataReaderUser.Read())
+                        {
+                            Game game = new Game();
+
+                            game.title = nameBdd.retrieveNameGame(dataReaderUser);
+
+                            userGameList.Add(game);
+                        }
+
+                        dataReaderUser.Close();
+                    }
+
+                    this.CloseConnection();
+
+                    return userGameList;
+                }
+                else
+                {
+                    return userGameList;
+                }
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex);
+                return null;
+            }
+
         }
         #endregion
 
         #region NEWS
         public List<News> RetrieveNewsList()
         {
-            List<News> newsList = new List<News>();
+            log.Info("api.NEWS.RetrieveNewsList ...");
 
-
-            string queryRetrieveNewsList = nameBdd.retrieveNewsList();
-
-            if (this.OpenConnection() == true)
+            try
             {
-                MySqlCommand cmd = new MySqlCommand(queryRetrieveNewsList, connection);
-                MySqlDataReader dataReader = cmd.ExecuteReader();
+                List<News> newsList = new List<News>();
 
-                while (dataReader.Read())
+
+                string queryRetrieveNewsList = nameBdd.retrieveNewsList();
+
+                if (this.OpenConnection() == true)
                 {
-                    News news = new News();
-                    Collection<Object> listeFieldsNews = new Collection<object>();
+                    MySqlCommand cmd = new MySqlCommand(queryRetrieveNewsList, connection);
+                    MySqlDataReader dataReader = cmd.ExecuteReader();
 
-                    listeFieldsNews = nameBdd.retrieveFieldsNews(dataReader);
+                    while (dataReader.Read())
+                    {
+                        News news = new News();
+                        Collection<Object> listeFieldsNews = new Collection<object>();
 
-                    news.idNews = int.Parse(listeFieldsNews[0].ToString());
-                    news.titleNews = listeFieldsNews[1].ToString();
-                    news.dateNews = DateTime.Parse(listeFieldsNews[2].ToString()).ToString(CONST.DATE_FORMAT);
-                    news.imageNews = listeFieldsNews[3].ToString();
-                    news.contentNews = listeFieldsNews[4].ToString();
-                    news.categNews = listeFieldsNews[5].ToString();
+                        listeFieldsNews = nameBdd.retrieveFieldsNews(dataReader);
 
-                    newsList.Add(news);
+                        news.idNews = int.Parse(listeFieldsNews[0].ToString());
+                        news.titleNews = listeFieldsNews[1].ToString();
+                        news.dateNews = DateTime.Parse(listeFieldsNews[2].ToString()).ToString(CONST.DATE_FORMAT);
+                        news.imageNews = listeFieldsNews[3].ToString();
+                        news.contentNews = listeFieldsNews[4].ToString();
+                        news.categNews = listeFieldsNews[5].ToString();
+
+                        newsList.Add(news);
+                    }
+
+                    dataReader.Close();
+
+                    this.CloseConnection();
+                    return newsList;
                 }
-
-                dataReader.Close();
-
-                this.CloseConnection();
-                return newsList;
+                else
+                {
+                    return null;
+                }
             }
-            else
+            catch (Exception ex)
             {
+                log.Error(ex);
                 return null;
             }
         }
