@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.ObjectModel;
 
 namespace LauncherBack.Helpers.Config
 {
@@ -46,5 +47,7 @@ namespace LauncherBack.Helpers.Config
         string retrieveGameList();
         int retrieveIdGame(MySqlDataReader dataReader);
         string retrieveTitleGame(MySqlDataReader dataReader);
+        string retrieveNewsList();
+        Collection<Object> retrieveFieldsNews(MySqlDataReader dataReader);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,7 +21,7 @@ namespace LauncherBack.Helpers.Config
         private const string PREFIX_NAME_FIELD = "_";
         //string.format
         #region NS_ACCOUNTS
-            private const string ENTITY_ACCOUNT = "ACCOUNT";
+            private static readonly string ENTITY_ACCOUNT = "ACCOUNT".ToUpper();
             private static readonly string NAME_TABLE_ACCOUNT = String.Format("{0}{1}{2}", PREFIX, PREFIX_NAME_FIELD, ENTITY_ACCOUNT);
             private static readonly string NAME_FIELD_ACCOUNT_ID = String.Format("{0}{1}{2}", ENTITY_ACCOUNT, PREFIX_NAME_FIELD, "ID");
             private static readonly string NAME_FIELD_ACCOUNT_EMAIL = String.Format("{0}{1}{2}", ENTITY_ACCOUNT, PREFIX_NAME_FIELD, "EMAIL");
@@ -28,7 +29,7 @@ namespace LauncherBack.Helpers.Config
         #endregion
 
         #region NS_UTILISATEURS
-            private const string ENTITY_UTILISATEUR = "UTILISATEUR";
+            private static readonly string ENTITY_UTILISATEUR = "UTILISATEUR".ToUpper();
             private static readonly string NAME_TABLE_UTILISATEUR = String.Format("{0}{1}{2}", PREFIX, PREFIX_NAME_FIELD, ENTITY_UTILISATEUR);
             private static readonly string NAME_FIELD_UTILISATEUR_ID = String.Format("{0}{1}{2}", ENTITY_UTILISATEUR, PREFIX_NAME_FIELD, "ID");
             private static readonly string NAME_FIELD_UTILISATEUR_ID_ACCOUNT = String.Format("{0}{1}{2}", ENTITY_UTILISATEUR, PREFIX_NAME_FIELD, "ID_ACCOUNT");
@@ -37,7 +38,7 @@ namespace LauncherBack.Helpers.Config
         #endregion
 
         #region NS_ETATS_UTILISATEUR
-            private const string ENTITY_ETAT_UTILISATEUR = "ETAT_UTILISATEUR";
+            private static readonly string ENTITY_ETAT_UTILISATEUR = "ETAT_UTILISATEUR".ToUpper();
             private static readonly string NAME_TABLE_ETAT_UTILISATEUR = String.Format("{0}{1}{2}", PREFIX, PREFIX_NAME_FIELD, ENTITY_ETAT_UTILISATEUR);
             private static readonly string NAME_FIELD_ETAT_UTILISATEUR_ID = String.Format("{0}{1}{2}", ENTITY_ETAT_UTILISATEUR, PREFIX_NAME_FIELD, "ID");
             private static readonly string NAME_FIELD_ETAT_UTILISATEUR_LIBELLE = String.Format("{0}{1}{2}", ENTITY_ETAT_UTILISATEUR, PREFIX_NAME_FIELD, "LIBELLE");
@@ -45,7 +46,7 @@ namespace LauncherBack.Helpers.Config
         #endregion
 
         #region NS_TOKENS
-            private const string ENTITY_TOKEN = "TOKEN";
+            private static readonly string ENTITY_TOKEN = "TOKEN".ToUpper();
             private static readonly string NAME_TABLE_TOKEN = String.Format("{0}{1}{2}", PREFIX, PREFIX_NAME_FIELD, ENTITY_TOKEN);
             private static readonly string NAME_FIELD_TOKEN_ID = String.Format("{0}{1}{2}", ENTITY_TOKEN, PREFIX_NAME_FIELD, "ID");
             private static readonly string NAME_FIELD_TOKEN_ACCOUNT_ID = String.Format("{0}{1}{2}", ENTITY_TOKEN, PREFIX_NAME_FIELD, "ACCOUNT_ID");
@@ -55,7 +56,7 @@ namespace LauncherBack.Helpers.Config
         #endregion
 
         #region NS_BANNISSEMENTS
-        private const string ENTITY_BANNISSEMENT = "BANNISSEMENT";
+            private static readonly string ENTITY_BANNISSEMENT = "BANNISSEMENT".ToUpper();
             private static readonly string NAME_TABLE_BANNISSEMENT = String.Format("{0}{1}{2}", PREFIX, PREFIX_NAME_FIELD, ENTITY_BANNISSEMENT);
             private static readonly string NAME_FIELD_BANNISSEMENT_ID = String.Format("{0}{1}{2}", ENTITY_BANNISSEMENT, PREFIX_NAME_FIELD, "ID");
             private static readonly string NAME_FIELD_BANNISSEMENT_ACCOUNT = String.Format("{0}{1}{2}", ENTITY_BANNISSEMENT, PREFIX_NAME_FIELD, "ACCOUNT");
@@ -66,14 +67,14 @@ namespace LauncherBack.Helpers.Config
         #endregion
 
         #region NS_JEUX
-        private const string ENTITY_JEU = "JEU";
+            private static readonly string ENTITY_JEU = "JEU".ToUpper();
             private static readonly string NAME_TABLE_JEU = String.Format("{0}{1}{2}", PREFIX, PREFIX_NAME_FIELD, ENTITY_JEU);
             private static readonly string NAME_FIELD_JEU_ID = String.Format("{0}{1}{2}", ENTITY_JEU, PREFIX_NAME_FIELD, "ID");
             private static readonly string NAME_FIELD_JEU_NAME = String.Format("{0}{1}{2}", ENTITY_JEU, PREFIX_NAME_FIELD, "NAME");
         #endregion
 
         #region NS_UTILISATEUR_JEU
-            private const string ENTITY_UTILISATEUR_JEU = "UTILISATEUR_JEU";
+            private static readonly string ENTITY_UTILISATEUR_JEU = "UTILISATEUR_JEU".ToUpper();
             private static readonly string NAME_TABLE_UTILISATEUR_JEU = String.Format("{0}{1}{2}", PREFIX, PREFIX_NAME_FIELD, ENTITY_UTILISATEUR_JEU);
             private static readonly string NAME_FIELD_UTILISATEUR_JEU_ID = String.Format("{0}{1}{2}", ENTITY_UTILISATEUR_JEU, PREFIX_NAME_FIELD, "ID");
             private static readonly string NAME_FIELD_UTILISATEUR_JEU_JEU = String.Format("{0}{1}{2}", ENTITY_UTILISATEUR_JEU, PREFIX_NAME_FIELD, "JEU");
@@ -81,7 +82,7 @@ namespace LauncherBack.Helpers.Config
         #endregion
 
         #region NS_SOCIAL
-            private const string ENTITY_SOCIAL = "SOCIAL";
+            private static readonly string ENTITY_SOCIAL = "SOCIAL".ToUpper();
             private static readonly string NAME_TABLE_SOCIAL = String.Format("{0}{1}{2}", PREFIX, PREFIX_NAME_FIELD, ENTITY_SOCIAL);
             private static readonly string NAME_FIELD_SOCIAL_ID = String.Format("{0}{1}{2}", ENTITY_SOCIAL, PREFIX_NAME_FIELD, "ID");
             private static readonly string NAME_FIELD_SOCIAL_UTILISATEUR_ID = String.Format("{0}{1}{2}", ENTITY_SOCIAL, PREFIX_NAME_FIELD, "UTILISATEUR_ID");
@@ -89,11 +90,31 @@ namespace LauncherBack.Helpers.Config
         #endregion
 
         #region NS_MOTS_iNTERDIS
-            private const string ENTITY_MOT_INTERDIT = "MOT_INTERDIT";
+            private static readonly string ENTITY_MOT_INTERDIT = "MOT_INTERDIT".ToUpper();
             private static readonly string NAME_TABLE_MOT_INTERDIT = String.Format("{0}{1}{2}", PREFIX, PREFIX_NAME_FIELD, ENTITY_MOT_INTERDIT);
             private static readonly string NAME_FIELD_MOT_INTERDIT_ID = String.Format("{0}{1}{2}", ENTITY_MOT_INTERDIT, PREFIX_NAME_FIELD, "ID");
             private static readonly string NAME_FIELD_MOT_INTERDIT_LIBELLE = String.Format("{0}{1}{2}", ENTITY_MOT_INTERDIT, PREFIX_NAME_FIELD, "LIBELLE");
         #endregion
+
+        #region NS_NEWS
+            private static readonly string ENTITY_NEWS = "NEWS".ToUpper();
+            private static readonly string NAME_TABLE_NEWS = String.Format("{0}{1}{2}", PREFIX, PREFIX_NAME_FIELD, ENTITY_NEWS);
+            private static readonly string NAME_FIELD_NEWS_ID = String.Format("{0}{1}{2}", ENTITY_NEWS, PREFIX_NAME_FIELD, "ID");
+            private static readonly string NAME_FIELD_NEWS_TITLE = String.Format("{0}{1}{2}", ENTITY_NEWS, PREFIX_NAME_FIELD, "TITLE");
+            private static readonly string NAME_FIELD_NEWS_DATE = String.Format("{0}{1}{2}", ENTITY_NEWS, PREFIX_NAME_FIELD, "DATE");
+            private static readonly string NAME_FIELD_NEWS_IMAGE = String.Format("{0}{1}{2}", ENTITY_NEWS, PREFIX_NAME_FIELD, "IMAGE");
+            private static readonly string NAME_FIELD_NEWS_CONTENT = String.Format("{0}{1}{2}", ENTITY_NEWS, PREFIX_NAME_FIELD, "CONTENT");
+            private static readonly string NAME_FIELD_NEWS_CATEG = String.Format("{0}{1}{2}", ENTITY_NEWS, PREFIX_NAME_FIELD, "CATEG");
+            private static readonly string NAME_FIELD_NEWS_PUBLISH = String.Format("{0}{1}{2}", ENTITY_NEWS, PREFIX_NAME_FIELD, "PUBLISH");
+        #endregion
+
+        #region NS_NEWS_CATEG
+        private static readonly string ENTITY_NEWS_CATEG = "NEWS_CATEG".ToUpper();
+            private static readonly string NAME_TABLE_NEWS_CATEG = String.Format("{0}{1}{2}", PREFIX, PREFIX_NAME_FIELD, ENTITY_NEWS_CATEG);
+            private static readonly string NAME_FIELD_NEWS_CATEG_ID = String.Format("{0}{1}{2}", ENTITY_NEWS_CATEG, PREFIX_NAME_FIELD, "ID");
+            private static readonly string NAME_FIELD_NEWS_CATEG_LIBELLE = String.Format("{0}{1}{2}", ENTITY_NEWS_CATEG, PREFIX_NAME_FIELD, "LIBELLE");
+        #endregion
+
         #endregion
 
         #region METHODES
@@ -143,7 +164,7 @@ namespace LauncherBack.Helpers.Config
                 idAccount,
                 tokenServer,
                 tokenClient,
-                DateTime.Now.ToString(CONST.DATE_FORMAT));
+                DateTime.Now.ToString(CONST.DATE_TIME_FORMAT));
         }
         public string nowOnline(int idAccount)
         {
@@ -160,7 +181,7 @@ namespace LauncherBack.Helpers.Config
                 NAME_FIELD_BANNISSEMENT_ACCOUNT,
                 idAccount,
                 NAME_FIELD_BANNISSEMENT_DATE_FIN,
-                DateTime.Now.ToString(CONST.DATE_FORMAT));
+                DateTime.Now.ToString(CONST.DATE_TIME_FORMAT));
         }
         public DateTime banishmentStart(MySqlDataReader dataReader)
         {
@@ -252,9 +273,9 @@ namespace LauncherBack.Helpers.Config
                 NAME_FIELD_BANNISSEMENT_DATE_FIN,
                 NAME_FIELD_BANNISSEMENT_RAISON,
                 idAccount,
-                startDate.ToString(CONST.DATE_FORMAT),
+                startDate.ToString(CONST.DATE_TIME_FORMAT),
                 during,
-                dateFin.ToString(CONST.DATE_FORMAT),
+                dateFin.ToString(CONST.DATE_TIME_FORMAT),
                 reason.Replace("'", "''"));
         }
         public string retrieveIdAccountFriend(int idAccount)
@@ -320,6 +341,31 @@ namespace LauncherBack.Helpers.Config
         {
             return dataReader[NAME_FIELD_JEU_NAME].ToString();
         }
+        public string retrieveNewsList()
+        {
+            return String.Format("SELECT * FROM {0}, {1} WHERE {2}.{3} = {4}.{5} AND {6} = 1",
+                NAME_TABLE_NEWS,
+                NAME_TABLE_NEWS_CATEG,
+                NAME_TABLE_NEWS,
+                NAME_FIELD_NEWS_CATEG,
+                NAME_TABLE_NEWS_CATEG,
+                NAME_FIELD_NEWS_CATEG_ID,
+                NAME_FIELD_NEWS_PUBLISH);
+        }
+        public Collection<Object> retrieveFieldsNews(MySqlDataReader dataReader)
+        {
+            Collection<Object> fieldsListe = new Collection<object>();
+
+            fieldsListe.Add(dataReader[NAME_FIELD_NEWS_ID]);
+            fieldsListe.Add(dataReader[NAME_FIELD_NEWS_TITLE]);
+            fieldsListe.Add(dataReader[NAME_FIELD_NEWS_DATE]);
+            fieldsListe.Add(dataReader[NAME_FIELD_NEWS_IMAGE]);
+            fieldsListe.Add(dataReader[NAME_FIELD_NEWS_CONTENT]);
+            fieldsListe.Add(dataReader[NAME_FIELD_NEWS_CATEG_LIBELLE]);
+
+            return fieldsListe;
+        }
+
         #endregion
     }
 }

@@ -9,7 +9,8 @@
 
         public static int WORK_ENV;
 
-        public const string DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
+        public const string DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
+        public const string DATE_FORMAT = "dd.MM.yyyy-HH:mm";
 
         //Liste des status possible pour un joueur
         public const string ONLINE = "En ligne";

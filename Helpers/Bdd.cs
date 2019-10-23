@@ -10,6 +10,8 @@ using CONST_BDD = LauncherBack.Helpers.Config.NameBdd;
 using LauncherBack.Controllers.Social;
 using LauncherBack.Controllers.Games;
 using LauncherBack.Helpers.Config;
+using LauncherBack.Controllers.News;
+using System.Collections.ObjectModel;
 
 namespace LauncherBack.Helpers
 {
@@ -438,8 +440,6 @@ namespace LauncherBack.Helpers
                 {
                     string queryRecupInfosFriends = nameBdd.retrieveInfoFriends(friendsIdList, i);
 
-                    log.Debug(queryRecupInfosFriends);
-
                         MySqlCommand cmdQueryUser = new MySqlCommand(queryRecupInfosFriends, connection);
                         MySqlDataReader dataReaderUser = cmdQueryUser.ExecuteReader();
 
@@ -511,8 +511,6 @@ namespace LauncherBack.Helpers
 
             string queryRetrieveUserGameList = nameBdd.retrieveGameListUser(idAccount);
 
-            log.Debug(queryRetrieveUserGameList);
-
             if (this.OpenConnection() == true)
             {
                 //On récupère les ID des amis
@@ -558,6 +556,47 @@ namespace LauncherBack.Helpers
         }
         #endregion
 
+        #region NEWS
+        public List<News> RetrieveNewsList()
+        {
+            List<News> newsList = new List<News>();
+
+
+            string queryRetrieveNewsList = nameBdd.retrieveNewsList();
+
+            if (this.OpenConnection() == true)
+            {
+                MySqlCommand cmd = new MySqlCommand(queryRetrieveNewsList, connection);
+                MySqlDataReader dataReader = cmd.ExecuteReader();
+
+                while (dataReader.Read())
+                {
+                    News news = new News();
+                    Collection<Object> listeFieldsNews = new Collection<object>();
+
+                    listeFieldsNews = nameBdd.retrieveFieldsNews(dataReader);
+
+                    news.idNews = int.Parse(listeFieldsNews[0].ToString());
+                    news.titleNews = listeFieldsNews[1].ToString();
+                    news.dateNews = DateTime.Parse(listeFieldsNews[2].ToString()).ToString(CONST.DATE_FORMAT);
+                    news.imageNews = listeFieldsNews[3].ToString();
+                    news.contentNews = listeFieldsNews[4].ToString();
+                    news.categNews = listeFieldsNews[5].ToString();
+
+                    newsList.Add(news);
+                }
+
+                dataReader.Close();
+
+                this.CloseConnection();
+                return newsList;
+            }
+            else
+            {
+                return null;
+            }
+        }
+        #endregion
 
     }
 }
