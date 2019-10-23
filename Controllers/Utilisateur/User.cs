@@ -1,4 +1,5 @@
-﻿using LauncherBack.Controllers.Social;
+﻿using LauncherBack.Controllers.Games;
+using LauncherBack.Controllers.Social;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,5 +14,6 @@ namespace LauncherBack.Controllers.Utilisateur
         public string status { get; set; }
 
         public List<Friend> friendList { get; set; }
+        public List<Game> gameList { get; set; }
     }
 }

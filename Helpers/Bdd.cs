@@ -9,6 +9,7 @@ using CONST = LauncherBack.Helpers.Constantes;
 using CONST_BDD = LauncherBack.Helpers.Config.NameBdd;
 using LauncherBack.Controllers.Social;
 using LauncherBack.Controllers.Games;
+using LauncherBack.Helpers.Config;
 
 namespace LauncherBack.Helpers
 {
@@ -17,6 +18,8 @@ namespace LauncherBack.Helpers
         private MySqlConnection connection;
 
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+        private INameBdd nameBdd = new NameBdd();
 
         //Constructor
         public Bdd(string server, string database, string login, string password)
@@ -79,12 +82,7 @@ namespace LauncherBack.Helpers
         //ACCOUNT EXIST
         public int Connection(RequestFrontConnexion request)
         {
-            string queryConnexion = String.Format("SELECT COUNT(*) FROM {0} WHERE {1} = '{2}' AND {3} = '{4}'", 
-                CONST_BDD.NAME_TABLE_ACCOUNT, 
-                CONST_BDD.NAME_FIELD_ACCOUNT_EMAIL, 
-                request.email, 
-                CONST_BDD.NAME_FIELD_ACCOUNT_PASSWORD, 
-                request.password);
+            string queryConnexion = nameBdd.connection(request);
             int Count = 0;
 
             if (this.OpenConnection() == true)
@@ -93,7 +91,7 @@ namespace LauncherBack.Helpers
                 MySqlCommand cmd = new MySqlCommand(queryConnexion, connection);
 
                 //ExecuteScalar will return one value
-                Count = int.Parse(cmd.ExecuteScalar() + "");
+                Count = int.Parse(cmd.ExecuteScalar().ToString());
 
                 //close Connection
                 this.CloseConnection();
@@ -109,13 +107,7 @@ namespace LauncherBack.Helpers
         //RECUP ID ACCOUNT
         public int RetrieveIdAccount(RequestFrontConnexion request)
         {
-            string queryRecupID = String.Format("SELECT {0} FROM {1} WHERE {2} = '{3}' AND {4} = '{5}'", 
-                CONST_BDD.NAME_FIELD_ACCOUNT_ID, 
-                CONST_BDD.NAME_TABLE_ACCOUNT,
-                CONST_BDD.NAME_FIELD_ACCOUNT_EMAIL,
-                request.email,
-                CONST_BDD.NAME_FIELD_ACCOUNT_PASSWORD,
-                request.password);
+            string queryRecupID = nameBdd.retrieveUserIdConnection(request);
             int id = 0;
 
             if (this.OpenConnection() == true)
@@ -125,7 +117,7 @@ namespace LauncherBack.Helpers
 
                 while (dataReader.Read())
                 {
-                    id = int.Parse(dataReader[CONST_BDD.NAME_FIELD_ACCOUNT_ID] + "");
+                    id = nameBdd.retrieveFieldAccountIdConnection(dataReader);
                 }
 
                 dataReader.Close();
@@ -144,16 +136,7 @@ namespace LauncherBack.Helpers
         //INSERT TOKEN
         public void InsertToken(int idAccount, string tokenServer, string tokenClient)
         {
-            string queryInsertToken = String.Format("INSERT INTO {0} ({1},{2},{3},{4}) VALUES ({5}, '{6}', '{7}', '{8}')",
-                CONST_BDD.NAME_TABLE_TOKEN,
-                CONST_BDD.NAME_FIELD_TOKEN_ACCOUNT_ID,
-                CONST_BDD.NAME_FIELD_TOKEN_TOKEN_SERVER,
-                CONST_BDD.NAME_FIELD_TOKEN_TOKEN_CLIENT,
-                CONST_BDD.NAME_FIELD_TOKEN_DATE_CREATION,
-                idAccount,
-                tokenServer, 
-                tokenClient,
-                DateTime.Now.ToString(CONST.DATE_FORMAT));
+            string queryInsertToken = nameBdd.addToken(idAccount, tokenServer, tokenClient);
 
             if (this.OpenConnection() == true)
             {
@@ -169,11 +152,7 @@ namespace LauncherBack.Helpers
         //PASSAGE EN LIGNE
         public void NowOnline(int idAccount)
         {
-            string queryPassageEnLigne = String.Format("UPDATE {0} SET {1} = 2 WHERE {2} = {3}",
-                CONST_BDD.NAME_TABLE_UTILISATEUR,
-                CONST_BDD.NAME_FIELD_UTILISATEUR_ETAT,
-                CONST_BDD.NAME_FIELD_UTILISATEUR_ID_ACCOUNT,
-                idAccount);
+            string queryPassageEnLigne = nameBdd.nowOnline(idAccount);
 
             if (this.OpenConnection() == true)
             {
@@ -190,12 +169,7 @@ namespace LauncherBack.Helpers
         {
             Banishment banishment = new Banishment();
 
-            string queryIfBanned = String.Format("SELECT * FROM {0} WHERE {1} = {2} AND {3} > '{4}'",
-                CONST_BDD.NAME_TABLE_BANNISSEMENT,
-                CONST_BDD.NAME_FIELD_BANNISSEMENT_ACCOUNT,
-                idAccount,
-                CONST_BDD.NAME_FIELD_BANNISSEMENT_DATE_FIN,
-                DateTime.Now.ToString(CONST.DATE_FORMAT));
+            string queryIfBanned = nameBdd.testIfUserBan(idAccount);
 
             if (this.OpenConnection() == true)
             {
@@ -205,10 +179,10 @@ namespace LauncherBack.Helpers
                 while (dataReader.Read())
                 {
                     banishment.hasBanned = true;
-                    banishment.start = DateTime.Parse(dataReader[CONST_BDD.NAME_FIELD_BANNISSEMENT_DATE_DEBUT] + "");
-                    banishment.during = int.Parse(dataReader[CONST_BDD.NAME_FIELD_BANNISSEMENT_DUREE] + "");
-                    banishment.end = DateTime.Parse(dataReader[CONST_BDD.NAME_FIELD_BANNISSEMENT_DATE_FIN] + "");
-                    banishment.reason = dataReader[CONST_BDD.NAME_FIELD_BANNISSEMENT_RAISON] + "";
+                    banishment.start = nameBdd.banishmentStart(dataReader);
+                    banishment.during = nameBdd.banishmentDuring(dataReader);
+                    banishment.end = nameBdd.banishmentEnd(dataReader);
+                    banishment.reason = nameBdd.banishmentReason(dataReader);
                 }
 
                 dataReader.Close();
@@ -228,18 +202,9 @@ namespace LauncherBack.Helpers
 
         public bool Registration(RequestFrontInscription request)
         {
-            string queryAddAccount = String.Format("INSERT INTO {0} ({1}, {2}) VALUES ('{3}', '{4}')",
-                CONST_BDD.NAME_TABLE_ACCOUNT,
-                CONST_BDD.NAME_FIELD_ACCOUNT_EMAIL,
-                CONST_BDD.NAME_FIELD_ACCOUNT_PASSWORD,
-                request.email,
-                request.password);
+            string queryAddAccount = nameBdd.registrationAddAccount(request);
 
-            string quertRecupIdAccount = String.Format("SELECT MAX({0}) as MAX_ID FROM {1} WHERE {2} = '{3}'",
-                CONST_BDD.NAME_FIELD_ACCOUNT_ID,
-                CONST_BDD.NAME_TABLE_ACCOUNT,
-                CONST_BDD.NAME_FIELD_ACCOUNT_EMAIL,
-                request.email);
+            string quertRecupIdAccount = nameBdd.registrationRecupIdAccount(request);
 
             int id = 0;
             bool isRegistered = false;
@@ -255,17 +220,12 @@ namespace LauncherBack.Helpers
 
                 while (dataReader.Read())
                 {
-                    id = int.Parse(dataReader["MAX_ID"] + "");
+                    id = int.Parse(dataReader["MAX_ID"].ToString());
                 }
 
                 dataReader.Close();
 
-                string queryAddUtilisateur = String.Format("INSERT INTO {0} ({1}, {2}) VALUES ({3}, '{4}')",
-                    CONST_BDD.NAME_TABLE_UTILISATEUR,
-                    CONST_BDD.NAME_FIELD_UTILISATEUR_ID_ACCOUNT,
-                    CONST_BDD.NAME_FIELD_UTILISATEUR_PSEUDO,
-                    id,
-                    request.nickname);
+                string queryAddUtilisateur = nameBdd.registrationAddUser(id, request);
 
                 MySqlCommand cmd2 = new MySqlCommand(queryAddUtilisateur, connection);
                 cmd2.ExecuteNonQuery();
@@ -283,10 +243,7 @@ namespace LauncherBack.Helpers
 
         public bool TestIfEmailExist(string email)
         {
-            string queryEmailExist = String.Format("SELECT COUNT(*) FROM {0} WHERE {1} = '{2}'", 
-                CONST_BDD.NAME_TABLE_ACCOUNT, 
-                CONST_BDD.NAME_FIELD_ACCOUNT_EMAIL, 
-                email);
+            string queryEmailExist = nameBdd.testIfEmailExist(email);
 
             bool exist = false;
 
@@ -295,7 +252,7 @@ namespace LauncherBack.Helpers
                 MySqlCommand cmd = new MySqlCommand(queryEmailExist, connection);
 
 
-                if (int.Parse(cmd.ExecuteScalar() + "") == 1)
+                if (int.Parse(cmd.ExecuteScalar().ToString()) == 1)
                 {
                     exist = true;
                 }
@@ -315,8 +272,7 @@ namespace LauncherBack.Helpers
         #region CONFIGURATION
         public List<String> RetrieveListOfForbiddenWord()
         {
-            string queryRecupListeMotsInteerdits = String.Format("SELECT * FROM {0}",
-                CONST_BDD.NAME_TABLE_MOT_INTERDIT);
+            string queryRecupListeMotsInteerdits = nameBdd.retrieveForbiddenWordList();
 
             List<String> forbiddenWordList = new List<string>();
 
@@ -327,7 +283,7 @@ namespace LauncherBack.Helpers
 
                 while (dataReader.Read())
                 {
-                    forbiddenWordList.Add(dataReader[CONST_BDD.NAME_FIELD_MOT_INTERDIT_LIBELLE].ToString());
+                    forbiddenWordList.Add(nameBdd.fieldForbiddenWord(dataReader));
                 }
 
                 dataReader.Close();
@@ -345,10 +301,7 @@ namespace LauncherBack.Helpers
         }
         public bool InsertForbiddenWord(string motInterdit)
         {
-            string queryAddMotInterdit = String.Format("INSERT INTO {0} ({1}) VALUES ('{2}')",
-                CONST_BDD.NAME_TABLE_MOT_INTERDIT,
-                CONST_BDD.NAME_FIELD_MOT_INTERDIT_LIBELLE,
-                motInterdit);
+            string queryAddMotInterdit = nameBdd.insertForbiddenWord(motInterdit);
 
             if (this.OpenConnection() == true)
             {
@@ -368,10 +321,7 @@ namespace LauncherBack.Helpers
         #region Utilisateur
         public int RetrieveUserId(RequestFrontUtilisateur request)
         {
-            string queryRecupIdUtilisateur = String.Format("SELECT * FROM {0} WHERE {1} = '{2}'",
-                CONST_BDD.NAME_TABLE_TOKEN,
-                CONST_BDD.NAME_FIELD_TOKEN_TOKEN_CLIENT,
-                request.token);
+            string queryRecupIdUtilisateur = nameBdd.retrieveUserID(request);
 
             int idAccount = 0;
 
@@ -382,7 +332,7 @@ namespace LauncherBack.Helpers
 
                 while (dataReader.Read())
                 {
-                    idAccount = int.Parse(dataReader[CONST_BDD.NAME_FIELD_TOKEN_ACCOUNT_ID] + "");
+                    idAccount = nameBdd.retrieveUserIdInt(dataReader);
                 }
 
                 dataReader.Close();
@@ -398,10 +348,7 @@ namespace LauncherBack.Helpers
 
         public User RetrieveUser(int idAccount)
         {
-            string queryRecuperationUtilisateur = String.Format("SELECT * FROM {0} WHERE {1} = {2}",
-                CONST_BDD.NAME_TABLE_UTILISATEUR,
-                CONST_BDD.NAME_FIELD_UTILISATEUR_ID_ACCOUNT,
-                idAccount);
+            string queryRecuperationUtilisateur = nameBdd.retrieveUser(idAccount);
 
             User user = new User();
 
@@ -412,8 +359,8 @@ namespace LauncherBack.Helpers
 
                 while (dataReader2.Read())
                 {
-                    user.nickname = dataReader2[CONST_BDD.NAME_FIELD_UTILISATEUR_PSEUDO] + "";
-                    switch (dataReader2[CONST_BDD.NAME_FIELD_UTILISATEUR_ETAT])
+                    user.nickname = nameBdd.retrieveNicknameUser(dataReader2);
+                    switch (nameBdd.retrieveStatusUser(dataReader2))
                     {
                         case 1:
                             user.status = CONST.OFFLINE;
@@ -449,18 +396,7 @@ namespace LauncherBack.Helpers
         public void BanningUser(DateTime startDate, int during, string reason, int idAccount)
         {
             DateTime dateFin = startDate.AddDays(during);
-            string queryBannirUtilisateur = String.Format("INSERT INTO {0} ({1}, {2}, {3}, {4}, {5}) VALUES ({6}, '{7}', {8}, '{9}', '{10}')",
-                CONST_BDD.NAME_TABLE_BANNISSEMENT,
-                CONST_BDD.NAME_FIELD_BANNISSEMENT_ACCOUNT,
-                CONST_BDD.NAME_FIELD_BANNISSEMENT_DATE_DEBUT,
-                CONST_BDD.NAME_FIELD_BANNISSEMENT_DUREE,
-                CONST_BDD.NAME_FIELD_BANNISSEMENT_DATE_FIN,
-                CONST_BDD.NAME_FIELD_BANNISSEMENT_RAISON,
-                idAccount,
-                startDate.ToString(CONST.DATE_FORMAT),
-                during,
-                dateFin.ToString(CONST.DATE_FORMAT),
-                reason.Replace("'", "''")); //TODO : remplacer le système d'échappement caractères
+            string queryBannirUtilisateur = nameBdd.banUser(idAccount, startDate, during, dateFin, reason);
 
             if (this.OpenConnection() == true)
             {
@@ -477,11 +413,7 @@ namespace LauncherBack.Helpers
         #region Social
         public List<Friend> RetrieveFriendListDatabase(int idAccount)
         {
-            string queryRecupIdFriend = String.Format("SELECT {0} FROM {1} WHERE {2} = {3}",
-                CONST_BDD.NAME_FIELD_SOCIAL_APOURAMI_ID,
-                CONST_BDD.NAME_TABLE_SOCIAL,
-                CONST_BDD.NAME_FIELD_SOCIAL_UTILISATEUR_ID,
-                idAccount);
+            string queryRecupIdFriend = nameBdd.retrieveIdAccountFriend(idAccount);
 
             
             List<Friend> friendList = new List<Friend>();
@@ -495,7 +427,7 @@ namespace LauncherBack.Helpers
 
                 while (dataReader.Read())
                 {
-                    friendsIdList.Add(int.Parse(dataReader[CONST_BDD.NAME_FIELD_SOCIAL_APOURAMI_ID].ToString()));
+                    friendsIdList.Add(nameBdd.retrieveIdFriend(dataReader));
                 }
 
                 dataReader.Close();
@@ -504,10 +436,7 @@ namespace LauncherBack.Helpers
 
                 for (int i = 0; i < friendsIdList.Count; i++)
                 {
-                    string queryRecupInfosFriends = String.Format("SELECT * FROM {0} WHERE {1} = {2}",
-                    CONST_BDD.NAME_TABLE_UTILISATEUR,
-                    CONST_BDD.NAME_FIELD_UTILISATEUR_ID_ACCOUNT,
-                    friendsIdList[i]);
+                    string queryRecupInfosFriends = nameBdd.retrieveInfoFriends(friendsIdList, i);
 
                     log.Debug(queryRecupInfosFriends);
 
@@ -518,8 +447,8 @@ namespace LauncherBack.Helpers
                         {
                             Friend friend = new Friend();
 
-                            friend.nickname = dataReaderUser[CONST_BDD.NAME_FIELD_UTILISATEUR_PSEUDO].ToString();
-                            friend.status = dataReaderUser[CONST_BDD.NAME_FIELD_UTILISATEUR_ETAT].ToString();
+                            friend.nickname = nameBdd.retrieveNicknameFriend(dataReaderUser);
+                            friend.status = nameBdd.retrieveStatusFriend(dataReaderUser);
 
                             friendList.Add(friend);
                         }
@@ -547,8 +476,7 @@ namespace LauncherBack.Helpers
             List<Game> gameList = new List<Game>();
             
 
-            string queryRetrieveGameList = String.Format("SELECT * FROM {0}",
-                CONST_BDD.NAME_TABLE_JEU);
+            string queryRetrieveGameList = nameBdd.retrieveGameList();
 
             if (this.OpenConnection() == true)
             {
@@ -559,8 +487,8 @@ namespace LauncherBack.Helpers
                 {
                     Game game = new Game();
 
-                    game.id = int.Parse(dataReader[CONST_BDD.NAME_FIELD_JEU_ID] + "");
-                    game.title = dataReader[CONST_BDD.NAME_FIELD_JEU_NAME] + "";
+                    game.id = nameBdd.retrieveIdGame(dataReader);
+                    game.title = nameBdd.retrieveTitleGame(dataReader);
                     game.price = 59.90;
 
                     gameList.Add(game);
@@ -576,6 +504,60 @@ namespace LauncherBack.Helpers
                 return null;
             }
         }
+        public List<Game> RetrieveUserGameList(int idAccount)
+        {
+            List<Game> userGameList = new List<Game>();
+            List<int> userGameIdList = new List<int>();
+
+            string queryRetrieveUserGameList = nameBdd.retrieveGameListUser(idAccount);
+
+            log.Debug(queryRetrieveUserGameList);
+
+            if (this.OpenConnection() == true)
+            {
+                //On récupère les ID des amis
+                MySqlCommand cmd2 = new MySqlCommand(queryRetrieveUserGameList, connection);
+                MySqlDataReader dataReader = cmd2.ExecuteReader();
+
+                while (dataReader.Read())
+                {
+                    userGameIdList.Add(nameBdd.retrieveFieldIdGame(dataReader));
+                }
+
+                dataReader.Close();
+
+                //On récupère les infos des amis
+
+                for (int i = 0; i < userGameIdList.Count; i++)
+                {
+                    string queryRecupInfoGame = nameBdd.retrieveGameInfos(userGameIdList, i);
+
+                    MySqlCommand cmdQueryUser = new MySqlCommand(queryRecupInfoGame, connection);
+                    MySqlDataReader dataReaderUser = cmdQueryUser.ExecuteReader();
+
+                    while (dataReaderUser.Read())
+                    {
+                        Game game = new Game();
+
+                        game.title = nameBdd.retrieveNameGame(dataReaderUser);
+
+                        userGameList.Add(game);
+                    }
+
+                    dataReaderUser.Close();
+                }
+
+                this.CloseConnection();
+
+                return userGameList;
+            }
+            else
+            {
+                return userGameList;
+            }
+        }
         #endregion
+
+
     }
 }

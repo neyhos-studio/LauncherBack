@@ -3,89 +3,323 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LauncherBack.Controllers.Connexion;
+using LauncherBack.Controllers.Inscription;
+using LauncherBack.Controllers.Utilisateur;
+using MySql.Data.MySqlClient;
+using CONST = LauncherBack.Helpers.Constantes;
+
 
 namespace LauncherBack.Helpers.Config
 {
-    public class NameBdd
+    public class NameBdd : INameBdd
     {
-        public const string PREFIX = "NS";
-        public const string PREFIX_NAME_FIELD = "_";
+        #region CONSTANTES
+        
+        private const string PREFIX = "NS";
+        private const string PREFIX_NAME_FIELD = "_";
         //string.format
         #region NS_ACCOUNTS
             private const string ENTITY_ACCOUNT = "ACCOUNT";
-            public static readonly string NAME_TABLE_ACCOUNT = String.Format("{0}{1}{2}", PREFIX, PREFIX_NAME_FIELD, ENTITY_ACCOUNT);
-            public static readonly string NAME_FIELD_ACCOUNT_ID = String.Format("{0}{1}{2}", ENTITY_ACCOUNT, PREFIX_NAME_FIELD, "ID");
-            public static readonly string NAME_FIELD_ACCOUNT_EMAIL = String.Format("{0}{1}{2}", ENTITY_ACCOUNT, PREFIX_NAME_FIELD, "EMAIL");
-            public static readonly string NAME_FIELD_ACCOUNT_PASSWORD = String.Format("{0}{1}{2}", ENTITY_ACCOUNT, PREFIX_NAME_FIELD, "PASSWORD");
+            private static readonly string NAME_TABLE_ACCOUNT = String.Format("{0}{1}{2}", PREFIX, PREFIX_NAME_FIELD, ENTITY_ACCOUNT);
+            private static readonly string NAME_FIELD_ACCOUNT_ID = String.Format("{0}{1}{2}", ENTITY_ACCOUNT, PREFIX_NAME_FIELD, "ID");
+            private static readonly string NAME_FIELD_ACCOUNT_EMAIL = String.Format("{0}{1}{2}", ENTITY_ACCOUNT, PREFIX_NAME_FIELD, "EMAIL");
+            private static readonly string NAME_FIELD_ACCOUNT_PASSWORD = String.Format("{0}{1}{2}", ENTITY_ACCOUNT, PREFIX_NAME_FIELD, "PASSWORD");
         #endregion
 
         #region NS_UTILISATEURS
             private const string ENTITY_UTILISATEUR = "UTILISATEUR";
-            public static readonly string NAME_TABLE_UTILISATEUR = String.Format("{0}{1}{2}", PREFIX, PREFIX_NAME_FIELD, ENTITY_UTILISATEUR);
-            public static readonly string NAME_FIELD_UTILISATEUR_ID = String.Format("{0}{1}{2}", ENTITY_UTILISATEUR, PREFIX_NAME_FIELD, "ID");
-            public static readonly string NAME_FIELD_UTILISATEUR_ID_ACCOUNT = String.Format("{0}{1}{2}", ENTITY_UTILISATEUR, PREFIX_NAME_FIELD, "ID_ACCOUNT");
-            public static readonly string NAME_FIELD_UTILISATEUR_PSEUDO = String.Format("{0}{1}{2}", ENTITY_UTILISATEUR, PREFIX_NAME_FIELD, "PSEUDO");
-            public static readonly string NAME_FIELD_UTILISATEUR_ETAT = String.Format("{0}{1}{2}", ENTITY_UTILISATEUR, PREFIX_NAME_FIELD, "ETAT");
+            private static readonly string NAME_TABLE_UTILISATEUR = String.Format("{0}{1}{2}", PREFIX, PREFIX_NAME_FIELD, ENTITY_UTILISATEUR);
+            private static readonly string NAME_FIELD_UTILISATEUR_ID = String.Format("{0}{1}{2}", ENTITY_UTILISATEUR, PREFIX_NAME_FIELD, "ID");
+            private static readonly string NAME_FIELD_UTILISATEUR_ID_ACCOUNT = String.Format("{0}{1}{2}", ENTITY_UTILISATEUR, PREFIX_NAME_FIELD, "ID_ACCOUNT");
+            private static readonly string NAME_FIELD_UTILISATEUR_PSEUDO = String.Format("{0}{1}{2}", ENTITY_UTILISATEUR, PREFIX_NAME_FIELD, "PSEUDO");
+            private static readonly string NAME_FIELD_UTILISATEUR_ETAT = String.Format("{0}{1}{2}", ENTITY_UTILISATEUR, PREFIX_NAME_FIELD, "ETAT");
         #endregion
 
         #region NS_ETATS_UTILISATEUR
             private const string ENTITY_ETAT_UTILISATEUR = "ETAT_UTILISATEUR";
-            public static readonly string NAME_TABLE_ETAT_UTILISATEUR = String.Format("{0}{1}{2}", PREFIX, PREFIX_NAME_FIELD, ENTITY_ETAT_UTILISATEUR);
-            public static readonly string NAME_FIELD_ETAT_UTILISATEUR_ID = String.Format("{0}{1}{2}", ENTITY_ETAT_UTILISATEUR, PREFIX_NAME_FIELD, "ID");
-            public static readonly string NAME_FIELD_ETAT_UTILISATEUR_LIBELLE = String.Format("{0}{1}{2}", ENTITY_ETAT_UTILISATEUR, PREFIX_NAME_FIELD, "LIBELLE");
-            public static readonly string NAME_FIELD_ETAT_UTILISATEUR_COLOR = String.Format("{0}{1}{2}", ENTITY_ETAT_UTILISATEUR, PREFIX_NAME_FIELD, "COLOR");
+            private static readonly string NAME_TABLE_ETAT_UTILISATEUR = String.Format("{0}{1}{2}", PREFIX, PREFIX_NAME_FIELD, ENTITY_ETAT_UTILISATEUR);
+            private static readonly string NAME_FIELD_ETAT_UTILISATEUR_ID = String.Format("{0}{1}{2}", ENTITY_ETAT_UTILISATEUR, PREFIX_NAME_FIELD, "ID");
+            private static readonly string NAME_FIELD_ETAT_UTILISATEUR_LIBELLE = String.Format("{0}{1}{2}", ENTITY_ETAT_UTILISATEUR, PREFIX_NAME_FIELD, "LIBELLE");
+            private static readonly string NAME_FIELD_ETAT_UTILISATEUR_COLOR = String.Format("{0}{1}{2}", ENTITY_ETAT_UTILISATEUR, PREFIX_NAME_FIELD, "COLOR");
         #endregion
 
         #region NS_TOKENS
             private const string ENTITY_TOKEN = "TOKEN";
-            public static readonly string NAME_TABLE_TOKEN = String.Format("{0}{1}{2}", PREFIX, PREFIX_NAME_FIELD, ENTITY_TOKEN);
-            public static readonly string NAME_FIELD_TOKEN_ID = String.Format("{0}{1}{2}", ENTITY_TOKEN, PREFIX_NAME_FIELD, "ID");
-            public static readonly string NAME_FIELD_TOKEN_ACCOUNT_ID = String.Format("{0}{1}{2}", ENTITY_TOKEN, PREFIX_NAME_FIELD, "ACCOUNT_ID");
-            public static readonly string NAME_FIELD_TOKEN_TOKEN_SERVER = String.Format("{0}{1}{2}", ENTITY_TOKEN, PREFIX_NAME_FIELD, "TOKEN_SERVER");
-            public static readonly string NAME_FIELD_TOKEN_TOKEN_CLIENT = String.Format("{0}{1}{2}", ENTITY_TOKEN, PREFIX_NAME_FIELD, "TOKEN_CLIENT");
-            public static readonly string NAME_FIELD_TOKEN_DATE_CREATION = String.Format("{0}{1}{2}", ENTITY_TOKEN, PREFIX_NAME_FIELD, "DATE_CREATION");
+            private static readonly string NAME_TABLE_TOKEN = String.Format("{0}{1}{2}", PREFIX, PREFIX_NAME_FIELD, ENTITY_TOKEN);
+            private static readonly string NAME_FIELD_TOKEN_ID = String.Format("{0}{1}{2}", ENTITY_TOKEN, PREFIX_NAME_FIELD, "ID");
+            private static readonly string NAME_FIELD_TOKEN_ACCOUNT_ID = String.Format("{0}{1}{2}", ENTITY_TOKEN, PREFIX_NAME_FIELD, "ACCOUNT_ID");
+            private static readonly string NAME_FIELD_TOKEN_TOKEN_SERVER = String.Format("{0}{1}{2}", ENTITY_TOKEN, PREFIX_NAME_FIELD, "TOKEN_SERVER");
+            private static readonly string NAME_FIELD_TOKEN_TOKEN_CLIENT = String.Format("{0}{1}{2}", ENTITY_TOKEN, PREFIX_NAME_FIELD, "TOKEN_CLIENT");
+            private static readonly string NAME_FIELD_TOKEN_DATE_CREATION = String.Format("{0}{1}{2}", ENTITY_TOKEN, PREFIX_NAME_FIELD, "DATE_CREATION");
         #endregion
 
         #region NS_BANNISSEMENTS
         private const string ENTITY_BANNISSEMENT = "BANNISSEMENT";
-            public static readonly string NAME_TABLE_BANNISSEMENT = String.Format("{0}{1}{2}", PREFIX, PREFIX_NAME_FIELD, ENTITY_BANNISSEMENT);
-            public static readonly string NAME_FIELD_BANNISSEMENT_ID = String.Format("{0}{1}{2}", ENTITY_BANNISSEMENT, PREFIX_NAME_FIELD, "ID");
-            public static readonly string NAME_FIELD_BANNISSEMENT_ACCOUNT = String.Format("{0}{1}{2}", ENTITY_BANNISSEMENT, PREFIX_NAME_FIELD, "ACCOUNT");
-            public static readonly string NAME_FIELD_BANNISSEMENT_DATE_DEBUT = String.Format("{0}{1}{2}", ENTITY_BANNISSEMENT, PREFIX_NAME_FIELD, "DATE_DEBUT");
-            public static readonly string NAME_FIELD_BANNISSEMENT_DUREE = String.Format("{0}{1}{2}", ENTITY_BANNISSEMENT, PREFIX_NAME_FIELD, "DUREE");
-            public static readonly string NAME_FIELD_BANNISSEMENT_DATE_FIN = String.Format("{0}{1}{2}", ENTITY_BANNISSEMENT, PREFIX_NAME_FIELD, "DATE_FIN");
-            public static readonly string NAME_FIELD_BANNISSEMENT_RAISON = String.Format("{0}{1}{2}", ENTITY_BANNISSEMENT, PREFIX_NAME_FIELD, "RAISON");
+            private static readonly string NAME_TABLE_BANNISSEMENT = String.Format("{0}{1}{2}", PREFIX, PREFIX_NAME_FIELD, ENTITY_BANNISSEMENT);
+            private static readonly string NAME_FIELD_BANNISSEMENT_ID = String.Format("{0}{1}{2}", ENTITY_BANNISSEMENT, PREFIX_NAME_FIELD, "ID");
+            private static readonly string NAME_FIELD_BANNISSEMENT_ACCOUNT = String.Format("{0}{1}{2}", ENTITY_BANNISSEMENT, PREFIX_NAME_FIELD, "ACCOUNT");
+            private static readonly string NAME_FIELD_BANNISSEMENT_DATE_DEBUT = String.Format("{0}{1}{2}", ENTITY_BANNISSEMENT, PREFIX_NAME_FIELD, "DATE_DEBUT");
+            private static readonly string NAME_FIELD_BANNISSEMENT_DUREE = String.Format("{0}{1}{2}", ENTITY_BANNISSEMENT, PREFIX_NAME_FIELD, "DUREE");
+            private static readonly string NAME_FIELD_BANNISSEMENT_DATE_FIN = String.Format("{0}{1}{2}", ENTITY_BANNISSEMENT, PREFIX_NAME_FIELD, "DATE_FIN");
+            private static readonly string NAME_FIELD_BANNISSEMENT_RAISON = String.Format("{0}{1}{2}", ENTITY_BANNISSEMENT, PREFIX_NAME_FIELD, "RAISON");
         #endregion
 
         #region NS_JEUX
         private const string ENTITY_JEU = "JEU";
-            public static readonly string NAME_TABLE_JEU = String.Format("{0}{1}{2}", PREFIX, PREFIX_NAME_FIELD, ENTITY_JEU);
-            public static readonly string NAME_FIELD_JEU_ID = String.Format("{0}{1}{2}", ENTITY_JEU, PREFIX_NAME_FIELD, "ID");
-            public static readonly string NAME_FIELD_JEU_NAME = String.Format("{0}{1}{2}", ENTITY_JEU, PREFIX_NAME_FIELD, "NAME");
+            private static readonly string NAME_TABLE_JEU = String.Format("{0}{1}{2}", PREFIX, PREFIX_NAME_FIELD, ENTITY_JEU);
+            private static readonly string NAME_FIELD_JEU_ID = String.Format("{0}{1}{2}", ENTITY_JEU, PREFIX_NAME_FIELD, "ID");
+            private static readonly string NAME_FIELD_JEU_NAME = String.Format("{0}{1}{2}", ENTITY_JEU, PREFIX_NAME_FIELD, "NAME");
         #endregion
 
         #region NS_UTILISATEUR_JEU
             private const string ENTITY_UTILISATEUR_JEU = "UTILISATEUR_JEU";
-            public static readonly string NAME_TABLE_UTILISATEUR_JEU = String.Format("{0}{1}{2}", PREFIX, PREFIX_NAME_FIELD, ENTITY_UTILISATEUR_JEU);
-            public static readonly string NAME_FIELD_UTILISATEUR_JEU_ID = String.Format("{0}{1}{2}", ENTITY_UTILISATEUR_JEU, PREFIX_NAME_FIELD, "ID");
-            public static readonly string NAME_FIELD_UTILISATEUR_JEU_JEU = String.Format("{0}{1}{2}", ENTITY_UTILISATEUR_JEU, PREFIX_NAME_FIELD, "JEU");
-            public static readonly string NAME_FIELD_UTILISATEUR_JEU_UTILISATEUR = String.Format("{0}{1}{2}", ENTITY_UTILISATEUR_JEU, PREFIX_NAME_FIELD, "UTILISATEUR");
+            private static readonly string NAME_TABLE_UTILISATEUR_JEU = String.Format("{0}{1}{2}", PREFIX, PREFIX_NAME_FIELD, ENTITY_UTILISATEUR_JEU);
+            private static readonly string NAME_FIELD_UTILISATEUR_JEU_ID = String.Format("{0}{1}{2}", ENTITY_UTILISATEUR_JEU, PREFIX_NAME_FIELD, "ID");
+            private static readonly string NAME_FIELD_UTILISATEUR_JEU_JEU = String.Format("{0}{1}{2}", ENTITY_UTILISATEUR_JEU, PREFIX_NAME_FIELD, "JEU");
+            private static readonly string NAME_FIELD_UTILISATEUR_JEU_UTILISATEUR = String.Format("{0}{1}{2}", ENTITY_UTILISATEUR_JEU, PREFIX_NAME_FIELD, "UTILISATEUR");
         #endregion
 
         #region NS_SOCIAL
             private const string ENTITY_SOCIAL = "SOCIAL";
-            public static readonly string NAME_TABLE_SOCIAL = String.Format("{0}{1}{2}", PREFIX, PREFIX_NAME_FIELD, ENTITY_SOCIAL);
-            public static readonly string NAME_FIELD_SOCIAL_ID = String.Format("{0}{1}{2}", ENTITY_SOCIAL, PREFIX_NAME_FIELD, "ID");
-            public static readonly string NAME_FIELD_SOCIAL_UTILISATEUR_ID = String.Format("{0}{1}{2}", ENTITY_SOCIAL, PREFIX_NAME_FIELD, "UTILISATEUR_ID");
-            public static readonly string NAME_FIELD_SOCIAL_APOURAMI_ID = String.Format("{0}{1}{2}", ENTITY_SOCIAL, PREFIX_NAME_FIELD, "APOURAMI_ID");
+            private static readonly string NAME_TABLE_SOCIAL = String.Format("{0}{1}{2}", PREFIX, PREFIX_NAME_FIELD, ENTITY_SOCIAL);
+            private static readonly string NAME_FIELD_SOCIAL_ID = String.Format("{0}{1}{2}", ENTITY_SOCIAL, PREFIX_NAME_FIELD, "ID");
+            private static readonly string NAME_FIELD_SOCIAL_UTILISATEUR_ID = String.Format("{0}{1}{2}", ENTITY_SOCIAL, PREFIX_NAME_FIELD, "UTILISATEUR_ID");
+            private static readonly string NAME_FIELD_SOCIAL_APOURAMI_ID = String.Format("{0}{1}{2}", ENTITY_SOCIAL, PREFIX_NAME_FIELD, "APOURAMI_ID");
         #endregion
 
         #region NS_MOTS_iNTERDIS
             private const string ENTITY_MOT_INTERDIT = "MOT_INTERDIT";
-            public static readonly string NAME_TABLE_MOT_INTERDIT = String.Format("{0}{1}{2}", PREFIX, PREFIX_NAME_FIELD, ENTITY_MOT_INTERDIT);
-            public static readonly string NAME_FIELD_MOT_INTERDIT_ID = String.Format("{0}{1}{2}", ENTITY_MOT_INTERDIT, PREFIX_NAME_FIELD, "ID");
-            public static readonly string NAME_FIELD_MOT_INTERDIT_LIBELLE = String.Format("{0}{1}{2}", ENTITY_MOT_INTERDIT, PREFIX_NAME_FIELD, "LIBELLE");
+            private static readonly string NAME_TABLE_MOT_INTERDIT = String.Format("{0}{1}{2}", PREFIX, PREFIX_NAME_FIELD, ENTITY_MOT_INTERDIT);
+            private static readonly string NAME_FIELD_MOT_INTERDIT_ID = String.Format("{0}{1}{2}", ENTITY_MOT_INTERDIT, PREFIX_NAME_FIELD, "ID");
+            private static readonly string NAME_FIELD_MOT_INTERDIT_LIBELLE = String.Format("{0}{1}{2}", ENTITY_MOT_INTERDIT, PREFIX_NAME_FIELD, "LIBELLE");
+        #endregion
         #endregion
 
+        #region METHODES
+        public string retrieveUserID(RequestFrontUtilisateur token)
+        {
+            return String.Format("SELECT * FROM {0} WHERE {1} = '{2}'",
+                NAME_TABLE_TOKEN,
+                NAME_FIELD_TOKEN_TOKEN_CLIENT,
+                token.token);
+        }
+
+        public int retrieveUserIdInt(MySqlDataReader dataReader)
+        {
+            return int.Parse(dataReader[NAME_FIELD_TOKEN_ACCOUNT_ID].ToString());
+        }
+        public string connection(RequestFrontConnexion request)
+        {
+            return String.Format("SELECT COUNT(*) FROM {0} WHERE {1} = '{2}' AND {3} = '{4}'",
+                NAME_TABLE_ACCOUNT,
+                NAME_FIELD_ACCOUNT_EMAIL,
+                request.email,
+                NAME_FIELD_ACCOUNT_PASSWORD,
+                request.password);
+        }
+        public string retrieveUserIdConnection(RequestFrontConnexion request)
+        {
+            return String.Format("SELECT {0} FROM {1} WHERE {2} = '{3}' AND {4} = '{5}'",
+                NAME_FIELD_ACCOUNT_ID,
+                NAME_TABLE_ACCOUNT,
+                NAME_FIELD_ACCOUNT_EMAIL,
+                request.email,
+                NAME_FIELD_ACCOUNT_PASSWORD,
+                request.password);
+        }
+        public int retrieveFieldAccountIdConnection(MySqlDataReader dataReader)
+        {
+            return int.Parse(dataReader[NAME_FIELD_ACCOUNT_ID].ToString());
+        }
+        public string addToken(int idAccount, string tokenServer, string tokenClient)
+        {
+            return String.Format("INSERT INTO {0} ({1},{2},{3},{4}) VALUES ({5}, '{6}', '{7}', '{8}')",
+                NAME_TABLE_TOKEN,
+                NAME_FIELD_TOKEN_ACCOUNT_ID,
+                NAME_FIELD_TOKEN_TOKEN_SERVER,
+                NAME_FIELD_TOKEN_TOKEN_CLIENT,
+                NAME_FIELD_TOKEN_DATE_CREATION,
+                idAccount,
+                tokenServer,
+                tokenClient,
+                DateTime.Now.ToString(CONST.DATE_FORMAT));
+        }
+        public string nowOnline(int idAccount)
+        {
+            return String.Format("UPDATE {0} SET {1} = 2 WHERE {2} = {3}",
+                NAME_TABLE_UTILISATEUR,
+                NAME_FIELD_UTILISATEUR_ETAT,
+                NAME_FIELD_UTILISATEUR_ID_ACCOUNT,
+                idAccount);
+        }
+        public string testIfUserBan(int idAccount)
+        {
+            return String.Format("SELECT * FROM {0} WHERE {1} = {2} AND {3} > '{4}'",
+                NAME_TABLE_BANNISSEMENT,
+                NAME_FIELD_BANNISSEMENT_ACCOUNT,
+                idAccount,
+                NAME_FIELD_BANNISSEMENT_DATE_FIN,
+                DateTime.Now.ToString(CONST.DATE_FORMAT));
+        }
+        public DateTime banishmentStart(MySqlDataReader dataReader)
+        {
+            return DateTime.Parse(dataReader[NAME_FIELD_BANNISSEMENT_DATE_DEBUT].ToString());
+        }
+        public int banishmentDuring(MySqlDataReader dataReader)
+        {
+            return int.Parse(dataReader[NAME_FIELD_BANNISSEMENT_DUREE].ToString());
+        }
+        public DateTime banishmentEnd(MySqlDataReader dataReader)
+        {
+            return DateTime.Parse(dataReader[NAME_FIELD_BANNISSEMENT_DATE_FIN].ToString());
+        }
+        public string banishmentReason(MySqlDataReader dataReader)
+        {
+            return dataReader[NAME_FIELD_BANNISSEMENT_RAISON].ToString();
+        }
+        public string registrationAddAccount(RequestFrontInscription request)
+        {
+            return String.Format("INSERT INTO {0} ({1}, {2}) VALUES ('{3}', '{4}')",
+                NAME_TABLE_ACCOUNT,
+                NAME_FIELD_ACCOUNT_EMAIL,
+                NAME_FIELD_ACCOUNT_PASSWORD,
+                request.email,
+                request.password);
+        }
+        public string registrationRecupIdAccount(RequestFrontInscription request)
+        {
+            return String.Format("SELECT MAX({0}) as MAX_ID FROM {1} WHERE {2} = '{3}'",
+                NAME_FIELD_ACCOUNT_ID,
+                NAME_TABLE_ACCOUNT,
+                NAME_FIELD_ACCOUNT_EMAIL,
+                request.email);
+        }
+        public string registrationAddUser(int idAccount, RequestFrontInscription request)
+        {
+            return String.Format("INSERT INTO {0} ({1}, {2}) VALUES ({3}, '{4}')",
+                    NAME_TABLE_UTILISATEUR,
+                    NAME_FIELD_UTILISATEUR_ID_ACCOUNT,
+                    NAME_FIELD_UTILISATEUR_PSEUDO,
+                    idAccount,
+                    request.nickname);
+        }
+        public string testIfEmailExist(string email)
+        {
+            return String.Format("SELECT COUNT(*) FROM {0} WHERE {1} = '{2}'",
+                NAME_TABLE_ACCOUNT,
+                NAME_FIELD_ACCOUNT_EMAIL,
+                email);
+        }
+        public string retrieveForbiddenWordList()
+        {
+            return String.Format("SELECT * FROM {0}",
+                NAME_TABLE_MOT_INTERDIT);
+        }
+        public string fieldForbiddenWord(MySqlDataReader dataReader)
+        {
+            return dataReader[NAME_FIELD_MOT_INTERDIT_LIBELLE].ToString();
+        }
+        public string insertForbiddenWord(string motInterdit)
+        {
+            return String.Format("INSERT INTO {0} ({1}) VALUES ('{2}')",
+                NAME_TABLE_MOT_INTERDIT,
+                NAME_FIELD_MOT_INTERDIT_LIBELLE,
+                motInterdit);
+        }
+        public string retrieveUser(int idAccount)
+        {
+            return String.Format("SELECT * FROM {0} WHERE {1} = {2}",
+               NAME_TABLE_UTILISATEUR,
+               NAME_FIELD_UTILISATEUR_ID_ACCOUNT,
+               idAccount);
+        }
+        public string retrieveNicknameUser(MySqlDataReader dataReader)
+        {
+            return dataReader[NAME_FIELD_UTILISATEUR_PSEUDO].ToString();
+        }
+        public int retrieveStatusUser(MySqlDataReader dataReader)
+        {
+            return int.Parse(dataReader[NAME_FIELD_UTILISATEUR_ETAT].ToString());
+        }
+        public string banUser(int idAccount, DateTime startDate, int during, DateTime dateFin, string reason)
+        {
+            return String.Format("INSERT INTO {0} ({1}, {2}, {3}, {4}, {5}) VALUES ({6}, '{7}', {8}, '{9}', '{10}')",
+                NAME_TABLE_BANNISSEMENT,
+                NAME_FIELD_BANNISSEMENT_ACCOUNT,
+                NAME_FIELD_BANNISSEMENT_DATE_DEBUT,
+                NAME_FIELD_BANNISSEMENT_DUREE,
+                NAME_FIELD_BANNISSEMENT_DATE_FIN,
+                NAME_FIELD_BANNISSEMENT_RAISON,
+                idAccount,
+                startDate.ToString(CONST.DATE_FORMAT),
+                during,
+                dateFin.ToString(CONST.DATE_FORMAT),
+                reason.Replace("'", "''"));
+        }
+        public string retrieveIdAccountFriend(int idAccount)
+        {
+            return String.Format("SELECT {0} FROM {1} WHERE {2} = {3}",
+                NAME_FIELD_SOCIAL_APOURAMI_ID,
+                NAME_TABLE_SOCIAL,
+                NAME_FIELD_SOCIAL_UTILISATEUR_ID,
+                idAccount);
+        }
+        public int retrieveIdFriend(MySqlDataReader dataReader)
+        {
+            return int.Parse(dataReader[NAME_FIELD_SOCIAL_APOURAMI_ID].ToString());
+        }
+        public string retrieveInfoFriends(List<int> friendListId, int i)
+        {
+            return String.Format("SELECT * FROM {0} WHERE {1} = {2}",
+                    NAME_TABLE_UTILISATEUR,
+                    NAME_FIELD_UTILISATEUR_ID_ACCOUNT,
+                    friendListId[i]);
+        }
+        public string retrieveNicknameFriend(MySqlDataReader dataReader)
+        {
+            return dataReader[NAME_FIELD_UTILISATEUR_PSEUDO].ToString();
+        }
+        public string retrieveStatusFriend(MySqlDataReader dataReader)
+        {
+            return dataReader[NAME_FIELD_UTILISATEUR_ETAT].ToString();
+        }
+        public string retrieveGameListUser(int idAccount)
+        {
+            return String.Format("SELECT {0} FROM {1} WHERE {2} = {3}",
+                NAME_FIELD_UTILISATEUR_JEU_JEU,
+                NAME_TABLE_UTILISATEUR_JEU,
+                NAME_FIELD_UTILISATEUR_JEU_UTILISATEUR,
+                idAccount);
+        }
+        public int retrieveFieldIdGame(MySqlDataReader dataReader)
+        {
+            return int.Parse(dataReader[NAME_FIELD_UTILISATEUR_JEU_JEU].ToString());
+        }
+        public string retrieveGameInfos(List<int> userGameList, int i)
+        {
+            return String.Format("SELECT * FROM {0} WHERE {1} = {2}",
+                    NAME_TABLE_JEU,
+                    NAME_FIELD_JEU_ID,
+                    userGameList[i]);
+        }
+        public string retrieveNameGame(MySqlDataReader dataReader)
+        {
+            return dataReader[NAME_FIELD_JEU_NAME].ToString();
+        }
+        public string retrieveGameList()
+        {
+            return String.Format("SELECT * FROM {0}",
+                NAME_TABLE_JEU);
+        }
+        public int retrieveIdGame(MySqlDataReader dataReader)
+        {
+            return int.Parse(dataReader[NAME_FIELD_JEU_ID].ToString());
+        }
+        public string retrieveTitleGame(MySqlDataReader dataReader)
+        {
+            return dataReader[NAME_FIELD_JEU_NAME].ToString();
+        }
+        #endregion
     }
 }

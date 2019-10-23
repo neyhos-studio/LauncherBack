@@ -33,6 +33,9 @@ namespace LauncherBack.Controllers.Utilisateur
 
             user = bdd.RetrieveUser(idAccount);
             user.friendList = FriendListController.RetrieveFriendList(idAccount);
+            user.gameList = bdd.RetrieveUserGameList(idAccount);
+
+            
 
             if(user.nickname == null)
             {
