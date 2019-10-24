@@ -366,6 +366,15 @@ namespace LauncherBack.Helpers.Config
             return fieldsListe;
         }
 
+        public string disconectionUser(int idAccount)
+        {
+            return String.Format("UPDATE {0} SET {1} = 1 WHERE {2} = {3}",
+                NAME_TABLE_UTILISATEUR,
+                NAME_FIELD_UTILISATEUR_ETAT,
+                NAME_FIELD_UTILISATEUR_ID_ACCOUNT,
+                idAccount);
+        }
+
         #endregion
     }
 }

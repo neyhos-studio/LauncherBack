@@ -15,7 +15,7 @@ namespace LauncherBack.Controllers.Configuration
     {
         [HttpPost]
         [ActionName("Forbidden Words")]
-        public ResponseFront AddForbiddenWord([FromBody] string forbiddenWord)
+        public ResponseFront AddForbiddenWord([FromBody] ForbiddenWord forbiddenWord)
         {
             Bdd bdd = DataBaseConnection.databaseConnection();
 
