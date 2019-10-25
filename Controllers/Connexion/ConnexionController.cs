@@ -52,7 +52,7 @@ namespace LauncherBack.Controllers.Connexion
                 {
                     log.Info(MSG.COMPTE_BANNI);
                     responseFront.hasError = true;
-                    responseFront.response = banishment;
+                    responseFront.error = banishment;
                     return responseFront;
                 }
                 
