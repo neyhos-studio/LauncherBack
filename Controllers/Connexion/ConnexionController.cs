@@ -78,7 +78,7 @@ namespace LauncherBack.Controllers.Connexion
 
         private string generationToken(int longueurToken)
         {
-            string caracteres = "azertyuiopqsdfghjklmwxcvbn123456789";
+            string caracteres = "azertyuiopqsdfghjklmwxcvbnAZERTYUIOPQSDFGHJKLMWXCVBN123456789";
             Random tokenAlea = new Random();
             string token = "";
 
