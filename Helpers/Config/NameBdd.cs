@@ -375,6 +375,15 @@ namespace LauncherBack.Helpers.Config
                 idAccount);
         }
 
+        public string nowBannedUser(int idAccount)
+        {
+            return String.Format("UPDATE {0} SET {1} = 6 WHERE {2} = {3}",
+                NAME_TABLE_UTILISATEUR,
+                NAME_FIELD_UTILISATEUR_ETAT,
+                NAME_FIELD_UTILISATEUR_ID_ACCOUNT,
+                idAccount);
+        }
+
         #endregion
     }
 }

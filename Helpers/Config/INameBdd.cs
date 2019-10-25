@@ -50,5 +50,6 @@ namespace LauncherBack.Helpers.Config
         string retrieveNewsList();
         Collection<Object> retrieveFieldsNews(MySqlDataReader dataReader);
         string disconectionUser(int idAccount);
+        string nowBannedUser(int idAccount);
     }
 }

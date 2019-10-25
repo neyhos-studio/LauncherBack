@@ -524,11 +524,14 @@ namespace LauncherBack.Helpers
             {
                 DateTime dateFin = startDate.AddDays(during);
                 string queryBannirUtilisateur = nameBdd.banUser(idAccount, startDate, during, dateFin, reason);
+                string queryNowBannedUser = nameBdd.nowBannedUser(idAccount);
 
                 if (this.OpenConnection() == true)
                 {
                     MySqlCommand cmd = new MySqlCommand(queryBannirUtilisateur, connection);
                     cmd.ExecuteNonQuery();
+                    MySqlCommand cmd2 = new MySqlCommand(queryNowBannedUser, connection);
+                    cmd2.ExecuteNonQuery();
                     this.CloseConnection();
                 }
             }
