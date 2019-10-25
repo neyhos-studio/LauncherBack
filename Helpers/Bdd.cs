@@ -12,6 +12,7 @@ using LauncherBack.Controllers.Games;
 using LauncherBack.Helpers.Config;
 using LauncherBack.Controllers.News;
 using System.Collections.ObjectModel;
+using LauncherBack.Controllers.Configuration;
 
 namespace LauncherBack.Helpers
 {
@@ -368,13 +369,13 @@ namespace LauncherBack.Helpers
                 return null;
             }
         }
-        public bool InsertForbiddenWord(string motInterdit)
+        public bool InsertForbiddenWord(ForbiddenWord forbiddenWord)
         {
             log.Info("api.CONFIGURATION.InsertForbiddenWord ...");
 
             try
             {
-                string queryAddMotInterdit = nameBdd.insertForbiddenWord(motInterdit);
+                string queryAddMotInterdit = nameBdd.insertForbiddenWord(forbiddenWord.word);
 
                 if (this.OpenConnection() == true)
                 {
@@ -397,7 +398,7 @@ namespace LauncherBack.Helpers
         }
         #endregion
 
-        #region Utilisateur
+        #region UTILISATEUR
         public int RetrieveUserId(RequestFrontUtilisateur request)
         {
             log.Info("api.UTILISATEUR.RetrieveUserId ...");
@@ -432,6 +433,28 @@ namespace LauncherBack.Helpers
             {
                 log.Error(ex);
                 return 0;
+            }
+        }
+        public Boolean disconectionUser(int idAccount)
+        {
+            log.Info("api.UTILISATEUR.DisconnectionUser ...");
+            try
+            {
+                string queryDisconnectionUser = nameBdd.disconectionUser(idAccount);
+
+                if(this.OpenConnection() == true)
+                {
+                    MySqlCommand cmd = new MySqlCommand(queryDisconnectionUser, connection);
+                    cmd.ExecuteNonQuery();
+                    this.CloseConnection();
+                    log.Info("Utilisateur #" + idAccount + " vient de se deconnecter");
+                }
+
+                return true;
+            }catch(Exception ex)
+            {
+                log.Error(ex);
+                return false;
             }
         }
 

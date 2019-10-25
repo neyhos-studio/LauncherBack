@@ -21,12 +21,13 @@ namespace LauncherBack.Controllers.Utilisateur
 
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         ResponseFront responseFront = new ResponseFront();
+        Bdd bdd = DataBaseConnection.databaseConnection();
 
         [HttpPost]
         [ActionName("RetrieveUser")]
         public ResponseFront Connexion([FromBody] RequestFrontUtilisateur request)
         {
-            Bdd bdd = DataBaseConnection.databaseConnection();
+            
             User user = new User();
 
             int idAccount = bdd.RetrieveUserId(request);
@@ -47,6 +48,15 @@ namespace LauncherBack.Controllers.Utilisateur
             log.Info("Récupération des informations du joueur " + user.nickname);
             responseFront.response = user;
             return responseFront;
+        }
+
+        [HttpPost]
+        [ActionName("Disconnection")]
+        public Boolean Disconnection([FromBody] RequestFrontUtilisateur request)
+        {
+            int idAccount = bdd.RetrieveUserId(request);
+
+            return bdd.disconectionUser(idAccount);
         }
 
     }

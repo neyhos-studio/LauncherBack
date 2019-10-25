@@ -49,5 +49,6 @@ namespace LauncherBack.Helpers.Config
         string retrieveTitleGame(MySqlDataReader dataReader);
         string retrieveNewsList();
         Collection<Object> retrieveFieldsNews(MySqlDataReader dataReader);
+        string disconectionUser(int idAccount);
     }
 }

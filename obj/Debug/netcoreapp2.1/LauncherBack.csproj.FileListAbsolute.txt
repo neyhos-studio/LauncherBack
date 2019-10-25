@@ -4,7 +4,6 @@ C:\Users\Le boss\Documents\Projet_MMO_renew\LauncherBack\bin\Debug\netcoreapp2.1
 C:\Users\Le boss\Documents\Projet_MMO_renew\LauncherBack\bin\Debug\netcoreapp2.1\LauncherBack.dll
 C:\Users\Le boss\Documents\Projet_MMO_renew\LauncherBack\bin\Debug\netcoreapp2.1\LauncherBack.pdb
 C:\Users\Le boss\Documents\Projet_MMO_renew\LauncherBack\obj\Debug\netcoreapp2.1\LauncherBack.csprojAssemblyReference.cache
-C:\Users\Le boss\Documents\Projet_MMO_renew\LauncherBack\obj\Debug\netcoreapp2.1\LauncherBack.csproj.CoreCompileInputs.cache
 C:\Users\Le boss\Documents\Projet_MMO_renew\LauncherBack\obj\Debug\netcoreapp2.1\LauncherBack.RazorAssemblyInfo.cache
 C:\Users\Le boss\Documents\Projet_MMO_renew\LauncherBack\obj\Debug\netcoreapp2.1\LauncherBack.RazorAssemblyInfo.cs
 C:\Users\Le boss\Documents\Projet_MMO_renew\LauncherBack\obj\Debug\netcoreapp2.1\LauncherBack.AssemblyInfoInputs.cache
@@ -34,3 +33,6 @@ C:\Users\kylian.robba\Documents\GitHub\LauncherBack\obj\Debug\netcoreapp2.1\Laun
 C:\Users\kylian.robba\Documents\GitHub\LauncherBack\obj\Debug\netcoreapp2.1\LauncherBack.RazorTargetAssemblyInfo.cache
 C:\Users\kylian.robba\Documents\GitHub\LauncherBack\obj\Debug\netcoreapp2.1\LauncherBack.dll
 C:\Users\kylian.robba\Documents\GitHub\LauncherBack\obj\Debug\netcoreapp2.1\LauncherBack.pdb
+C:\Users\Le boss\Documents\Projet_MMO_renew\LauncherBack\bin\Debug\netcoreapp2.1\appsettings.Development.json
+C:\Users\Le boss\Documents\Projet_MMO_renew\LauncherBack\bin\Debug\netcoreapp2.1\appsettings.json
+C:\Users\Le boss\Documents\Projet_MMO_renew\LauncherBack\bin\Debug\netcoreapp2.1\Properties\launchSettings.json
