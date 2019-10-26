@@ -300,13 +300,11 @@ namespace LauncherBack.Helpers
             try
             {
                 string queryEmailExist = nameBdd.testIfEmailExist(email);
-
                 bool exist = false;
 
                 if (this.OpenConnection() == true)
                 {
                     MySqlCommand cmd = new MySqlCommand(queryEmailExist, connection);
-
 
                     if (int.Parse(cmd.ExecuteScalar().ToString()) == 1)
                     {

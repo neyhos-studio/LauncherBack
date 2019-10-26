@@ -28,17 +28,8 @@ namespace LauncherBack.Controllers.Inscription
 
             Bdd bdd = DataBaseConnection.databaseConnection();
 
-
             #region Critères d'acceptances
             //On test les critères d'acceptances de l'Email / Password / Pseudo
-
-            //Test si l'adresse Email existe ou non
-            if (bdd.TestIfEmailExist(request.email))
-            {
-                responseFront.hasError = true;
-                responseFront.error = MSG.INSCRIPTION_EMAIL_EXIST;
-                return responseFront;
-            }
 
             //Test de la taille de MDP
             if (request.password.Length < CONST.MINIMUM_PASSWORD_LENGTH)
@@ -115,6 +106,14 @@ namespace LauncherBack.Controllers.Inscription
             request.password = stringPasswordCrypt;
             request.email = stringEmailCrypt;
             #endregion
+
+            //Test si l'adresse Email existe ou non
+            if (bdd.TestIfEmailExist(request.email))
+            {
+                responseFront.hasError = true;
+                responseFront.error = MSG.INSCRIPTION_EMAIL_EXIST;
+                return responseFront;
+            }
 
             try
             {
