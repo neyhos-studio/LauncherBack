@@ -384,6 +384,25 @@ namespace LauncherBack.Helpers.Config
                 idAccount);
         }
 
+        public string deleteTokenUser(string token)
+        {
+            return String.Format("DELETE FROM {0} WHERE {1} = '{2}'",
+                NAME_TABLE_TOKEN,
+                NAME_FIELD_TOKEN_TOKEN_CLIENT,
+                token);
+        }
+
+        //Morceau pour re générer token
+        /*
+        public string retrieveIdTokenClient(int idAccount)
+        {
+            return String.Format("SELECT MAX({0}) as ID_TOKEN FROM {1} WHERE {2} = {3}",
+                NAME_FIELD_TOKEN_ID,
+                NAME_TABLE_TOKEN,
+                NAME_FIELD_TOKEN_ACCOUNT_ID,
+                idAccount);
+        }*/
+
         #endregion
     }
 }

@@ -51,5 +51,8 @@ namespace LauncherBack.Helpers.Config
         Collection<Object> retrieveFieldsNews(MySqlDataReader dataReader);
         string disconectionUser(int idAccount);
         string nowBannedUser(int idAccount);
+        string deleteTokenUser(string token);
+        //Morceau pour re générer token
+        //string retrieveIdTokenClient(int idAccount);
     }
 }

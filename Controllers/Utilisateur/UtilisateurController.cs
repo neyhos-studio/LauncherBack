@@ -23,6 +23,8 @@ namespace LauncherBack.Controllers.Utilisateur
         ResponseFront responseFront = new ResponseFront();
         Bdd bdd = DataBaseConnection.databaseConnection();
 
+        string tokenClient;
+
         [HttpPost]
         [ActionName("RetrieveUser")]
         public ResponseFront Connexion([FromBody] RequestFrontUtilisateur request)
@@ -36,9 +38,14 @@ namespace LauncherBack.Controllers.Utilisateur
             user.friendList = FriendListController.RetrieveFriendList(idAccount);
             user.gameList = bdd.RetrieveUserGameList(idAccount);
 
-            
+            //Morceau pour re générer token
+            /*log.Info("Génération d'un nouveau token client");
+            tokenClient = GenerateToken.generationToken(CONST.TOKEN_SIZE);
 
-            if(user.nickname == null)
+
+            log.Info("Fin de génération d'un nouveau token client");*/
+
+            if (user.nickname == null)
             {
                 responseFront.hasError = true;
                 responseFront.error = "Pas d'utilisateur correspond à se token";
@@ -56,7 +63,7 @@ namespace LauncherBack.Controllers.Utilisateur
         {
             int idAccount = bdd.RetrieveUserId(request);
 
-            return bdd.disconectionUser(idAccount);
+            return bdd.disconectionUser(idAccount, request.token);
         }
 
     }

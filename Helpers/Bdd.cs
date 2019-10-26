@@ -433,19 +433,23 @@ namespace LauncherBack.Helpers
                 return 0;
             }
         }
-        public Boolean disconectionUser(int idAccount)
+        public Boolean disconectionUser(int idAccount, string token)
         {
             log.Info("api.UTILISATEUR.DisconnectionUser ...");
             try
             {
                 string queryDisconnectionUser = nameBdd.disconectionUser(idAccount);
+                string queryDeleteTokenUser = nameBdd.deleteTokenUser(token);
 
                 if(this.OpenConnection() == true)
                 {
                     MySqlCommand cmd = new MySqlCommand(queryDisconnectionUser, connection);
                     cmd.ExecuteNonQuery();
+                    MySqlCommand cmd2 = new MySqlCommand(queryDeleteTokenUser, connection);
+                    cmd2.ExecuteNonQuery();
                     this.CloseConnection();
                     log.Info("Utilisateur #" + idAccount + " vient de se deconnecter");
+                    log.Info("Token du compte #" + idAccount + " supprimé");
                 }
 
                 return true;
@@ -463,6 +467,9 @@ namespace LauncherBack.Helpers
             try
             {
                 string queryRecuperationUtilisateur = nameBdd.retrieveUser(idAccount);
+                //string queryRetrieveIdTokenUser = nameBdd.retrieveIdTokenClient(idAccount);
+
+                //int idToken;
 
                 User user = new User();
 
@@ -497,6 +504,16 @@ namespace LauncherBack.Helpers
                     }
 
                     dataReader2.Close();
+
+                    //Morceau pour re générer token
+                    /*MySqlCommand cmd = new MySqlCommand(queryRetrieveIdTokenUser, connection);
+                    MySqlDataReader dataReader = cmd.ExecuteReader();
+                    
+                    while (dataReader.Read())
+                    {
+                        idToken = int.Parse(dataReader["ID_TOKEN"].ToString());
+                    }*/
+
                     this.CloseConnection();
 
                     return user;

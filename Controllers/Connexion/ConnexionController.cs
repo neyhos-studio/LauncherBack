@@ -61,8 +61,8 @@ namespace LauncherBack.Controllers.Connexion
                     return responseFront;
                 }
                 
-                string tokenClient = generationToken(CONST.TOKEN_SIZE);
-                string tokenServer = generationToken(CONST.TOKEN_SIZE);
+                string tokenClient = GenerateToken.generationToken(CONST.TOKEN_SIZE);
+                string tokenServer = GenerateToken.generationToken(CONST.TOKEN_SIZE);
 
                 bdd.InsertToken(idAccount, tokenServer, tokenClient);
                 bdd.NowOnline(idAccount);
@@ -80,32 +80,6 @@ namespace LauncherBack.Controllers.Connexion
                 return responseFront;
             }
         }
-
-        private string generationToken(int longueurToken)
-        {
-            string caracteres = "azertyuiopqsdfghjklmwxcvbnAZERTYUIOPQSDFGHJKLMWXCVBN123456789";
-            Random tokenAlea = new Random();
-            string token = "";
-
-            for (int i = 0; i < longueurToken; i++) // 254 caracteres
-            {
-                int majOrMin = tokenAlea.Next(2);
-                string carac = caracteres[tokenAlea.Next(0, caracteres.Length)].ToString();
-                if (majOrMin == 0)
-                {
-                    token += carac.ToUpper(); // Maj
-                }
-                else
-                {
-                    token += carac.ToLower(); //Min
-                }
-            }
-
-            return token;
-        }
-
-        
-
     }
 
     
