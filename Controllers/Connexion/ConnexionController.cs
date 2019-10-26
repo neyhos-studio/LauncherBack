@@ -26,9 +26,14 @@ namespace LauncherBack.Controllers.Connexion
 
             string mdpCrypt = ShaHash.GetShaHash(request.password);
             string concatPasswordKeys = String.Concat(CONST.KEY_CRYPTAGE, mdpCrypt, CONST.KEY_CRYPTAGE);
-            string stringCrypt = ShaHash.GetShaHash(concatPasswordKeys);
+            string stringPasswordCrypt = ShaHash.GetShaHash(concatPasswordKeys);
 
-            request.password = stringCrypt;
+            string emailCrypt = ShaHash.GetShaHash(request.email);
+            string concatEmailKeys = String.Concat(CONST.KEY_CRYPTAGE, emailCrypt, CONST.KEY_CRYPTAGE);
+            string stringEmailCrypt = ShaHash.GetShaHash(concatEmailKeys);
+
+            request.password = stringPasswordCrypt;
+            request.email = stringEmailCrypt;
 
             try
             {
