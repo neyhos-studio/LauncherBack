@@ -35,10 +35,18 @@ namespace LauncherBack.Helpers.Config
             private static readonly string NAME_FIELD_UTILISATEUR_ID_ACCOUNT = String.Format("{0}{1}{2}", ENTITY_UTILISATEUR, PREFIX_NAME_FIELD, "ID_ACCOUNT");
             private static readonly string NAME_FIELD_UTILISATEUR_PSEUDO = String.Format("{0}{1}{2}", ENTITY_UTILISATEUR, PREFIX_NAME_FIELD, "PSEUDO");
             private static readonly string NAME_FIELD_UTILISATEUR_ETAT = String.Format("{0}{1}{2}", ENTITY_UTILISATEUR, PREFIX_NAME_FIELD, "ETAT");
+            private static readonly string NAME_FIELD_UTILISATEUR_AVATAR = String.Format("{0}{1}{2}", ENTITY_UTILISATEUR, PREFIX_NAME_FIELD, "AVATAR");
+        #endregion
+
+        #region NS_AVATAR
+        private static readonly string ENTITY_AVATAR = "AVATAR".ToUpper();
+        private static readonly string NAME_TABLE_AVATAR = String.Format("{0}{1}{2}", PREFIX, PREFIX_NAME_FIELD, ENTITY_AVATAR);
+        private static readonly string NAME_FIELD_AVATAR_ID = String.Format("{0}{1}{2}", ENTITY_AVATAR, PREFIX_NAME_FIELD, "ID");
+        private static readonly string NAME_FIELD_AVATAR_URL = String.Format("{0}{1}{2}", ENTITY_AVATAR, PREFIX_NAME_FIELD, "URL");
         #endregion
 
         #region NS_ETATS_UTILISATEUR
-            private static readonly string ENTITY_ETAT_UTILISATEUR = "ETAT_UTILISATEUR".ToUpper();
+        private static readonly string ENTITY_ETAT_UTILISATEUR = "ETAT_UTILISATEUR".ToUpper();
             private static readonly string NAME_TABLE_ETAT_UTILISATEUR = String.Format("{0}{1}{2}", PREFIX, PREFIX_NAME_FIELD, ENTITY_ETAT_UTILISATEUR);
             private static readonly string NAME_FIELD_ETAT_UTILISATEUR_ID = String.Format("{0}{1}{2}", ENTITY_ETAT_UTILISATEUR, PREFIX_NAME_FIELD, "ID");
             private static readonly string NAME_FIELD_ETAT_UTILISATEUR_LIBELLE = String.Format("{0}{1}{2}", ENTITY_ETAT_UTILISATEUR, PREFIX_NAME_FIELD, "LIBELLE");
@@ -218,12 +226,14 @@ namespace LauncherBack.Helpers.Config
         }
         public string registrationAddUser(int idAccount, RequestFrontInscription request)
         {
-            return String.Format("INSERT INTO {0} ({1}, {2}) VALUES ({3}, '{4}')",
+            return String.Format("INSERT INTO {0} ({1}, {2}, {3}) VALUES ({4}, '{5}', {6})",
                     NAME_TABLE_UTILISATEUR,
                     NAME_FIELD_UTILISATEUR_ID_ACCOUNT,
                     NAME_FIELD_UTILISATEUR_PSEUDO,
+                    NAME_FIELD_UTILISATEUR_AVATAR,
                     idAccount,
-                    request.nickname);
+                    request.nickname,
+                    0);
         }
         public string testIfEmailExist(string email)
         {
@@ -250,14 +260,23 @@ namespace LauncherBack.Helpers.Config
         }
         public string retrieveUser(int idAccount)
         {
-            return String.Format("SELECT * FROM {0} WHERE {1} = {2}",
+            return String.Format("SELECT * FROM {0}, {1} WHERE {2}.{3} = {4}.{5} AND {6} = '{7}'",
                NAME_TABLE_UTILISATEUR,
+               NAME_TABLE_AVATAR,
+               NAME_TABLE_UTILISATEUR,
+               NAME_FIELD_UTILISATEUR_AVATAR,
+               NAME_TABLE_AVATAR,
+               NAME_FIELD_AVATAR_ID,
                NAME_FIELD_UTILISATEUR_ID_ACCOUNT,
                idAccount);
         }
         public string retrieveNicknameUser(MySqlDataReader dataReader)
         {
             return dataReader[NAME_FIELD_UTILISATEUR_PSEUDO].ToString();
+        }
+        public string retrieveAvatarUser(MySqlDataReader dataReader)
+        {
+            return dataReader[NAME_FIELD_AVATAR_URL].ToString();
         }
         public int retrieveStatusUser(MySqlDataReader dataReader)
         {

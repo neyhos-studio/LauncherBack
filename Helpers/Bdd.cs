@@ -481,6 +481,7 @@ namespace LauncherBack.Helpers
                     while (dataReader2.Read())
                     {
                         user.nickname = nameBdd.retrieveNicknameUser(dataReader2);
+                        user.avatar = nameBdd.retrieveAvatarUser(dataReader2);
                         switch (nameBdd.retrieveStatusUser(dataReader2))
                         {
                             case 1:
@@ -562,11 +563,12 @@ namespace LauncherBack.Helpers
         public List<Friend> RetrieveFriendListDatabase(int idAccount)
         {
             log.Info("api.SOCIAL.RetrieveFriendListDatabase ...");
+            log.Debug(idAccount);
 
             try
             {
                 string queryRecupIdFriend = nameBdd.retrieveIdAccountFriend(idAccount);
-
+                log.Debug(queryRecupIdFriend);
 
                 List<Friend> friendList = new List<Friend>();
                 List<int> friendsIdList = new List<int>();

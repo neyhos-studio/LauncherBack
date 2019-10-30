@@ -33,6 +33,7 @@ namespace LauncherBack.Helpers.Config
         string insertForbiddenWord(string motInterdit);
         string retrieveUser(int idAccount);
         string retrieveNicknameUser(MySqlDataReader dataReader);
+        string retrieveAvatarUser(MySqlDataReader dataReader);
         int retrieveStatusUser(MySqlDataReader dataReader);
         string banUser(int idAccount, DateTime startDate, int during, DateTime dateFin, string reason);
         string retrieveIdAccountFriend(int idAccount);

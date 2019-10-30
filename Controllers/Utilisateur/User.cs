@@ -13,6 +13,7 @@ namespace LauncherBack.Controllers.Utilisateur
         public string ip { get; set; }
         public string status { get; set; }
         public string token { get; set; }
+        public string avatar { get; set; }
         public List<Friend> friendList { get; set; }
         public List<Game> gameList { get; set; }
     }
