@@ -531,26 +531,8 @@ namespace LauncherBack.Helpers
                     {
                         user.nickname = nameBdd.retrieveNicknameUser(dataReader2);
                         user.avatar = nameBdd.retrieveAvatarUser(dataReader2);
-                        switch (nameBdd.retrieveStatusUser(dataReader2))
-                        {
-                            case 1:
-                                user.status = CONST.OFFLINE;
-                                break;
-                            case 2:
-                                user.status = CONST.ONLINE;
-                                break;
-                            case 3:
-                                user.status = CONST.ABSENT;
-                                break;
-                            case 4:
-                                user.status = CONST.BUSY;
-                                break;
-                            case 5:
-                                user.status = CONST.INVISIBLE;
-                                break;
-                            default:
-                                break;
-                        }
+                        user.status = nameBdd.retrieveStatusUser(dataReader2);
+
                     }
 
                     dataReader2.Close();
