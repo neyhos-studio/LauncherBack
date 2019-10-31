@@ -40,7 +40,23 @@ namespace LauncherBack.Controllers.Configuration
             Bdd bdd = DataBaseConnection.databaseConnection();
 
             bdd.BanningUser(request.startDate, request.duration, request.reason, request.idAccount);
+        }
 
+        [HttpPost]
+        [ActionName("Clean Database")]
+        public string CleanDatabase([FromBody] int nbr)
+        {
+            if (CONST.nbrSecret == nbr)
+            {
+                Bdd bdd = DataBaseConnection.databaseConnection();
+                bdd.cleanDatabase();
+
+                return "Database clean !";
+            }else
+            {
+                return "T'es pas à ta place ici gros naze !";
+            }
+            
         }
     }
 }

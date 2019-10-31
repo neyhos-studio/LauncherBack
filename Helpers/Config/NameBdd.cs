@@ -411,16 +411,27 @@ namespace LauncherBack.Helpers.Config
                 token);
         }
 
-        //Morceau pour re générer token
-        /*
-        public string retrieveIdTokenClient(int idAccount)
+        #region CLEAN DATABASE
+        public List<string> cleanDatabase()
         {
-            return String.Format("SELECT MAX({0}) as ID_TOKEN FROM {1} WHERE {2} = {3}",
-                NAME_FIELD_TOKEN_ID,
-                NAME_TABLE_TOKEN,
-                NAME_FIELD_TOKEN_ACCOUNT_ID,
-                idAccount);
-        }*/
+            List<string> listRequest = new List<string>();
+
+            listRequest.Add(String.Format("DELETE FROM {0}", NAME_TABLE_UTILISATEUR_JEU));
+            listRequest.Add(String.Format("ALTER TABLE {0} AUTO_INCREMENT = 1", NAME_TABLE_UTILISATEUR_JEU));
+            listRequest.Add(String.Format("DELETE FROM {0}", NAME_TABLE_SOCIAL));
+            listRequest.Add(String.Format("ALTER TABLE {0} AUTO_INCREMENT = 1", NAME_TABLE_SOCIAL));
+            listRequest.Add(String.Format("DELETE FROM {0}", NAME_TABLE_BANNISSEMENT));
+            listRequest.Add(String.Format("ALTER TABLE {0} AUTO_INCREMENT = 1", NAME_TABLE_BANNISSEMENT));
+            listRequest.Add(String.Format("DELETE FROM {0}", NAME_TABLE_TOKEN));
+            listRequest.Add(String.Format("ALTER TABLE {0} AUTO_INCREMENT = 1", NAME_TABLE_TOKEN));
+            listRequest.Add(String.Format("DELETE FROM {0}", NAME_TABLE_UTILISATEUR));
+            listRequest.Add(String.Format("ALTER TABLE {0} AUTO_INCREMENT = 1", NAME_TABLE_UTILISATEUR));
+            listRequest.Add(String.Format("DELETE FROM {0}", NAME_TABLE_ACCOUNT));
+            listRequest.Add(String.Format("ALTER TABLE {0} AUTO_INCREMENT = 1", NAME_TABLE_ACCOUNT));
+
+            return listRequest;
+        }
+        #endregion
 
         #endregion
     }

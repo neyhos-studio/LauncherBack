@@ -21,6 +21,8 @@ namespace LauncherBack.Controllers.Connexion
         [ActionName("Connection")]
         public ResponseFront Connection([FromBody] RequestFrontConnexion request)
         {
+            log.Info("api.Connection ...");
+
             Bdd bdd = DataBaseConnection.databaseConnection();
             Banishment banishment = new Banishment();
 

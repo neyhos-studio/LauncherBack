@@ -53,7 +53,8 @@ namespace LauncherBack.Helpers.Config
         string disconectionUser(int idAccount);
         string nowBannedUser(int idAccount);
         string deleteTokenUser(string token);
-        //Morceau pour re générer token
-        //string retrieveIdTokenClient(int idAccount);
+        #region CLEAN DATABASE
+        List<string> cleanDatabase();
+        #endregion
     }
 }

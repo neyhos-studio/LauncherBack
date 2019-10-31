@@ -6,13 +6,13 @@ using LauncherBack.Controllers.Utilisateur;
 using MySql.Data.MySqlClient;
 using MSG = LauncherBack.Helpers.Messages;
 using CONST = LauncherBack.Helpers.Constantes;
-using CONST_BDD = LauncherBack.Helpers.Config.NameBdd;
 using LauncherBack.Controllers.Social;
 using LauncherBack.Controllers.Games;
 using LauncherBack.Helpers.Config;
 using LauncherBack.Controllers.News;
 using System.Collections.ObjectModel;
 using LauncherBack.Controllers.Configuration;
+using System.Diagnostics;
 
 namespace LauncherBack.Helpers
 {
@@ -21,6 +21,7 @@ namespace LauncherBack.Helpers
         private MySqlConnection connection;
 
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        Stopwatch stopwatch = new Stopwatch();
 
         private INameBdd nameBdd = new NameBdd();
 
@@ -85,7 +86,6 @@ namespace LauncherBack.Helpers
         //ACCOUNT EXIST
         public int Connection(RequestFrontConnexion request)
         {
-            log.Info("api.Connection ...");
             try
             {
                 string queryConnexion = nameBdd.connection(request);
@@ -118,8 +118,8 @@ namespace LauncherBack.Helpers
         //RECUP ID ACCOUNT
         public int RetrieveIdAccount(RequestFrontConnexion request)
         {
-            log.Info("api.CONNECTION.RetrieveIdAccount ...");
-
+            stopwatch.Start();
+            
             try
             {
                 string queryRecupID = nameBdd.retrieveUserIdConnection(request);
@@ -139,12 +139,16 @@ namespace LauncherBack.Helpers
 
                     this.CloseConnection();
 
+                    stopwatch.Stop();
+                    log.Info("api.CONNECTION.RetrieveIdAccount ... (" + stopwatch.Elapsed.TotalSeconds + " ms)");
                     return id;
                 }
                 else
                 {
                     return 0;
                 }
+
+                
             }
             catch (Exception ex)
             {
@@ -156,7 +160,7 @@ namespace LauncherBack.Helpers
         //INSERT TOKEN
         public void InsertToken(int idAccount, string tokenServer, string tokenClient)
         {
-            log.Info("api.CONNECTION.InsertToken ...");
+            stopwatch.Start();
 
             try
             {
@@ -173,12 +177,15 @@ namespace LauncherBack.Helpers
                 log.Error(ex);
             }
 
+            stopwatch.Stop();
+            log.Info("api.CONNECTION.InsertToken ... (" + stopwatch.Elapsed.TotalSeconds + " ms)");
+
         }
 
         //PASSAGE EN LIGNE
         public void NowOnline(int idAccount)
         {
-            log.Info("api.CONNECTION.NowOnline ...");
+            stopwatch.Start();
 
             try
             {
@@ -195,11 +202,14 @@ namespace LauncherBack.Helpers
                 log.Error(ex);
             }
 
+            stopwatch.Stop();
+            log.Info("api.CONNECTION.NowOnline ... (" + stopwatch.Elapsed.TotalSeconds + " ms)");
         }
 
         public Banishment TestIfUserBan(int idAccount)
         {
-            log.Info("api.CONNECTION.TestIfUserBan ...");
+            stopwatch.Start();
+            
 
             try
             {
@@ -224,6 +234,9 @@ namespace LauncherBack.Helpers
                     dataReader.Close();
 
                     this.CloseConnection();
+
+                    stopwatch.Stop();
+                    log.Info("api.CONNECTION.TestIfUserBan ... (" + stopwatch.Elapsed.TotalSeconds + " ms)");
                     return banishment;
                 }
                 else
@@ -244,7 +257,7 @@ namespace LauncherBack.Helpers
 
         public bool Registration(RequestFrontInscription request)
         {
-            log.Info("api.INSCRIPTION.Registration ...");
+            stopwatch.Start();
 
             try
             {
@@ -278,6 +291,9 @@ namespace LauncherBack.Helpers
 
                     this.CloseConnection();
 
+                    stopwatch.Stop();
+                    log.Info("api.INSCRIPTION.Registration ... (" + stopwatch.Elapsed.TotalSeconds + " ms)");
+
                     return isRegistered = true;
 
                 }
@@ -295,7 +311,7 @@ namespace LauncherBack.Helpers
 
         public bool TestIfEmailExist(string email)
         {
-            log.Info("api.INSCRIPTION.TestIfEmailExist ...");
+            stopwatch.Start();
 
             try
             {
@@ -318,6 +334,9 @@ namespace LauncherBack.Helpers
                     Console.WriteLine(MSG.BDD_ERREUR_CONNEXION_BDD);
                 }
 
+                stopwatch.Stop();
+                log.Info("api.INSCRIPTION.TestIfEmailExist ... (" + stopwatch.Elapsed.TotalSeconds + " ms)");
+
                 return exist;
             }
             catch (Exception ex)
@@ -332,7 +351,7 @@ namespace LauncherBack.Helpers
         #region CONFIGURATION
         public List<String> RetrieveListOfForbiddenWord()
         {
-            log.Info("api.CONFIGURATION.RetrieveListOfForbiddenWord ...");
+            stopwatch.Start();
 
             try
             {
@@ -354,6 +373,9 @@ namespace LauncherBack.Helpers
 
                     this.CloseConnection();
 
+                    stopwatch.Stop();
+                    log.Info("api.CONFIGURATION.RetrieveListOfForbiddenWord ... (" + stopwatch.Elapsed.TotalSeconds + " ms)");
+
                     return forbiddenWordList;
                 }
                 else
@@ -369,7 +391,8 @@ namespace LauncherBack.Helpers
         }
         public bool InsertForbiddenWord(ForbiddenWord forbiddenWord)
         {
-            log.Info("api.CONFIGURATION.InsertForbiddenWord ...");
+            stopwatch.Start();
+            
 
             try
             {
@@ -380,6 +403,9 @@ namespace LauncherBack.Helpers
                     MySqlCommand cmd = new MySqlCommand(queryAddMotInterdit, connection);
                     cmd.ExecuteNonQuery();
                     this.CloseConnection();
+
+                    stopwatch.Stop();
+                    log.Info("api.CONFIGURATION.InsertForbiddenWord ... (" + stopwatch.Elapsed.TotalSeconds + " ms)");
 
                     return true;
                 }
@@ -394,13 +420,31 @@ namespace LauncherBack.Helpers
                 return false;
             }
         }
+        public void cleanDatabase()
+        {
+            stopwatch.Start();
+            List<string> listRequest = nameBdd.cleanDatabase();
+
+            if (this.OpenConnection() == true)
+            {
+                for (int i = 0; i < listRequest.Count; i++)
+                {
+                    MySqlCommand cmd = new MySqlCommand(listRequest[i], connection);
+                    cmd.ExecuteNonQuery();
+                }
+                this.CloseConnection();
+            }
+
+            stopwatch.Stop();
+            log.Info("Database clean ... (" + stopwatch.Elapsed.TotalSeconds + " ms)");
+        }
         #endregion
 
         #region UTILISATEUR
         public int RetrieveUserId(RequestFrontUtilisateur request)
         {
-            log.Info("api.UTILISATEUR.RetrieveUserId ...");
-
+            stopwatch.Start();
+            
             try
             {
                 string queryRecupIdUtilisateur = nameBdd.retrieveUserID(request);
@@ -420,6 +464,10 @@ namespace LauncherBack.Helpers
                     dataReader.Close();
 
                     this.CloseConnection();
+
+                    stopwatch.Stop();
+                    log.Info("api.UTILISATEUR.RetrieveUserId ... (" + stopwatch.Elapsed.TotalSeconds + " ms)");
+
                     return idAccount;
                 }
                 else
@@ -435,7 +483,8 @@ namespace LauncherBack.Helpers
         }
         public Boolean disconectionUser(int idAccount, string token)
         {
-            log.Info("api.UTILISATEUR.DisconnectionUser ...");
+            stopwatch.Start();
+
             try
             {
                 string queryDisconnectionUser = nameBdd.disconectionUser(idAccount);
@@ -452,6 +501,9 @@ namespace LauncherBack.Helpers
                     log.Info("Token du compte #" + idAccount + " supprimé");
                 }
 
+                stopwatch.Stop();
+                log.Info("api.UTILISATEUR.DisconnectionUser ... (" + stopwatch.Elapsed.TotalSeconds + " ms)");
+
                 return true;
             }catch(Exception ex)
             {
@@ -462,14 +514,11 @@ namespace LauncherBack.Helpers
 
         public User RetrieveUser(int idAccount)
         {
-            log.Info("api.UTILISATEUR.RetrieveUser ...");
+            stopwatch.Start();
 
             try
             {
                 string queryRecuperationUtilisateur = nameBdd.retrieveUser(idAccount);
-                //string queryRetrieveIdTokenUser = nameBdd.retrieveIdTokenClient(idAccount);
-
-                //int idToken;
 
                 User user = new User();
 
@@ -506,16 +555,10 @@ namespace LauncherBack.Helpers
 
                     dataReader2.Close();
 
-                    //Morceau pour re générer token
-                    /*MySqlCommand cmd = new MySqlCommand(queryRetrieveIdTokenUser, connection);
-                    MySqlDataReader dataReader = cmd.ExecuteReader();
-                    
-                    while (dataReader.Read())
-                    {
-                        idToken = int.Parse(dataReader["ID_TOKEN"].ToString());
-                    }*/
-
                     this.CloseConnection();
+
+                    stopwatch.Stop();
+                    log.Info("api.UTILISATEUR.RetrieveUser ... (" + stopwatch.Elapsed.TotalSeconds + " ms)");
 
                     return user;
                 }
@@ -534,7 +577,7 @@ namespace LauncherBack.Helpers
         
         public void BanningUser(DateTime startDate, int during, string reason, int idAccount)
         {
-            log.Info("api.UTILISATEUR.BanningUser ...");
+            stopwatch.Start();
 
             try
             {
@@ -550,6 +593,10 @@ namespace LauncherBack.Helpers
                     cmd2.ExecuteNonQuery();
                     this.CloseConnection();
                 }
+
+                stopwatch.Stop();
+                log.Info("api.UTILISATEUR.BanningUser ... " + stopwatch.Elapsed.TotalSeconds + " ms)");
+                log.Info("Utilisateur #"+idAccount+" banni pendant "+during+" jour(s)");
             }
             catch (Exception ex)
             {
@@ -562,13 +609,12 @@ namespace LauncherBack.Helpers
         #region Social
         public List<Friend> RetrieveFriendListDatabase(int idAccount)
         {
-            log.Info("api.SOCIAL.RetrieveFriendListDatabase ...");
-            log.Debug(idAccount);
+            stopwatch.Start();
+            
 
             try
             {
                 string queryRecupIdFriend = nameBdd.retrieveIdAccountFriend(idAccount);
-                log.Debug(queryRecupIdFriend);
 
                 List<Friend> friendList = new List<Friend>();
                 List<int> friendsIdList = new List<int>();
@@ -610,6 +656,9 @@ namespace LauncherBack.Helpers
 
                     this.CloseConnection();
 
+                    stopwatch.Stop();
+                    log.Info("api.SOCIAL.RetrieveFriendListDatabase ... (" + stopwatch.Elapsed.TotalSeconds + " ms)");
+
                     return friendList;
                 }
                 else
@@ -630,7 +679,7 @@ namespace LauncherBack.Helpers
         #region GAME LIST
         public List<Game> RetrieveGameList()
         {
-            log.Info("api.GAME_LIST.RetrieveGameList ...");
+            stopwatch.Start();
 
             try
             {
@@ -658,6 +707,10 @@ namespace LauncherBack.Helpers
                     dataReader.Close();
 
                     this.CloseConnection();
+
+                    stopwatch.Stop();
+                    log.Info("api.GAME_LIST.RetrieveGameList ... (" + stopwatch.Elapsed.TotalSeconds + " ms)");
+
                     return gameList;
                 }
                 else
@@ -674,7 +727,7 @@ namespace LauncherBack.Helpers
         }
         public List<Game> RetrieveUserGameList(int idAccount)
         {
-            log.Info("api.GAME_LIST.RetrieveUserGameList ...");
+            stopwatch.Start();
 
             try
             {
@@ -719,6 +772,9 @@ namespace LauncherBack.Helpers
 
                     this.CloseConnection();
 
+                    stopwatch.Stop();
+                    log.Info("api.GAME_LIST.RetrieveUserGameList ... (" + stopwatch.Elapsed.TotalSeconds + " ms)");
+
                     return userGameList;
                 }
                 else
@@ -738,12 +794,12 @@ namespace LauncherBack.Helpers
         #region NEWS
         public List<News> RetrieveNewsList()
         {
-            log.Info("api.NEWS.RetrieveNewsList ...");
+            stopwatch.Start();
+            
 
             try
             {
                 List<News> newsList = new List<News>();
-
 
                 string queryRetrieveNewsList = nameBdd.retrieveNewsList();
 
@@ -772,6 +828,9 @@ namespace LauncherBack.Helpers
                     dataReader.Close();
 
                     this.CloseConnection();
+
+                    stopwatch.Stop();
+                    log.Info("api.NEWS.RetrieveNewsList ... (" + stopwatch.Elapsed.TotalSeconds + " ms)");
                     return newsList;
                 }
                 else
