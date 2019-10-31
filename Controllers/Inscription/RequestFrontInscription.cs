@@ -2,8 +2,7 @@
 {
     public class RequestFrontInscription
     {
-        public string email { get; set; }
-        public string password { get; set; }
-        public string nickname { get; set; }
+        public RegisterAccount registerAccount { get; set; }
+        public RegisterUser registerUser { get; set; }
     }
 }

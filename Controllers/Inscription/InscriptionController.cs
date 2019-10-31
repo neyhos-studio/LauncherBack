@@ -26,13 +26,14 @@ namespace LauncherBack.Controllers.Inscription
         public ResponseFront Inscription([FromBody] RequestFrontInscription request)
         {
 
+
             Bdd bdd = DataBaseConnection.databaseConnection();
 
             #region Critères d'acceptances
             //On test les critères d'acceptances de l'Email / Password / Pseudo
 
             //Test de la taille de MDP
-            if (request.password.Length < CONST.MINIMUM_PASSWORD_LENGTH)
+            if (request.registerAccount.registerPassword.Length < CONST.MINIMUM_PASSWORD_LENGTH)
             {
                 responseFront.hasError = true;
                 responseFront.error = MSG.INSCRIPTION_PASSWORD_COURT;
@@ -40,7 +41,7 @@ namespace LauncherBack.Controllers.Inscription
             }
 
             //Test de la taille du PSEUDO
-            if (request.nickname.Length > CONST.MAXIMUM_NICKNAME_LENGTH)
+            if (request.registerUser.registerNickname.Length > CONST.MAXIMUM_NICKNAME_LENGTH)
             {
                 responseFront.hasError = true;
                 responseFront.error = MSG.INSCRIPTION_PSEUDO_LONG;
@@ -55,7 +56,7 @@ namespace LauncherBack.Controllers.Inscription
             for (int i = 0; i < listeMotsInterdits.Count(); i++)
             {
                 string motInterditNormaliser = listeMotsInterdits[i].ToString().ToLower();
-                string pseudoNormaliser = request.nickname.ToLower();
+                string pseudoNormaliser = request.registerUser.registerNickname.ToLower();
                 if (pseudoNormaliser.Contains(motInterditNormaliser))
                 {
                     test = true;
@@ -70,7 +71,7 @@ namespace LauncherBack.Controllers.Inscription
             }
 
             //Test de la validation d'une adresse Email
-            if (!request.email.Contains("@"))
+            if (!request.registerAccount.registerEmail.Contains("@"))
             {
                 responseFront.hasError = true;
                 responseFront.error = MSG.INSCRIPTION_EMAIL_INVALID;
@@ -78,7 +79,7 @@ namespace LauncherBack.Controllers.Inscription
             }
 
             //Test si le PSEUDO contient plus de 2 espaces
-            if (request.nickname.Contains("  "))
+            if (request.registerUser.registerNickname.Contains("  "))
             {
                 responseFront.hasError = true;
                 responseFront.error = MSG.INSCRIPTION_PSEUDO_2_ESPACES;
@@ -86,7 +87,7 @@ namespace LauncherBack.Controllers.Inscription
             }
 
             //Test si le PSEUDO contient plus de 2 -
-            if (request.nickname.Contains("--"))
+            if (request.registerUser.registerNickname.Contains("--"))
             {
                 responseFront.hasError = true;
                 responseFront.error = MSG.INSCRIPTION_PSEUDO_2_TIRETS;
@@ -95,20 +96,20 @@ namespace LauncherBack.Controllers.Inscription
             #endregion
 
             #region Cryptage du MDP et de l'Email
-            string mdpCrypt = ShaHash.GetShaHash(request.password);
+            string mdpCrypt = ShaHash.GetShaHash(request.registerAccount.registerPassword);
             string concatPasswordKeys = String.Concat(CONST.KEY_CRYPTAGE, mdpCrypt, CONST.KEY_CRYPTAGE);
             string stringPasswordCrypt = ShaHash.GetShaHash(concatPasswordKeys);
 
-            string emailCrypt = ShaHash.GetShaHash(request.email);
+            string emailCrypt = ShaHash.GetShaHash(request.registerAccount.registerEmail);
             string concatEmailKeys = String.Concat(CONST.KEY_CRYPTAGE, emailCrypt, CONST.KEY_CRYPTAGE);
             string stringEmailCrypt = ShaHash.GetShaHash(concatEmailKeys);
 
-            request.password = stringPasswordCrypt;
-            request.email = stringEmailCrypt;
+            request.registerAccount.registerPassword = stringPasswordCrypt;
+            request.registerAccount.registerEmail = stringEmailCrypt;
             #endregion
 
             //Test si l'adresse Email existe ou non
-            if (bdd.TestIfEmailExist(request.email))
+            if (bdd.TestIfEmailExist(request.registerAccount.registerEmail))
             {
                 responseFront.hasError = true;
                 responseFront.error = MSG.INSCRIPTION_EMAIL_EXIST;
@@ -117,7 +118,7 @@ namespace LauncherBack.Controllers.Inscription
 
             try
             {
-                request.nickname = request.nickname[0].ToString().ToUpper() + request.nickname.Substring(1).ToLower();
+                request.registerUser.registerNickname = request.registerUser.registerNickname[0].ToString().ToUpper() + request.registerUser.registerNickname.Substring(1).ToLower();
                 bool estInscrit = bdd.Registration(request);
                 responseFront.response = MSG.INSCRIPTION_OK;
                 return responseFront;

@@ -213,8 +213,8 @@ namespace LauncherBack.Helpers.Config
                 NAME_TABLE_ACCOUNT,
                 NAME_FIELD_ACCOUNT_EMAIL,
                 NAME_FIELD_ACCOUNT_PASSWORD,
-                request.email,
-                request.password);
+                request.registerAccount.registerEmail,
+                request.registerAccount.registerPassword);
         }
         public string registrationRecupIdAccount(RequestFrontInscription request)
         {
@@ -222,7 +222,7 @@ namespace LauncherBack.Helpers.Config
                 NAME_FIELD_ACCOUNT_ID,
                 NAME_TABLE_ACCOUNT,
                 NAME_FIELD_ACCOUNT_EMAIL,
-                request.email);
+                request.registerAccount.registerEmail);
         }
         public string registrationAddUser(int idAccount, RequestFrontInscription request)
         {
@@ -232,7 +232,7 @@ namespace LauncherBack.Helpers.Config
                     NAME_FIELD_UTILISATEUR_PSEUDO,
                     NAME_FIELD_UTILISATEUR_AVATAR,
                     idAccount,
-                    request.nickname,
+                    request.registerUser.registerNickname,
                     0);
         }
         public string testIfEmailExist(string email)
