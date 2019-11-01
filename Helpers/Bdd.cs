@@ -438,6 +438,41 @@ namespace LauncherBack.Helpers
             stopwatch.Stop();
             log.Info("Database clean ... (" + stopwatch.Elapsed.TotalSeconds + " ms)");
         }
+        public void cleanTokens()
+        {
+            stopwatch.Start();
+            List<string> listRequestTokens = nameBdd.cleanTokens();
+
+            if(this.OpenConnection() == true)
+            {
+                for(int i = 0; i<listRequestTokens.Count; i++)
+                {
+                    MySqlCommand cmd = new MySqlCommand(listRequestTokens[i], connection);
+                    cmd.ExecuteNonQuery();
+                }
+
+                this.CloseConnection();
+            }
+
+            stopwatch.Stop();
+            log.Info("Table tokens clean ... (" + stopwatch.Elapsed.TotalSeconds + " ms)");
+        }
+        public void disconnectAllUsers()
+        {
+            stopwatch.Start();
+            string requestDisconnectAllUsers = nameBdd.disconnectAllUsers();
+
+            if (this.OpenConnection() == true)
+            {
+                MySqlCommand cmd = new MySqlCommand(requestDisconnectAllUsers, connection);
+                cmd.ExecuteNonQuery();
+
+                this.CloseConnection();
+            }
+
+            stopwatch.Stop();
+            log.Info("All users have been logged out ... (" + stopwatch.Elapsed.TotalSeconds + " ms)");
+        }
         #endregion
 
         #region UTILISATEUR
@@ -629,6 +664,8 @@ namespace LauncherBack.Helpers
 
                             friend.nickname = nameBdd.retrieveNicknameFriend(dataReaderUser);
                             friend.status = nameBdd.retrieveStatusFriend(dataReaderUser);
+                            friend.avatar =  nameBdd.retrieveAvatarFriend(dataReaderUser);
+
 
                             friendList.Add(friend);
                         }

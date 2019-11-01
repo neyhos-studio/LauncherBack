@@ -58,5 +58,34 @@ namespace LauncherBack.Controllers.Configuration
             }
             
         }
+
+        [HttpPost]
+        [ActionName("Clean tokens")]
+        public string CleanTokens([FromBody] int nbr)
+        {
+            if(CONST.nbrSecret == nbr){
+                Bdd bdd = DataBaseConnection.databaseConnection();
+                bdd.cleanTokens();
+                return "Table tokens clean !";
+            }else
+            {
+                return "T'es pas à ta place ici gros naze !";
+            }
+        }
+
+        [HttpPost]
+        [ActionName("Disconnect All Users")]
+        public string DisconnectAllUsers([FromBody] int nbr)
+        {
+            if(CONST.nbrSecret == nbr)
+            {
+                Bdd bdd = DataBaseConnection.databaseConnection();
+                bdd.disconnectAllUsers();
+                return "All users have been logged out";
+            }else
+            {
+                return "Tu n'es pas à ta place ici gros naze !";
+            }
+        }
     }
 }

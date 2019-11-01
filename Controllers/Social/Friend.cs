@@ -9,5 +9,6 @@ namespace LauncherBack.Controllers.Social
     {
         public string nickname { get; set; }
         public string status { get; set; }
+        public string avatar { get; set; }
     }
 }

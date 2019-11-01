@@ -41,6 +41,7 @@ namespace LauncherBack.Helpers.Config
         string retrieveInfoFriends(List<int> friendListId, int i);
         string retrieveNicknameFriend(MySqlDataReader dataReader);
         string retrieveStatusFriend(MySqlDataReader dataReader);
+        string retrieveAvatarFriend(MySqlDataReader dataReader);
         string retrieveGameListUser(int idAccount);
         int retrieveFieldIdGame(MySqlDataReader dataReader);
         string retrieveGameInfos(List<int> userGameList, int i);
@@ -55,6 +56,8 @@ namespace LauncherBack.Helpers.Config
         string deleteTokenUser(string token);
         #region CLEAN DATABASE
         List<string> cleanDatabase();
+        List<string> cleanTokens();
+        string disconnectAllUsers();
         #endregion
     }
 }

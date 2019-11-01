@@ -311,8 +311,13 @@ namespace LauncherBack.Helpers.Config
         }
         public string retrieveInfoFriends(List<int> friendListId, int i)
         {
-            return String.Format("SELECT * FROM {0} WHERE {1} = {2}",
+            return String.Format("SELECT * FROM {0}, {1} WHERE {2}.{3} = {4}.{5} AND {6} = {7}",
                     NAME_TABLE_UTILISATEUR,
+                    NAME_TABLE_AVATAR,
+                    NAME_TABLE_UTILISATEUR,
+                    NAME_FIELD_UTILISATEUR_AVATAR,
+                    NAME_TABLE_AVATAR,
+                    NAME_FIELD_AVATAR_ID,
                     NAME_FIELD_UTILISATEUR_ID_ACCOUNT,
                     friendListId[i]);
         }
@@ -324,6 +329,11 @@ namespace LauncherBack.Helpers.Config
         {
             return dataReader[NAME_FIELD_UTILISATEUR_ETAT].ToString();
         }
+        public string retrieveAvatarFriend(MySqlDataReader dataReader)
+        {
+            return dataReader[NAME_FIELD_AVATAR_URL].ToString();
+        }
+        
         public string retrieveGameListUser(int idAccount)
         {
             return String.Format("SELECT {0} FROM {1} WHERE {2} = {3}",
@@ -431,6 +441,20 @@ namespace LauncherBack.Helpers.Config
 
             return listRequest;
         }
+        public List<string> cleanTokens()
+        {
+            List<string> listeRequestCleanTokens = new List<string>();
+            listeRequestCleanTokens.Add(String.Format("DELETE FROM {0}", NAME_TABLE_TOKEN));
+            listeRequestCleanTokens.Add(String.Format("ALTER TABLE {0} AUTO_INCREMENT = 1", NAME_TABLE_TOKEN));
+
+            return listeRequestCleanTokens;
+
+        }
+        public string disconnectAllUsers()
+        {
+            return String.Format("UPDATE {0} SET {1} = {2}", NAME_TABLE_UTILISATEUR, NAME_FIELD_UTILISATEUR_ETAT, 1);
+        }
+        
         #endregion
 
         #endregion
