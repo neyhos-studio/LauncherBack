@@ -23,6 +23,7 @@ namespace LauncherBack.Controllers.Inscription
 
         [HttpPost]
         [ActionName("Registration")]
+        
         public ResponseFront Inscription([FromBody] RequestFrontInscription request)
         {
 
@@ -35,16 +36,16 @@ namespace LauncherBack.Controllers.Inscription
             //Test de la taille de MDP
             if (request.registerAccount.registerPassword.Length < CONST.MINIMUM_PASSWORD_LENGTH)
             {
-                responseFront.hasError = true;
-                responseFront.error = RegisterEnum.passwordNoMinLength;
+                responseFront.hasError = false;
+                responseFront.response = RegisterEnum.passwordNoMinLength;
                 return responseFront;
             }
 
             //Test de la taille du PSEUDO
             if (request.registerUser.registerNickname.Length > CONST.MAXIMUM_NICKNAME_LENGTH)
             {
-                responseFront.hasError = true;
-                responseFront.error = RegisterEnum.nicknameMaxLength;
+                responseFront.hasError = false;
+                responseFront.response = RegisterEnum.nicknameMaxLength;
                 return responseFront;
             }
 
@@ -65,32 +66,32 @@ namespace LauncherBack.Controllers.Inscription
 
             if (test)
             {
-                responseFront.hasError = true;
-                responseFront.error = RegisterEnum.nicknameWordForbidden;
+                responseFront.hasError = false;
+                responseFront.response = RegisterEnum.nicknameWordForbidden;
                 return responseFront;
             }
 
             //Test de la validation d'une adresse Email
             if (!request.registerAccount.registerEmail.Contains("@"))
             {
-                responseFront.hasError = true;
-                responseFront.error = RegisterEnum.mailInvalid;
+                responseFront.hasError = false;
+                responseFront.response = RegisterEnum.mailInvalid;
                 return responseFront;
             }
 
             //Test si le PSEUDO contient plus de 2 espaces
             if (request.registerUser.registerNickname.Contains("  "))
             {
-                responseFront.hasError = true;
-                responseFront.error = RegisterEnum.nicknameTwoSpaces;
+                responseFront.hasError = false;
+                responseFront.response = RegisterEnum.nicknameTwoSpaces;
                 return responseFront;
             }
 
             //Test si le PSEUDO contient plus de 2 -
             if (request.registerUser.registerNickname.Contains("--"))
             {
-                responseFront.hasError = true;
-                responseFront.error = RegisterEnum.nicknameTwoDashes;
+                responseFront.hasError = false;
+                responseFront.response = RegisterEnum.nicknameTwoDashes;
                 return responseFront;
             }
             #endregion
@@ -111,8 +112,8 @@ namespace LauncherBack.Controllers.Inscription
             //Test si l'adresse Email existe ou non
             if (bdd.TestIfEmailExist(request.registerAccount.registerEmail))
             {
-                responseFront.hasError = true;
-                responseFront.error = RegisterEnum.mailAlreadyExist;
+                responseFront.hasError = false;
+                responseFront.response = RegisterEnum.mailAlreadyExist;
                 return responseFront;
             }
 
