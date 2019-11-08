@@ -36,7 +36,7 @@ namespace LauncherBack.Controllers.Inscription
             if (request.registerAccount.registerPassword.Length < CONST.MINIMUM_PASSWORD_LENGTH)
             {
                 responseFront.hasError = true;
-                responseFront.error = MSG.INSCRIPTION_PASSWORD_COURT;
+                responseFront.error = RegisterEnum.passwordNoMinLength;
                 return responseFront;
             }
 
@@ -44,7 +44,7 @@ namespace LauncherBack.Controllers.Inscription
             if (request.registerUser.registerNickname.Length > CONST.MAXIMUM_NICKNAME_LENGTH)
             {
                 responseFront.hasError = true;
-                responseFront.error = MSG.INSCRIPTION_PSEUDO_LONG;
+                responseFront.error = RegisterEnum.nicknameMaxLength;
                 return responseFront;
             }
 
@@ -66,7 +66,7 @@ namespace LauncherBack.Controllers.Inscription
             if (test)
             {
                 responseFront.hasError = true;
-                responseFront.error = MSG.INSCRIPTION_PSEUDO_MOTS_INTERDIT;
+                responseFront.error = RegisterEnum.nicknameWordForbidden;
                 return responseFront;
             }
 
@@ -74,7 +74,7 @@ namespace LauncherBack.Controllers.Inscription
             if (!request.registerAccount.registerEmail.Contains("@"))
             {
                 responseFront.hasError = true;
-                responseFront.error = MSG.INSCRIPTION_EMAIL_INVALID;
+                responseFront.error = RegisterEnum.mailInvalid;
                 return responseFront;
             }
 
@@ -82,7 +82,7 @@ namespace LauncherBack.Controllers.Inscription
             if (request.registerUser.registerNickname.Contains("  "))
             {
                 responseFront.hasError = true;
-                responseFront.error = MSG.INSCRIPTION_PSEUDO_2_ESPACES;
+                responseFront.error = RegisterEnum.nicknameTwoSpaces;
                 return responseFront;
             }
 
@@ -90,7 +90,7 @@ namespace LauncherBack.Controllers.Inscription
             if (request.registerUser.registerNickname.Contains("--"))
             {
                 responseFront.hasError = true;
-                responseFront.error = MSG.INSCRIPTION_PSEUDO_2_TIRETS;
+                responseFront.error = RegisterEnum.nicknameTwoDashes;
                 return responseFront;
             }
             #endregion
@@ -112,7 +112,7 @@ namespace LauncherBack.Controllers.Inscription
             if (bdd.TestIfEmailExist(request.registerAccount.registerEmail))
             {
                 responseFront.hasError = true;
-                responseFront.error = MSG.INSCRIPTION_EMAIL_EXIST;
+                responseFront.error = RegisterEnum.mailAlreadyExist;
                 return responseFront;
             }
 
@@ -120,13 +120,13 @@ namespace LauncherBack.Controllers.Inscription
             {
                 request.registerUser.registerNickname = request.registerUser.registerNickname[0].ToString().ToUpper() + request.registerUser.registerNickname.Substring(1).ToLower();
                 bool estInscrit = bdd.Registration(request);
-                responseFront.response = MSG.INSCRIPTION_OK;
+                responseFront.response = RegisterEnum.ok;
                 return responseFront;
             }catch(Exception e)
             {
                 log.Warn("Erreur durant l'inscription : " + e.Message);
                 responseFront.hasError = true;
-                responseFront.error = MSG.INSCRIPTION_FAILED;
+                responseFront.error = RegisterEnum.nok;
                 return responseFront;
             }
         }
