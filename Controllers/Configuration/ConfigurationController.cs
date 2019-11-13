@@ -5,6 +5,7 @@ using MSG = LauncherBack.Helpers.Messages;
 using CONST = LauncherBack.Helpers.Constantes;
 using CRED = LauncherBack.Helpers.Config.Credentials;
 using System;
+using NHibernate;
 
 namespace LauncherBack.Controllers.Configuration
 {
@@ -13,7 +14,7 @@ namespace LauncherBack.Controllers.Configuration
     [ApiController]
     public class ConfigurationController : Controller
     {
-        [HttpPost]
+        /*[HttpPost]
         [ActionName("Forbidden Words")]
         public ResponseFront AddForbiddenWord([FromBody] ForbiddenWord forbiddenWord)
         {
@@ -31,7 +32,21 @@ namespace LauncherBack.Controllers.Configuration
                 responseFront.error = MSG.CONFIGURATION_MOT_INTERDIT_NOK;
                 return responseFront;
             }
+        }*/
+
+        [HttpPost]
+        [ActionName("Forbidden Words")]
+        public void AddForbiddenWord([FromBody] ForbiddenWord forbiddenWord)
+        {
+            ISession session = NhibernateSession.OpenSession();
+
+            ForbiddenWordHib forbiddenWordHib = new ForbiddenWordHib();
+
+            forbiddenWordHib.word = forbiddenWord.word;
+            session.Save(forbiddenWordHib);
+            session.Close();
         }
+
 
         [HttpPost]
         [ActionName("Banishment")]

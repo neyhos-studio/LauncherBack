@@ -36,3 +36,5 @@ C:\Users\kylian.robba\Documents\GitHub\LauncherBack\obj\Debug\netcoreapp2.1\Laun
 C:\Users\Le boss\Documents\Projet_MMO_renew\LauncherBack\bin\Debug\netcoreapp2.1\appsettings.Development.json
 C:\Users\Le boss\Documents\Projet_MMO_renew\LauncherBack\bin\Debug\netcoreapp2.1\appsettings.json
 C:\Users\Le boss\Documents\Projet_MMO_renew\LauncherBack\bin\Debug\netcoreapp2.1\Properties\launchSettings.json
+C:\Users\kylian.robba\Documents\GitHub\LauncherBack\bin\Debug\netcoreapp2.1\hibernate.cfg.xml
+C:\Users\kylian.robba\Documents\GitHub\LauncherBack\bin\Debug\netcoreapp2.1\mapping\hbm.xml

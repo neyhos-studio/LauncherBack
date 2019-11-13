@@ -1,23 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Le boss\\Documents\\Projet_MMO_renew\\LauncherBack\\LauncherBack.csproj": {}
+    "C:\\Users\\kylian.robba\\Documents\\GitHub\\LauncherBack\\LauncherBack.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Le boss\\Documents\\Projet_MMO_renew\\LauncherBack\\LauncherBack.csproj": {
+    "C:\\Users\\kylian.robba\\Documents\\GitHub\\LauncherBack\\LauncherBack.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Le boss\\Documents\\Projet_MMO_renew\\LauncherBack\\LauncherBack.csproj",
+        "projectUniqueName": "C:\\Users\\kylian.robba\\Documents\\GitHub\\LauncherBack\\LauncherBack.csproj",
         "projectName": "LauncherBack",
-        "projectPath": "C:\\Users\\Le boss\\Documents\\Projet_MMO_renew\\LauncherBack\\LauncherBack.csproj",
-        "packagesPath": "C:\\Users\\Le boss\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Le boss\\Documents\\Projet_MMO_renew\\LauncherBack\\obj\\",
+        "projectPath": "C:\\Users\\kylian.robba\\Documents\\GitHub\\LauncherBack\\LauncherBack.csproj",
+        "packagesPath": "C:\\Users\\kylian.robba\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\kylian.robba\\Documents\\GitHub\\LauncherBack\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-        ],
         "configFilePaths": [
-          "C:\\Users\\Le boss\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\kylian.robba\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -73,6 +70,10 @@
             "MySql.Data": {
               "target": "Package",
               "version": "[8.0.18, )"
+            },
+            "NHibernate": {
+              "target": "Package",
+              "version": "[5.2.6, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
