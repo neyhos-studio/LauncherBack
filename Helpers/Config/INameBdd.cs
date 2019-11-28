@@ -1,6 +1,7 @@
 ﻿using LauncherBack.Controllers.Connexion;
 using LauncherBack.Controllers.Inscription;
 using LauncherBack.Controllers.Utilisateur;
+using LauncherBack.Controllers.Social;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
@@ -54,6 +55,9 @@ namespace LauncherBack.Helpers.Config
         string disconectionUser(int idAccount);
         string nowBannedUser(int idAccount);
         string deleteTokenUser(string token);
+
+        string sendMessage(Message requestMessage);
+
         #region CLEAN DATABASE
         List<string> cleanDatabase();
         List<string> cleanTokens();

@@ -693,6 +693,33 @@ namespace LauncherBack.Helpers
 
         }
 
+        public void sendMessage(Message requestMessage)
+        {
+            stopwatch.Start();
+
+            try
+            {
+                string queryInsertMessage = nameBdd.sendMessage(requestMessage);
+
+                if (this.OpenConnection() == true)
+                {
+                    MySqlCommand cmd = new MySqlCommand(queryInsertMessage, connection);
+                    cmd.ExecuteNonQuery();
+                    this.CloseConnection();
+                }
+
+                stopwatch.Stop();
+                log.Info("api.SOCIAL.SendMessage ... (" + stopwatch.Elapsed.TotalSeconds + " ms)");
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex);
+            }
+
+            
+
+        }
+
         #endregion
 
         #region GAME LIST

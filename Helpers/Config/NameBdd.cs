@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using LauncherBack.Controllers.Connexion;
 using LauncherBack.Controllers.Inscription;
 using LauncherBack.Controllers.Utilisateur;
+using LauncherBack.Controllers.Social;
 using MySql.Data.MySqlClient;
 using CONST = LauncherBack.Helpers.Constantes;
 
@@ -121,6 +122,16 @@ namespace LauncherBack.Helpers.Config
             private static readonly string NAME_TABLE_NEWS_CATEG = String.Format("{0}{1}{2}", PREFIX, PREFIX_NAME_FIELD, ENTITY_NEWS_CATEG);
             private static readonly string NAME_FIELD_NEWS_CATEG_ID = String.Format("{0}{1}{2}", ENTITY_NEWS_CATEG, PREFIX_NAME_FIELD, "ID");
             private static readonly string NAME_FIELD_NEWS_CATEG_LIBELLE = String.Format("{0}{1}{2}", ENTITY_NEWS_CATEG, PREFIX_NAME_FIELD, "LIBELLE");
+        #endregion
+
+        #region NS_TCHAT_MESSAGE
+        private static readonly string ENTITY_NS_TCHAT_MESSAGE = "TCHAT_MESSAGE".ToUpper();
+        private static readonly string NAME_TABLE_TCHAT_MESSAGE = String.Format("{0}{1}{2}", PREFIX, PREFIX_NAME_FIELD, ENTITY_NS_TCHAT_MESSAGE);
+        private static readonly string NAME_FIELD_TCHAT_MESSAGE_ID = String.Format("{0}{1}{2}", ENTITY_NS_TCHAT_MESSAGE, PREFIX_NAME_FIELD, "ID");
+        private static readonly string NAME_FIELD_TCHAT_MESSAGE_DATETIME = String.Format("{0}{1}{2}", ENTITY_NS_TCHAT_MESSAGE, PREFIX_NAME_FIELD, "DATETIME");
+        private static readonly string NAME_FIELD_TCHAT_MESSAGE_MESSAGE = String.Format("{0}{1}{2}", ENTITY_NS_TCHAT_MESSAGE, PREFIX_NAME_FIELD, "MESSAGE");
+        private static readonly string NAME_FIELD_TCHAT_MESSAGE_FROM = String.Format("{0}{1}{2}", ENTITY_NS_TCHAT_MESSAGE, PREFIX_NAME_FIELD, "FROM");
+        private static readonly string NAME_FIELD_TCHAT_MESSAGE_TO = String.Format("{0}{1}{2}", ENTITY_NS_TCHAT_MESSAGE, PREFIX_NAME_FIELD, "TO");
         #endregion
 
         #endregion
@@ -419,6 +430,20 @@ namespace LauncherBack.Helpers.Config
                 NAME_TABLE_TOKEN,
                 NAME_FIELD_TOKEN_TOKEN_CLIENT,
                 token);
+        }
+
+        public string sendMessage(Message requestFrontMessage)
+        {
+            return String.Format("INSERT INTO {0} ({1},{2},{3},{4}) VALUES ('{5}', '{6}', {7}, {8})",
+                NAME_TABLE_TCHAT_MESSAGE,
+                NAME_FIELD_TCHAT_MESSAGE_DATETIME,
+                NAME_FIELD_TCHAT_MESSAGE_MESSAGE,
+                NAME_FIELD_TCHAT_MESSAGE_FROM,
+                NAME_FIELD_TCHAT_MESSAGE_TO,
+                requestFrontMessage.messageDateTime.ToString(CONST.DATE_TIME_FORMAT),
+                requestFrontMessage.message,
+                requestFrontMessage.messageFrom,
+                requestFrontMessage.messageTo);
         }
 
         #region CLEAN DATABASE
