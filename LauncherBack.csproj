@@ -14,7 +14,7 @@
   <ItemGroup>
     <PackageReference Include="AWSSDK" Version="2.3.55.2" />
     <PackageReference Include="ColoredConsole" Version="1.0.0" />
-    <PackageReference Include="log4net" Version="2.0.8" />
+    <PackageReference Include="log4net" Version="2.0.10" />
     <PackageReference Include="MicroKnights.Log4NetAdoNetAppender" Version="1.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.2" PrivateAssets="All" />
